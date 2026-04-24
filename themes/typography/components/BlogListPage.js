@@ -6,9 +6,6 @@ import { useRouter } from 'next/router'
 import CONFIG from '../config'
 import { BlogItem } from './BlogItem'
 
-/**
- * 博客列表（三列网格，紧靠左侧边栏）
- */
 export default function BlogListPage(props) {
   const { page = 1, posts, postCount } = props
   const router = useRouter()
@@ -27,14 +24,13 @@ export default function BlogListPage(props) {
 
   return (
     <div className='w-full px-4 md:px-8'>
-      {/* 三列网格：移动端1列，桌面端3列 */}
+      {/* 三列网格，卡片紧靠左侧 */}
       <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10'>
         {posts?.map((p, index) => (
           <BlogItem key={p.id} post={p} />
         ))}
       </div>
 
-      {/* 分页导航 */}
       <div className='flex justify-between text-xs mt-12'>
         <SmartLink
           href={{
