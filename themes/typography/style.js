@@ -86,22 +86,6 @@ const Style = () => {
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
-
-      /* ========== 以下为新增的安全样式（无语法错误） ========== */
-      /* 缩小文章内容区左右内边距 */
-      #container-inner {
-        padding-left: 0.25rem !important;
-        padding-right: 0.25rem !important;
-      }
-      /* 右侧边栏向上移动（顶部距离变小） */
-      .sticky {
-        top: 3rem !important;
-      }
-      /* 右侧边栏内部紫色虚线区域高度减半 */
-      [class*="justify-between"][class*="md:mt-20"],
-      .flex.flex-col.justify-between {
-        margin-top: 2.5rem !important;
-      }
     `}</style>
   )
 }
