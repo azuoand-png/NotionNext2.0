@@ -50,7 +50,7 @@ const LayoutBase = props => {
 
         {/* 外层容器：去掉左右内边距 */}
         <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-0 w-screen'>
-          {/* 左侧内容区域：左内边距改为 md:pl-0，让文章彻底靠左 */}
+          {/* 左侧内容区域：左内边距为0 */}
           <div className='overflow-hidden md:mt-8 flex-1 md:pl-0'>
             <div
               id='container-inner'
@@ -72,8 +72,8 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {/* 右侧边栏：完全贴顶，内部无上边距，并添加巨大左外边距 md:ml-24 向右移动 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 md:ml-24'>
+          {/* 右侧边栏：ml-auto 让它自动靠右，紧贴右侧 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 md:ml-auto'>
             <div className='flex flex-col justify-between md:mt-0 md:h-[70vh]'>
               <NavBar {...props} />
             </div>
@@ -90,6 +90,7 @@ const LayoutBase = props => {
   )
 }
 
+// 以下所有函数与原始完全一致，保持原样
 const LayoutIndex = props => <LayoutPostList {...props} />
 
 const LayoutPostList = props => (
@@ -148,11 +149,9 @@ const LayoutSlug = props => {
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
         <div className='flex flex-col md:flex-row px-5 pt-3'>
-          {/* 左侧目录（桌面端显示） */}
           <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
             <Catalog post={post} />
           </div>
-          {/* 右侧文章内容 */}
           <div className={`flex-1 ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
             <ArticleInfo post={post} />
             <WWAds orientation='horizontal' className='w-full' />
