@@ -13,18 +13,24 @@ export const BlogItem = props => {
   const showPreview =
     siteConfig('POST_LIST_PREVIEW', false, NOTION_CONFIG) && post.blockMap
 
-  // 获取封面图URL（优先缩略图，其次原图）
-  const coverImage = post?.pageCoverThumbnail || post?.pageCover
+  // 获取封面图：多种字段兼容（Page和Post）
+  const coverImage =
+    post?.pageCoverThumbnail ||
+    post?.pageCover ||
+    post?.cover ||
+    post?.thumbnail ||
+    (post?.blockMap && post?.blockMap?.cover?.length > 0 ? post.blockMap.cover : null)
 
   return (
     <div className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-      {/* 图片区域 - 始终显示（如果有封面图） */}
+      {/* 图片区域 - 只要有封面图就显示 */}
       {coverImage && (
         <div className="relative w-full pt-[56.25%] overflow-hidden bg-gray-100 dark:bg-gray-700">
           <SmartLink href={post.href} passHref legacyBehavior>
             <LazyImage
               src={coverImage}
               className="absolute inset-0 w-full h-full object-cover object-center hover:scale-110 duration-500"
+              alt={post.title}
             />
           </SmartLink>
         </div>
@@ -48,7 +54,7 @@ export const BlogItem = props => {
         <header className="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap items-center gap-2 mb-3">
           <div className="flex items-center space-x-1">
             <i className="far fa-calendar-alt"></i>
-            <span>{formatDateFmt(post?.publishDate || post?.date?.start_date, 'yyyy-MM-dd')}</span>
+            <span>{formatDateFmt(post?.publishDate || post?.date?.start_date || post?.createdTime, 'yyyy-MM-dd')}</span>
           </div>
           {post?.tags && post?.tags?.length > 0 && (
             <div className="flex items-center flex-wrap gap-1">
