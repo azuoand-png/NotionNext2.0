@@ -72,19 +72,19 @@ const LayoutBase = props => {
 
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-24 w-screen'>
-          {/* 主体 - 使用 flex 布局 */}
-          {/* 文章详情才显示 */}
-          {/* {props.post && (
-            <div className='mt-20 hidden md:block md:fixed md:left-5 md:w-[300px]'>
-              <Catalog {...props} />
-            </div>
-          )} */}
-          <div className='overflow-hidden md:mt-20 flex-1 '>
-            {/* 左侧内容区域 - 可滚动 */}
+        {/* 外层容器：增加最大宽度以让文章区域更宽 */}
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-[90rem] md:px-12 w-screen'>
+          {/* 左侧：侧边栏（原右侧区域） - 固定在左侧，不滚动 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-20'>
+            <NavBar {...props} />
+            <Footer {...props} />
+          </div>
+
+          {/* 右侧：主要内容区域（文章列表/详情） - 可滚动 */}
+          <div className='overflow-hidden md:mt-20 flex-1'>
             <div
               id='container-inner'
-              className='h-full w-full md:px-24 overflow-y-auto scroll-hidden relative'>
+              className='h-full w-full md:px-12 overflow-y-auto scroll-hidden relative'>
               {/* 移动端导航 - 显示在顶部 */}
               <div className='md:hidden'>
                 <NavBar {...props} />
@@ -99,16 +99,10 @@ const LayoutBase = props => {
               )}
               <AdSlot type='native' />
               {/* 移动端页脚 - 显示在底部 */}
-              <div className='md:hidden  z-30  '>
+              <div className='md:hidden z-30'>
                 <Footer {...props} />
               </div>
             </div>
-          </div>
-
-          {/* 右侧导航和页脚 - 固定不滚动 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-20'>
-            <NavBar {...props} />
-            <Footer {...props} />
           </div>
         </div>
 
@@ -171,7 +165,7 @@ const LayoutSearch = props => {
   return <LayoutPostList {...props} />
 }
 
- function groupArticlesByYearArray(articles) {
+function groupArticlesByYearArray(articles) {
   const grouped = {};
 
   for (const article of articles) {
@@ -192,8 +186,6 @@ const LayoutSearch = props => {
     .map(([year, posts]) => ({ year, posts }));
 }
 
-
-
 /**
  * 归档页
  * @param {*} props
@@ -204,7 +196,7 @@ const LayoutArchive = props => {
   const sortPosts = groupArticlesByYearArray(posts)
   return (
     <>
-      <div className='mb-10 pb-20 md:pb-12 p-5  min-h-screen w-full'>
+      <div className='mb-10 pb-20 md:pb-12 p-5 min-h-screen w-full'>
         {sortPosts.map(p => (
           <BlogArchiveItem
             key={p.year}
@@ -231,8 +223,8 @@ const LayoutSlug = props => {
       {lock && <ArticleLock validPassword={validPassword} />}
 
       {!lock && post && (
-        <div
-          className={`px-5 pt-3 ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
+        // 移除宽度限制，让文章内容充分利用右侧区域宽度
+        <div className='px-5 pt-3'>
           {/* 文章信息 */}
           <ArticleInfo post={post} />
 
@@ -344,7 +336,7 @@ const LayoutTagIndex = props => {
                 key={tag}
                 href={`/tag/${encodeURIComponent(tag.name)}`}
                 passHref
-                className={`cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200  mr-2 py-1 px-2 text-xs whitespace-nowrap dark:hover:text-white text-gray-600 hover:shadow-xl dark:border-gray-400 notion-${tag.color}_background dark:bg-gray-800`}>
+                className={`cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs whitespace-nowrap dark:hover:text-white text-gray-600 hover:shadow-xl dark:border-gray-400 notion-${tag.color}_background dark:bg-gray-800`}>
                 <div className='font-light dark:text-gray-400'>
                   <i className='mr-1 fas fa-tag' />{' '}
                   {tag.name + (tag.count ? `(${tag.count})` : '')}{' '}
