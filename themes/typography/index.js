@@ -47,9 +47,10 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
+        {/* 修改1：外层容器左右内边距从 md:px-24 改为 md:px-8，显著缩窄 */}
         <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-8 w-screen'>
           <div className='overflow-hidden md:mt-8 flex-1'>
-            {/* 内层容器左右内边距改为 md:px-2，进一步收窄 */}
+            {/* 修改2：内层容器左右内边距从 md:px-12 改为 md:px-2，让内容更靠边 */}
             <div
               id='container-inner'
               className='h-full w-full md:px-2 overflow-y-auto scroll-hidden relative'>
@@ -69,8 +70,12 @@ const LayoutBase = props => {
               </div>
             </div>
           </div>
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-20'>
-            <NavBar {...props} />
+          {/* 修改3：右侧边栏 sticky top-20 -> top-12，减小顶部间距 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-12'>
+            {/* 修改4：内部容器 md:mt-20 -> md:mt-10，紫色虚线高度缩短一半 */}
+            <div className='flex flex-col justify-between md:mt-10 md:h-[70vh]'>
+              <NavBar {...props} />
+            </div>
             <Footer {...props} />
           </div>
         </div>
