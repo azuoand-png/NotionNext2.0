@@ -22,10 +22,15 @@ export default function NavBar(props) {
             <div className='font-bold text-4xl text-center' id='blog-name'>
               {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-            {/* 英文名：使用绝对定位，使其位于竖线左侧（相对于 header） */}
+            {/* 英文名：绝对定位，保持在竖线左侧且竖排显示 */}
             <div
-              className='font-bold text-xl text-center absolute left-0 md:left-[-2rem] top-full md:top-auto md:bottom-auto'
-              style={{ writingMode: 'horizontal-tb' }}
+              className='font-bold text-xl text-center absolute'
+              style={{
+                writingMode: 'vertical-lr',
+                left: '-2rem',
+                top: '0',
+                bottom: 'auto'
+              }}
               id='blog-name-en'
             >
               {siteConfig('TYPOGRAPHY_BLOG_NAME_EN')}
