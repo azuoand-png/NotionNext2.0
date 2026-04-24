@@ -23,8 +23,8 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    // 减少桌面端左右内边距：md:px-8 改为 md:px-6
-    <div className='w-full px-4 md:px-6'>
+    // 修改5：减少桌面端左右内边距，原来 md:px-8 改为 md:px-4
+    <div className='w-full px-4 md:px-4'>
       <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10'>
         {posts?.map((p, index) => (
           <BlogItem key={p.id} post={p} />
