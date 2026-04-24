@@ -83,39 +83,24 @@ const Style = () => {
       }
 
       #container-wrapper .scroll-hidden {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
 
-      /* ========== 新增：强制覆盖布局边距和位置 ========== */
-      /* 1. 文章内容区左右内边距改为 0.25rem (约4px)，显著收窄 */
+      /* ========== 以下为新增的安全样式（无语法错误） ========== */
+      /* 缩小文章内容区左右内边距 */
       #container-inner {
         padding-left: 0.25rem !important;
         padding-right: 0.25rem !important;
       }
-
-      /* 2. 右侧边栏顶部距离从 5rem 改为 3rem */
-      .sticky.top-20 {
+      /* 右侧边栏向上移动（顶部距离变小） */
+      .sticky {
         top: 3rem !important;
       }
-
-      /* 3. 右侧边栏内部容器的顶部外边距从 5rem 改为 2.5rem（紫色虚线高度减半） */
-      .flex.flex-col.justify-between.md\:mt-20 {
+      /* 右侧边栏内部紫色虚线区域高度减半 */
+      [class*="justify-between"][class*="md:mt-20"],
+      .flex.flex-col.justify-between {
         margin-top: 2.5rem !important;
-      }
-
-      /* 4. 桌面端媒体查询确保生效 */
-      @media (min-width: 768px) {
-        #container-inner {
-          padding-left: 0.25rem !important;
-          padding-right: 0.25rem !important;
-        }
-        .sticky.top-20 {
-          top: 3rem !important;
-        }
-        .flex.flex-col.justify-between.md\:mt-20 {
-          margin-top: 2.5rem !important;
-        }
       }
     `}</style>
   )
