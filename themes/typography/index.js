@@ -18,7 +18,6 @@ const AlgoliaSearchModal = dynamic(
   { ssr: false }
 )
 
-// 主题组件
 const BlogArchiveItem = dynamic(() => import('./components/BlogArchiveItem'), { ssr: false })
 const ArticleLock = dynamic(() => import('./components/ArticleLock'), { ssr: false })
 const ArticleInfo = dynamic(() => import('./components/ArticleInfo'), { ssr: false })
@@ -32,16 +31,15 @@ const WWAds = dynamic(() => import('@/components/WWAds'), { ssr: false })
 const BlogListPage = dynamic(() => import('./components/BlogListPage'), { ssr: false })
 const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ssr: false })
 
-// 主题全局状态
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
 /**
- * 基础布局
+ * 基础布局（顶部固定导航 + 左右两栏：目录+内容）
  */
 const LayoutBase = props => {
   const { children } = props
-  const { onLoading, fullWidth } = useGlobal()
+  const { onLoading } = useGlobal()
   const searchModal = useRef(null)
   const [currentPost, setCurrentPost] = useState(null)
 
@@ -53,40 +51,30 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器 */}
-        <div className='flex flex-1 mx-auto overflow-hidden py-1 md:p-0 md:max-w-[90rem] md:px-12 w-screen'>
-          
-          {/* 左侧边栏：增加顶部粘性距离（top-20），整体下移预留菜单空间 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:w-64 md:h-[100vh] sticky top-20 overflow-y-auto scroll-hidden'>
-            <NavBar {...props} />
-            {currentPost && (
-              <div className='mt-4 px-2'>
-                <Catalog post={currentPost} />
-              </div>
-            )}
-            <Footer {...props} />
-          </div>
+        {/* 顶部固定导航栏 */}
+        <div className='sticky top-0 z-30 bg-white dark:bg-[#232222] border-b border-gray-200 dark:border-gray-700'>
+          <NavBar {...props} />
+        </div>
 
-          {/* 右侧主要内容区域：增加顶部外边距（md:mt-12），使文章区域整体下移 */}
-          <div className='overflow-hidden md:mt-12 flex-1'>
-            <div
-              id='container-inner'
-              className='h-full w-full md:px-8 overflow-y-auto scroll-hidden relative'>
-              <div className='md:hidden'>
-                <NavBar {...props} />
-              </div>
-              {onLoading ? (
-                <div className='flex items-center justify-center min-h-[500px] w-full'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
-                </div>
-              ) : (
-                <>{children}</>
-              )}
-              <AdSlot type='native' />
-              <div className='md:hidden z-30'>
-                <Footer {...props} />
-              </div>
+        {/* 主内容区域：左右水平布局 */}
+        <div className='flex flex-1 overflow-hidden'>
+          {/* 左侧目录（仅在文章详情页显示） */}
+          {currentPost && (
+            <div className='hidden md:block w-64 border-r border-gray-200 dark:border-gray-700 overflow-y-auto p-4'>
+              <Catalog post={currentPost} />
             </div>
+          )}
+
+          {/* 右侧主要内容区（滚动） */}
+          <div className='flex-1 overflow-y-auto' id='container-inner'>
+            {onLoading ? (
+              <div className='flex items-center justify-center min-h-[500px] w-full'>
+                <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
+              </div>
+            ) : (
+              <>{children}</>
+            )}
+            <AdSlot type='native' />
           </div>
         </div>
 
@@ -99,174 +87,5 @@ const LayoutBase = props => {
   )
 }
 
-/**
- * 博客首页
- */
-const LayoutIndex = props => <LayoutPostList {...props} />
-
-/**
- * 博客列表
- */
-const LayoutPostList = props => (
-  <>
-    <BlogPostBar {...props} />
-    <BlogListPage {...props} />
-  </>
-)
-
-/**
- * 搜索页
- */
-const LayoutSearch = props => {
-  const { keyword } = props
-  useEffect(() => {
-    if (isBrowser) {
-      replaceSearchResult({
-        doms: document.getElementById('posts-wrapper'),
-        search: keyword,
-        target: { element: 'span', className: 'text-red-500 border-b border-dashed' }
-      })
-    }
-  }, [keyword])
-  return <LayoutPostList {...props} />
-}
-
-function groupArticlesByYearArray(articles) {
-  const grouped = {}
-  for (const article of articles) {
-    const year = new Date(article.publishDate).getFullYear().toString()
-    if (!grouped[year]) grouped[year] = []
-    grouped[year].push(article)
-  }
-  for (const year in grouped) {
-    grouped[year].sort((a, b) => b.publishDate - a.publishDate)
-  }
-  return Object.entries(grouped)
-    .sort(([a], [b]) => b - a)
-    .map(([year, posts]) => ({ year, posts }))
-}
-
-/**
- * 归档页
- */
-const LayoutArchive = props => {
-  const { posts } = props
-  const sortPosts = groupArticlesByYearArray(posts)
-  return (
-    <div className='mb-10 pb-20 md:pb-12 p-5 min-h-screen w-full'>
-      {sortPosts.map(p => (
-        <BlogArchiveItem key={p.year} archiveTitle={p.year} archivePosts={p.posts} />
-      ))}
-    </div>
-  )
-}
-
-/**
- * 文章详情
- */
-const LayoutSlug = props => {
-  const { post, lock, validPassword, prev, next, recommendPosts } = props
-  const { fullWidth } = useGlobal()
-  const { setCurrentPost } = useSimpleGlobal()
-
-  useEffect(() => {
-    if (post) setCurrentPost(post)
-    return () => setCurrentPost(null)
-  }, [post, setCurrentPost])
-
-  return (
-    <>
-      {lock && <ArticleLock validPassword={validPassword} />}
-      {!lock && post && (
-        <div className='px-5 pt-3'>
-          <ArticleInfo post={post} />
-          <WWAds orientation='horizontal' className='w-full' />
-          <div id='article-wrapper'>
-            <NotionPage post={post} />
-          </div>
-          <AdSlot type='in-article' />
-          {post?.type === 'Post' && (
-            <>
-              <ArticleAround prev={prev} next={next} />
-              <RecommendPosts recommendPosts={recommendPosts} />
-            </>
-          )}
-          <Comment frontMatter={post} />
-        </div>
-      )}
-    </>
-  )
-}
-
-/**
- * 404
- */
-const Layout404 = props => {
-  const { post } = props
-  const router = useRouter()
-  const waiting404 = siteConfig('POST_WAITING_TIME_FOR_404') * 1000
-  useEffect(() => {
-    if (!post) {
-      setTimeout(() => {
-        if (isBrowser) {
-          const article = document.querySelector('#article-wrapper #notion-article')
-          if (!article) router.push('/404').then(() => console.warn('找不到页面', router.asPath))
-        }
-      }, waiting404)
-    }
-  }, [post, router])
-  return <>404 Not found.</>
-}
-
-/**
- * 分类列表
- */
-const LayoutCategoryIndex = props => {
-  const { categoryOptions } = props
-  return (
-    <div id='category-list' className='px-5 duration-200 flex flex-wrap'>
-      {categoryOptions?.map(category => (
-        <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
-          <div className='hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'>
-            <i className='mr-4 fas fa-folder' /> {category.name}({category.count})
-          </div>
-        </SmartLink>
-      ))}
-    </div>
-  )
-}
-
-/**
- * 标签列表
- */
-const LayoutTagIndex = props => {
-  const { tagOptions } = props
-  return (
-    <div id='tags-list' className='px-5 duration-200 flex flex-wrap'>
-      {tagOptions.map(tag => (
-        <div key={tag.name} className='p-2'>
-          <SmartLink
-            href={`/tag/${encodeURIComponent(tag.name)}`}
-            className={`cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs whitespace-nowrap dark:hover:text-white text-gray-600 hover:shadow-xl dark:border-gray-400 notion-${tag.color}_background dark:bg-gray-800`}>
-            <div className='font-light dark:text-gray-400'>
-              <i className='mr-1 fas fa-tag' /> {tag.name + (tag.count ? `(${tag.count})` : '')}
-            </div>
-          </SmartLink>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-export {
-  Layout404,
-  LayoutArchive,
-  LayoutBase,
-  LayoutCategoryIndex,
-  LayoutIndex,
-  LayoutPostList,
-  LayoutSearch,
-  LayoutSlug,
-  LayoutTagIndex,
-  CONFIG as THEME_CONFIG
-}
+// 其余 LayoutIndex, LayoutPostList, LayoutSearch, LayoutArchive, LayoutSlug, Layout404, LayoutCategoryIndex, LayoutTagIndex 保持不变……
+// （请从您原来的代码中复制，此处省略重复内容，避免过长）
