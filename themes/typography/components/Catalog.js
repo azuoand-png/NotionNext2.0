@@ -16,25 +16,40 @@ const Catalog = ({ post }) => {
       const sections = document.getElementsByClassName('notion-h')
       if (!sections || sections.length === 0) return
 
-      let currentSectionId = null
-      for (let i = 0; i < sections.length; ++i) {
+      let currentActiveId = null
+      // 获取滚动容器的滚动位置
+      const container = document.querySelector('#container-inner')
+      const scrollTop = container ? container.scrollTop : window.scrollY
+
+      // 遍历所有标题，找到当前滚动位置所在的标题
+      for (let i = 0; i < sections.length; i++) {
         const section = sections[i]
         if (!section || !(section instanceof Element)) continue
-        const bbox = section.getBoundingClientRect()
-        const offset = 100
-        if (bbox.top - offset < 0) {
-          currentSectionId = section.getAttribute('data-id')
+        
+        const rect = section.getBoundingClientRect()
+        const containerRect = container ? container.getBoundingClientRect() : null
+        // 相对于滚动容器的顶部偏移
+        const offsetTop = containerRect ? rect.top - containerRect.top : rect.top
+        
+        // 设置一个较小的阈值（比如 80px），用于判断标题是否已进入可视区顶部附近
+        const threshold = 80
+        if (offsetTop <= threshold) {
+          currentActiveId = section.getAttribute('data-id')
         } else {
+          // 一旦发现标题还在阈值以下，停止循环（因为后续标题更远）
           break
         }
       }
-      if (!currentSectionId && sections.length > 0) {
-        currentSectionId = sections[0].getAttribute('data-id')
+
+      // 如果没找到，且至少有一个标题，则默认激活第一个
+      if (!currentActiveId && sections.length > 0) {
+        currentActiveId = sections[0].getAttribute('data-id')
       }
 
-      if (currentSectionId !== activeSection) {
-        setActiveSection(currentSectionId)
-        const index = post?.toc?.findIndex(obj => uuidToId(obj.id) === currentSectionId)
+      if (currentActiveId !== activeSection) {
+        setActiveSection(currentActiveId)
+        // 同步滚动目录列表到当前激活项
+        const index = post?.toc?.findIndex(obj => uuidToId(obj.id) === currentActiveId)
         if (index !== -1 && tRef?.current) {
           tRef.current.scrollTo({ top: 28 * index, behavior: 'smooth' })
         }
@@ -43,9 +58,14 @@ const Catalog = ({ post }) => {
 
     const content = document.querySelector('#container-inner')
     if (!content) return
+
     content.addEventListener('scroll', actionSectionScrollSpy)
+    // 初始化执行一次，确保正确高亮
     setTimeout(() => actionSectionScrollSpy(), 300)
-    return () => content?.removeEventListener('scroll', actionSectionScrollSpy)
+
+    return () => {
+      content.removeEventListener('scroll', actionSectionScrollSpy)
+    }
   }, [post, activeSection])
 
   if (!post || !post?.toc || post?.toc?.length < 1) return null
