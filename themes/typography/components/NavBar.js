@@ -6,24 +6,25 @@ import { MenuList } from './MenuList'
 import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
 
-/**
- * 菜单导航
- * @param {*} props
- * @returns
- */
 export default function NavBar(props) {
   return (
     <div className='flex flex-col justify-between md:mt-8 md:h-auto'>
-      {/* 标题区域：整体向右移动，同时 hover 背景会覆盖其内部所有文档流元素 */}
-      <header className='w-fit self-center md:self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2 md:ml-8'>
+      {/* 为 header 添加一个自定义类，便于 CSS 控制 hover 背景 */}
+      <header className='relative w-fit self-center md:self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 mb-2 md:ml-8 nav-header-hover'>
         <SmartLink href='/'>
           <div className='flex flex-col-reverse md:flex-col items-center md:items-start'>
             <div className='font-bold text-4xl text-center' id='blog-name'>
               {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-            {/* 关键修改：不用绝对定位，用负左外边距向左移动，同时保持文档流 */}
+            {/* 绝对定位，保持英文名在竖线左侧 */}
             <div
-              className='font-bold text-xl text-center md:-ml-8'
+              className='font-bold text-xl text-center absolute'
+              style={{
+                writingMode: 'vertical-lr',
+                left: '-2rem',
+                top: '0',
+                bottom: 'auto'
+              }}
               id='blog-name-en'
             >
               {siteConfig('TYPOGRAPHY_BLOG_NAME_EN')}
