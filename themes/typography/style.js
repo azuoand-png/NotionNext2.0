@@ -88,7 +88,7 @@ const Style = () => {
 
       /* ========== 右侧边栏整体向右移动 4rem ========== */
       .hidden.md\:flex.md\:flex-col.md\:flex-shrink-0.md\:h-\[100vh\].sticky {
-        margin-left: 12rem !important;
+        margin-left: -8rem !important;
       }
     `}</style>
   )
