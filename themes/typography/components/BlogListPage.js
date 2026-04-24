@@ -7,7 +7,7 @@ import CONFIG from '../config'
 import { BlogItem } from './BlogItem'
 
 /**
- * 博客列表
+ * 博客列表（两列卡片布局）
  * @param {*} props
  * @returns
  */
@@ -19,13 +19,6 @@ export default function BlogListPage(props) {
   const totalPage = Math.ceil(postCount / POSTS_PER_PAGE)
   const currentPage = +page
 
-  // 博客列表嵌入广告
-  const TYPOGRAPHY_POST_AD_ENABLE = siteConfig(
-    'TYPOGRAPHY_POST_AD_ENABLE',
-    false,
-    CONFIG
-  )
-
   const showPrev = currentPage > 1
   const showNext = page < totalPage
   const pagePrefix = router.asPath
@@ -36,19 +29,15 @@ export default function BlogListPage(props) {
 
   return (
     <div className='w-full md:pr-8 mb-12 px-5'>
-      <div id='posts-wrapper'>
+      {/* 两列网格布局：移动端1列，桌面端2列 */}
+      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-10'>
         {posts?.map((p, index) => (
-          <div key={p.id}>
-            {TYPOGRAPHY_POST_AD_ENABLE && (index + 1) % 3 === 0 && (
-              <AdSlot type='in-article' />
-            )}
-            {TYPOGRAPHY_POST_AD_ENABLE && index + 1 === 4 && <AdSlot type='flow' />}
-            <BlogItem post={p} />
-          </div>
+          <BlogItem key={p.id} post={p} />
         ))}
       </div>
 
-      <div className='flex justify-between text-xs mt-1'>
+      {/* 分页导航（保留原有样式） */}
+      <div className='flex justify-between text-xs mt-12'>
         <SmartLink
           href={{
             pathname:
