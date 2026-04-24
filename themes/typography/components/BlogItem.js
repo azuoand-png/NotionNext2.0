@@ -1,7 +1,6 @@
 import LazyImage from '@/components/LazyImage'
 import NotionIcon from '@/components/NotionIcon'
 import NotionPage from '@/components/NotionPage'
-import TwikooCommentCount from '@/components/TwikooCommentCount'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import { formatDateFmt } from '@/lib/utils/formatDate'
@@ -11,25 +10,27 @@ import CONFIG from '../config'
 export const BlogItem = props => {
   const { post } = props
   const { NOTION_CONFIG } = useGlobal()
-  const showPageCover = siteConfig('TYPOGRAPHY_POST_COVER_ENABLE', false, CONFIG)
   const showPreview =
     siteConfig('POST_LIST_PREVIEW', false, NOTION_CONFIG) && post.blockMap
 
+  // 获取封面图URL（优先缩略图，其次原图）
+  const coverImage = post?.pageCoverThumbnail || post?.pageCover
+
   return (
-    <div key={post.id} className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-      {/* 图片封面区域（纵向布局，图片在上方） */}
-      {showPageCover && (
+    <div className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+      {/* 图片区域 - 始终显示（如果有封面图） */}
+      {coverImage && (
         <div className="relative w-full pt-[56.25%] overflow-hidden bg-gray-100 dark:bg-gray-700">
           <SmartLink href={post.href} passHref legacyBehavior>
             <LazyImage
-              src={post?.pageCoverThumbnail || post?.pageCover}
+              src={coverImage}
               className="absolute inset-0 w-full h-full object-cover object-center hover:scale-110 duration-500"
             />
           </SmartLink>
         </div>
       )}
 
-      {/* 内容区域（下方） */}
+      {/* 内容区域 */}
       <article className="article-info p-4 flex flex-col flex-grow">
         <h2 className="mb-2">
           <SmartLink
@@ -43,7 +44,7 @@ export const BlogItem = props => {
           </SmartLink>
         </h2>
 
-        {/* 文章元信息：发布日期、标签 */}
+        {/* 元信息：日期、标签 */}
         <header className="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap items-center gap-2 mb-3">
           <div className="flex items-center space-x-1">
             <i className="far fa-calendar-alt"></i>
@@ -64,7 +65,7 @@ export const BlogItem = props => {
           )}
         </header>
 
-        {/* 文章摘要 / 预览 */}
+        {/* 摘要 */}
         <main className="text-gray-600 dark:text-gray-300 line-clamp-3 overflow-hidden text-ellipsis leading-relaxed text-sm">
           {!showPreview && <>{post.summary}</>}
           {showPreview && post?.blockMap && (
@@ -74,7 +75,7 @@ export const BlogItem = props => {
           )}
         </main>
 
-        {/* 可选：阅读更多链接 */}
+        {/* 阅读更多 */}
         <div className="mt-4">
           <SmartLink
             href={post.href}
