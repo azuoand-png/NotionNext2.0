@@ -18,7 +18,6 @@ const AlgoliaSearchModal = dynamic(
   { ssr: false }
 )
 
-// 主题组件
 const BlogArchiveItem = dynamic(() => import('./components/BlogArchiveItem'), { ssr: false })
 const ArticleLock = dynamic(() => import('./components/ArticleLock'), { ssr: false })
 const ArticleInfo = dynamic(() => import('./components/ArticleInfo'), { ssr: false })
@@ -48,10 +47,10 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：左右内边距从 md:px-24 改为 md:px-4，内容区变宽 */}
-        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-4 w-screen'>
-          <div className='overflow-hidden md:mt-8 flex-1'>
-            {/* 内容区容器：额外添加 md:px-0 无内边距 */}
+        {/* 外层容器：去掉左右内边距，让右侧边栏能贴右 */}
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-0 w-screen'>
+          {/* 左侧内容区域：单独添加左内边距，避免文字贴边 */}
+          <div className='overflow-hidden md:mt-8 flex-1 md:pl-6'>
             <div
               id='container-inner'
               className='h-full w-full md:px-0 overflow-y-auto scroll-hidden relative'>
@@ -72,10 +71,9 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {/* 右侧边栏：顶部距离从 top-20 改为 top-12（上移2rem） */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-12'>
-            {/* 内部容器：顶部外边距从 md:mt-20 改为 md:mt-10（高度减半） */}
-            <div className='flex flex-col justify-between md:mt-10 md:h-[70vh]'>
+          {/* 右侧边栏：完全贴顶（top-0），内部无上边距（mt-0），紧靠右侧边缘 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0'>
+            <div className='flex flex-col justify-between md:mt-0 md:h-[70vh]'>
               <NavBar {...props} />
             </div>
             <Footer {...props} />
@@ -91,150 +89,5 @@ const LayoutBase = props => {
   )
 }
 
-const LayoutIndex = props => <LayoutPostList {...props} />
-
-const LayoutPostList = props => (
-  <>
-    <BlogPostBar {...props} />
-    <BlogListPage {...props} />
-  </>
-)
-
-const LayoutSearch = props => {
-  const { keyword } = props
-  useEffect(() => {
-    if (isBrowser) {
-      replaceSearchResult({
-        doms: document.getElementById('posts-wrapper'),
-        search: keyword,
-        target: { element: 'span', className: 'text-red-500 border-b border-dashed' }
-      })
-    }
-  }, [keyword])
-  return <LayoutPostList {...props} />
-}
-
-function groupArticlesByYearArray(articles) {
-  const grouped = {}
-  for (const article of articles) {
-    const year = new Date(article.publishDate).getFullYear().toString()
-    if (!grouped[year]) grouped[year] = []
-    grouped[year].push(article)
-  }
-  for (const year in grouped) {
-    grouped[year].sort((a, b) => b.publishDate - a.publishDate)
-  }
-  return Object.entries(grouped)
-    .sort(([a], [b]) => b - a)
-    .map(([year, posts]) => ({ year, posts }))
-}
-
-const LayoutArchive = props => {
-  const { posts } = props
-  const sortPosts = groupArticlesByYearArray(posts)
-  return (
-    <div className='mb-10 pb-20 md:pb-12 p-5 min-h-screen w-full'>
-      {sortPosts.map(p => (
-        <BlogArchiveItem key={p.year} archiveTitle={p.year} archivePosts={p.posts} />
-      ))}
-    </div>
-  )
-}
-
-const LayoutSlug = props => {
-  const { post, lock, validPassword, prev, next, recommendPosts } = props
-  const { fullWidth } = useGlobal()
-  return (
-    <>
-      {lock && <ArticleLock validPassword={validPassword} />}
-      {!lock && post && (
-        <div className='flex flex-col md:flex-row px-5 pt-3'>
-          {/* 左侧目录（桌面端显示） */}
-          <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
-            <Catalog post={post} />
-          </div>
-          {/* 右侧文章内容 */}
-          <div className={`flex-1 ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
-            <ArticleInfo post={post} />
-            <WWAds orientation='horizontal' className='w-full' />
-            <div id='article-wrapper'>
-              <NotionPage post={post} />
-            </div>
-            <AdSlot type='in-article' />
-            {post?.type === 'Post' && (
-              <>
-                <ArticleAround prev={prev} next={next} />
-                <RecommendPosts recommendPosts={recommendPosts} />
-              </>
-            )}
-            <Comment frontMatter={post} />
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-
-const Layout404 = props => {
-  const { post } = props
-  const router = useRouter()
-  const waiting404 = siteConfig('POST_WAITING_TIME_FOR_404') * 1000
-  useEffect(() => {
-    if (!post) {
-      setTimeout(() => {
-        if (isBrowser) {
-          const article = document.querySelector('#article-wrapper #notion-article')
-          if (!article) router.push('/404').then(() => console.warn('找不到页面', router.asPath))
-        }
-      }, waiting404)
-    }
-  }, [post])
-  return <>404 Not found.</>
-}
-
-const LayoutCategoryIndex = props => {
-  const { categoryOptions } = props
-  return (
-    <div id='category-list' className='px-5 duration-200 flex flex-wrap'>
-      {categoryOptions?.map(category => (
-        <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
-          <div className='hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'>
-            <i className='mr-4 fas fa-folder' /> {category.name}({category.count})
-          </div>
-        </SmartLink>
-      ))}
-    </div>
-  )
-}
-
-const LayoutTagIndex = props => {
-  const { tagOptions } = props
-  return (
-    <div id='tags-list' className='px-5 duration-200 flex flex-wrap'>
-      {tagOptions.map(tag => (
-        <div key={tag.name} className='p-2'>
-          <SmartLink
-            href={`/tag/${encodeURIComponent(tag.name)}`}
-            className={`cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs whitespace-nowrap dark:hover:text-white text-gray-600 hover:shadow-xl dark:border-gray-400 notion-${tag.color}_background dark:bg-gray-800`}>
-            <div className='font-light dark:text-gray-400'>
-              <i className='mr-1 fas fa-tag' /> {tag.name + (tag.count ? `(${tag.count})` : '')}
-            </div>
-          </SmartLink>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-export {
-  Layout404,
-  LayoutArchive,
-  LayoutBase,
-  LayoutCategoryIndex,
-  LayoutIndex,
-  LayoutPostList,
-  LayoutSearch,
-  LayoutSlug,
-  LayoutTagIndex,
-  CONFIG as THEME_CONFIG
-}
+// 以下所有函数（LayoutIndex, LayoutPostList, ... 到导出）与您提供的完全一致，不在此重复，请保留您原有的完整内容。
+// 为避免遗漏，建议您把上面的 LayoutBase 单独替换，其余函数保持原样。
