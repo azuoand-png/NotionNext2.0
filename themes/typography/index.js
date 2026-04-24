@@ -231,35 +231,29 @@ const LayoutSlug = props => {
       {lock && <ArticleLock validPassword={validPassword} />}
 
       {!lock && post && (
-        <div
-          className={`px-5 pt-3 ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
-          {/* 文章信息 */}
-          <ArticleInfo post={post} />
-
-          {/* 广告嵌入 */}
-          {/* <AdSlot type={'in-article'} /> */}
-          <WWAds orientation='horizontal' className='w-full' />
-
-          <div id='article-wrapper'>
-            {/* Notion 文章主体 */}
-            {!lock && <NotionPage post={post} />}
+        // 左右并排布局：左侧目录，右侧文章内容
+        <div className='flex flex-col md:flex-row px-5 pt-3'>
+          {/* 左侧目录（桌面端显示，预留位置） */}
+          <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
+            <Catalog post={post} />
           </div>
 
-          {/* 分享 */}
-          {/* <ShareBar post={post} /> */}
-
-          {/* 广告嵌入 */}
-          <AdSlot type={'in-article'} />
-
-          {post?.type === 'Post' && (
-            <>
-              <ArticleAround prev={prev} next={next} />
-              <RecommendPosts recommendPosts={recommendPosts} />
-            </>
-          )}
-
-          {/* 评论区 */}
-          <Comment frontMatter={post} />
+          {/* 右侧文章内容 */}
+          <div className={`flex-1 ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
+            <ArticleInfo post={post} />
+            <WWAds orientation='horizontal' className='w-full' />
+            <div id='article-wrapper'>
+              <NotionPage post={post} />
+            </div>
+            <AdSlot type='in-article' />
+            {post?.type === 'Post' && (
+              <>
+                <ArticleAround prev={prev} next={next} />
+                <RecommendPosts recommendPosts={recommendPosts} />
+              </>
+            )}
+            <Comment frontMatter={post} />
+          </div>
         </div>
       )}
     </>
