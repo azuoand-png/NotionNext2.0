@@ -86,6 +86,28 @@ const Style = () => {
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
       }
+
+      /* ========== 强制布局覆盖（解决边距和右侧栏位置） ========== */
+      /* 1. 文章内容区左右内边距归零 */
+      #container-inner {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      /* 2. 右侧边栏紧贴顶部 */
+      .sticky {
+        top: 0 !important;
+      }
+
+      /* 3. 右侧边栏内部紫色虚线区域高度归零 */
+      .flex.flex-col.justify-between.md\:mt-20 {
+        margin-top: 0 !important;
+      }
+
+      /* 4. 右侧边栏向右移动 6rem（96px），增大间距 */
+      .hidden.md\:flex.md\:flex-col.md\:flex-shrink-0.md\:h-\[100vh\].sticky {
+        margin-left: 6rem !important;
+      }
     `}</style>
   )
 }
