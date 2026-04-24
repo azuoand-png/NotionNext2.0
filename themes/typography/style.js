@@ -83,8 +83,8 @@ const Style = () => {
       }
 
       #container-wrapper .scroll-hidden {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
       }
 
       /* ========== 仅调整右侧边栏：向右移动 + 顶部贴合 + 去除上边距 ========== */
