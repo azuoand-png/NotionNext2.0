@@ -86,18 +86,18 @@ const Style = () => {
         scrollbar-width: none;
       }
 
-      /* ========== 强制左右贴边，消除多余中缝 ========== */
-      /* 左侧内容区左右内边距归零 */
+      /* ========== 强制布局覆盖 ========== */
+      /* 文章内容区左右内边距归零 */
       #container-inner {
         padding-left: 0 !important;
         padding-right: 0 !important;
       }
-      /* 右侧边栏紧贴右边缘 */
+      /* 右侧边栏强制靠右（如果 ml-auto 不生效） */
       .sticky.top-0 {
         margin-left: auto !important;
         margin-right: 0 !important;
       }
-      /* 清除右侧边栏内部可能的上边距 */
+      /* 移除右侧边栏内部可能的多余上边距 */
       .sticky.top-0 > div {
         margin-top: 0 !important;
       }
