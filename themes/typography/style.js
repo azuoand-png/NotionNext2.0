@@ -23,6 +23,7 @@ const Style = () => {
           PingFang HK,
           PingFang TC,
           sans-serif !important;
+        }
       }
       /* 底色 */
       .dark body {
@@ -86,9 +87,18 @@ const Style = () => {
         scrollbar-width: none;
       }
 
-      /* ========== 右侧边栏整体向右移动 4rem ========== */
+      /* ========== 仅调整右侧边栏：向右移动 + 顶部贴合 + 去除上边距 ========== */
+      /* 右侧边栏容器向右移动 4rem（64px），数值可改 */
       .hidden.md\:flex.md\:flex-col.md\:flex-shrink-0.md\:h-\[100vh\].sticky {
-        margin-left: -8rem !important;
+        margin-left: 4rem !important;
+      }
+      /* 右侧边栏紧贴顶部 */
+      .sticky {
+        top: 0 !important;
+      }
+      /* 移除右侧边栏内部容器的顶部外边距（紫色虚线区域） */
+      .flex.flex-col.justify-between.md\:mt-20 {
+        margin-top: 0 !important;
       }
     `}</style>
   )
