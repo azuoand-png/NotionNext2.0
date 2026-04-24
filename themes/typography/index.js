@@ -223,35 +223,38 @@ const LayoutSlug = props => {
       {lock && <ArticleLock validPassword={validPassword} />}
 
       {!lock && post && (
-        // 移除宽度限制，让文章内容充分利用右侧区域宽度
-        <div className='px-5 pt-3'>
-          {/* 文章信息 */}
-          <ArticleInfo post={post} />
-
-          {/* 广告嵌入 */}
-          {/* <AdSlot type={'in-article'} /> */}
-          <WWAds orientation='horizontal' className='w-full' />
-
-          <div id='article-wrapper'>
-            {/* Notion 文章主体 */}
-            {!lock && <NotionPage post={post} />}
+        <div className='relative flex justify-center'>
+          {/* 目录导航 - 固定在文章左侧 */}
+          <div className='hidden md:block fixed left-4 top-20 w-64 z-20'>
+            <Catalog post={post} />
           </div>
 
-          {/* 分享 */}
-          {/* <ShareBar post={post} /> */}
+          {/* 文章内容区域 - 增加左边距防止被目录遮挡 */}
+          <div className={`px-5 pt-3 md:pl-80 w-full ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
+            <ArticleInfo post={post} />
 
-          {/* 广告嵌入 */}
-          <AdSlot type={'in-article'} />
+            {/* 广告嵌入 */}
+            {/* <AdSlot type={'in-article'} /> */}
+            <WWAds orientation='horizontal' className='w-full' />
 
-          {post?.type === 'Post' && (
-            <>
-              <ArticleAround prev={prev} next={next} />
-              <RecommendPosts recommendPosts={recommendPosts} />
-            </>
-          )}
+            <div id='article-wrapper'>
+              {/* Notion 文章主体 */}
+              {!lock && <NotionPage post={post} />}
+            </div>
 
-          {/* 评论区 */}
-          <Comment frontMatter={post} />
+            {/* 广告嵌入 */}
+            <AdSlot type={'in-article'} />
+
+            {post?.type === 'Post' && (
+              <>
+                <ArticleAround prev={prev} next={next} />
+                <RecommendPosts recommendPosts={recommendPosts} />
+              </>
+            )}
+
+            {/* 评论区 */}
+            <Comment frontMatter={post} />
+          </div>
         </div>
       )}
     </>
