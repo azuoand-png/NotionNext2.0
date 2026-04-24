@@ -53,8 +53,8 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器 - 增加宽度，避免内容被切断 */}
-        <div className='flex flex-1 mx-auto overflow-hidden py-4 md:p-0 md:max-w-[90rem] md:px-8 w-screen'>
+        {/* 外层容器 - 减小上下内边距，进一步减少顶部留白 */}
+        <div className='flex flex-1 mx-auto overflow-hidden py-1 md:p-0 md:max-w-[90rem] md:px-8 w-screen'>
           
           {/* 左侧边栏：固定在左侧，包含博客信息、导航、目录、页脚 */}
           <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:w-64 md:h-[100vh] sticky top-8 overflow-y-auto scroll-hidden'>
@@ -68,8 +68,8 @@ const LayoutBase = props => {
             <Footer {...props} />
           </div>
 
-          {/* 右侧主要内容区域（文章列表/详情）- 可滚动，自适应剩余宽度 */}
-          <div className='overflow-hidden md:mt-8 flex-1'>
+          {/* 右侧主要内容区域（文章列表/详情）- 大幅减少顶部外边距 */}
+          <div className='overflow-hidden md:mt-4 flex-1'>
             <div
               id='container-inner'
               className='h-full w-full md:px-8 overflow-y-auto scroll-hidden relative'>
@@ -182,7 +182,6 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 移除宽度限制，让文章内容充分利用右侧区域，防止被切断
         <div className='px-5 pt-3'>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
