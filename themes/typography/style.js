@@ -83,14 +83,13 @@ const Style = () => {
       }
 
       #container-wrapper .scroll-hidden {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
       }
 
-      /* ========== 增大文章区右侧外边距，推动右侧边栏向右 ========== */
-      /* 匹配左侧文章区容器（overflow-hidden flex-1） */
-      .overflow-hidden.md\:mt-20.flex-1 {
-        margin-right: 12rem !important;
+      /* ========== 增加文章内容区右侧边距 6rem，增大与右侧边栏的间距 ========== */
+      #container-inner {
+        margin-right: 6rem !important;
       }
     `}</style>
   )
