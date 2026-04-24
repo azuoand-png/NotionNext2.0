@@ -87,89 +87,70 @@ const Style = () => {
         scrollbar-width: none; /* Firefox */
       }
 
-      /* ========== 菜单样式（药丸效果，保持字体大小行距不变） ========== */
-      /* 强制移除所有菜单链接的下划线和默认背景 */
-      .menu-custom .menu-link {
+      /* ========== 左侧栏菜单样式（完整重写，满足所有需求） ========== */
+      /* 基础重置：去除下划线、设置字体大小和行距 */
+      .menu-custom .menu-link,
+      .menu-custom .absolute ul li a {
         text-decoration: none !important;
-        /* 不设置 font-size，保持主题原有大小 */
-        /* 不设置 line-height，保持原有行距 */
+        font-size: 1.2rem !important;      /* 约为原字体 1.2 倍 */
+        line-height: 1.4 !important;       /* 行距紧凑，不会过大 */
         transition: all 0.2s ease;
         border-radius: 9999px;
         padding: 0.25rem 0.75rem;
         display: inline-block;
+        white-space: nowrap;
       }
 
-      /* 白天模式：文字蓝色，背景透明 */
-      .menu-custom .menu-link {
+      /* 白天模式：正常文字蓝色 */
+      .menu-custom .menu-link,
+      .menu-custom .absolute ul li a {
         color: #2563EB !important;
         background-color: transparent !important;
       }
       /* 白天模式悬停：文字白色，背景蓝色（药丸） */
-      .menu-custom .menu-link:hover {
+      .menu-custom .menu-link:hover,
+      .menu-custom .absolute ul li a:hover {
         color: white !important;
         background-color: #2563EB !important;
       }
 
-      /* 黑暗模式：文字白色，背景透明 */
-      .dark .menu-custom .menu-link {
+      /* 夜晚模式：正常文字白色 */
+      .dark .menu-custom .menu-link,
+      .dark .menu-custom .absolute ul li a {
         color: white !important;
         background-color: transparent !important;
       }
-      /* 黑暗模式悬停：文字蓝色，背景白色（药丸） */
-      .dark .menu-custom .menu-link:hover {
+      /* 夜晚模式悬停：文字蓝色，背景白色（药丸） */
+      .dark .menu-custom .menu-link:hover,
+      .dark .menu-custom .absolute ul li a:hover {
         color: #2563EB !important;
         background-color: white !important;
       }
 
-      /* ---------- 二级菜单特殊处理：去除灰白色/黑色长条背景 ---------- */
-      /* 清除二级菜单容器 glassmorphism 的所有背景、阴影、边框、模糊效果 */
-      .menu-custom .glassmorphism {
+      /* ---------- 二级菜单容器：彻底去除玻璃效果和背景条 ---------- */
+      .menu-custom .glassmorphism,
+      .menu-custom .absolute,
+      .menu-custom ul,
+      .menu-custom .absolute ul {
         background: transparent !important;
         backdrop-filter: none !important;
         box-shadow: none !important;
         border: none !important;
       }
-      /* 二级菜单包裹层的背景透明 */
-      .menu-custom .absolute {
-        background: transparent !important;
-      }
-      /* 二级菜单项 li 的背景透明 */
+      /* 移除二级菜单项的默认背景（包括 dark:bg-gray-900） */
       .menu-custom .absolute ul li {
         background: transparent !important;
-        margin-bottom: 0;
+        margin: 0;
         padding: 0;
+        border: none;
       }
-      /* 二级菜单项中的链接样式沿袭一级菜单的药丸效果 */
-      .menu-custom .absolute ul li a {
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        transition: all 0.2s ease;
-        display: inline-block;
-        width: auto;
+      /* 确保二级菜单项在白天/黑夜无背景 */
+      .dark .menu-custom .absolute ul li {
+        background: transparent !important;
       }
-      /* 移除二级菜单中可能存在的额外背景色（dark:bg-gray-900 等） */
-      .dark .menu-custom .absolute ul li a {
-        background-color: transparent !important;
-      }
-      /* 二级菜单项的文字颜色独立控制（白天） */
-      .menu-custom .absolute ul li a,
-      .menu-custom .absolute ul li a .menu-link {
-        color: #2563EB !important;
-      }
-      .dark .menu-custom .absolute ul li a,
-      .dark .menu-custom .absolute ul li a .menu-link {
-        color: white !important;
-      }
-      /* 二级菜单悬停时保持一致药丸效果 */
-      .menu-custom .absolute ul li a:hover,
-      .menu-custom .absolute ul li a:hover .menu-link {
-        color: white !important;
-        background-color: #2563EB !important;
-      }
-      .dark .menu-custom .absolute ul li a:hover,
-      .dark .menu-custom .absolute ul li a:hover .menu-link {
-        color: #2563EB !important;
-        background-color: white !important;
+      /* 二级菜单项之间的间距可以保留一点 */
+      .menu-custom .absolute ul li {
+        margin-bottom: 0.25rem;
       }
     `}</style>
   )
