@@ -87,19 +87,73 @@ const Style = () => {
         scrollbar-width: none; /* Firefox */
       }
 
-      /* ========== 左侧栏菜单样式：去掉下划线、行距1.6倍、海蓝色 ========== */
+      /* ========== 菜单样式（药丸效果，保持字体大小不变） ========== */
+      /* 一级菜单 & 二级菜单链接基础样式 */
       .menu-custom .menu-link {
+        display: inline-block;
+        transition: all 0.2s ease;
+        border-radius: 9999px; /* 药丸形状的基础圆角 */
+        padding: 0.25rem 0.75rem; /* 确保背景区域足够形成药丸，不改变原有布局太多 */
         text-decoration: none !important;
-        line-height: 1.6 !important;
-        color: #1E90FF !important; /* 海蓝（道奇蓝） */
       }
-      /* 保持菜单项间距舒适 */
-      .menu-custom .menu-item {
-        margin-bottom: 0.25rem;
+
+      /* 白天模式：正常文字蓝色 */
+      .menu-custom .menu-link {
+        color: #2563EB !important;
+        background: transparent;
       }
-      /* 可选：暗色模式下的菜单颜色（稍微提亮） */
+
+      /* 白天模式悬停：文字白色，背景蓝色 */
+      .menu-custom .menu-link:hover {
+        color: white !important;
+        background-color: #2563EB !important;
+      }
+
+      /* 黑暗模式：正常文字白色 */
       .dark .menu-custom .menu-link {
-        color: #5BA3FF !important;
+        color: white !important;
+        background: transparent;
+      }
+
+      /* 黑暗模式悬停：文字蓝色，背景白色 */
+      .dark .menu-custom .menu-link:hover {
+        color: #2563EB !important;
+        background-color: white !important;
+      }
+
+      /* ---------- 二级菜单特殊处理：去掉灰白色长条背景 ---------- */
+      .menu-custom .glassmorphism {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      /* 二级菜单项的背景条也要清除，并应用药丸悬停效果 */
+      .menu-custom .absolute ul li a {
+        /* 保证和一级菜单一样的悬停效果 */
+        display: inline-block;
+        border-radius: 9999px;
+        padding: 0.25rem 0.75rem;
+        transition: all 0.2s ease;
+      }
+      /* 二级菜单白天文字颜色继承链接样式 */
+      .menu-custom .absolute ul li a {
+        color: #2563EB !important;
+      }
+      .dark .menu-custom .absolute ul li a {
+        color: white !important;
+      }
+      .menu-custom .absolute ul li a:hover {
+        color: white !important;
+        background-color: #2563EB !important;
+      }
+      .dark .menu-custom .absolute ul li a:hover {
+        color: #2563EB !important;
+        background-color: white !important;
+      }
+      /* 可选：移除二级菜单项的默认背景条和边框 */
+      .menu-custom .absolute ul li {
+        background: transparent !important;
       }
     `}</style>
   )
