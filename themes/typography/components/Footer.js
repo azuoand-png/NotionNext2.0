@@ -8,22 +8,12 @@ import { siteConfig } from '@/lib/config'
  * @returns
  */
 export default function Footer(props) {
-  const d = new Date()
-  const currentYear = d.getFullYear()
-  const since = siteConfig('SINCE')
-  const copyrightDate =
-    parseInt(since) < currentYear ? since + '-' + currentYear : currentYear
-
   return (
     <footer>
+      {/* 仅保留暗色模式切换按钮（月亮图标） */}
       <DarkModeButton className='pt-4' />
-
-      <div className='font-bold text-[var(--primary-color)] dark:text-white py-6 text-sm flex flex-col gap-2 items-center'>
-        <div>
-          &copy;{`${copyrightDate}`} {siteConfig('AUTHOR')}.
-        </div>
-        <div>All rights reserved.</div>
-      </div>
+      
+      {/* 以下版权文字已删除 */}
     </footer>
   )
 }
