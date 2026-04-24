@@ -18,6 +18,7 @@ const AlgoliaSearchModal = dynamic(
   { ssr: false }
 )
 
+// 主题组件
 const BlogArchiveItem = dynamic(() => import('./components/BlogArchiveItem'), { ssr: false })
 const ArticleLock = dynamic(() => import('./components/ArticleLock'), { ssr: false })
 const ArticleInfo = dynamic(() => import('./components/ArticleInfo'), { ssr: false })
@@ -31,15 +32,16 @@ const WWAds = dynamic(() => import('@/components/WWAds'), { ssr: false })
 const BlogListPage = dynamic(() => import('./components/BlogListPage'), { ssr: false })
 const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ssr: false })
 
+// 主题全局状态
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
 /**
- * 基础布局（顶部固定导航 + 左右两栏：目录+内容）
+ * 基础布局（顶部固定导航 + 目录侧边栏 + 内容区）
  */
 const LayoutBase = props => {
   const { children } = props
-  const { onLoading } = useGlobal()
+  const { onLoading, fullWidth } = useGlobal()
   const searchModal = useRef(null)
   const [currentPost, setCurrentPost] = useState(null)
 
@@ -56,7 +58,7 @@ const LayoutBase = props => {
           <NavBar {...props} />
         </div>
 
-        {/* 主内容区域：左右水平布局 */}
+        {/* 主内容区域：左右布局（目录侧边栏 + 内容区） */}
         <div className='flex flex-1 overflow-hidden'>
           {/* 左侧目录（仅在文章详情页显示） */}
           {currentPost && (
@@ -87,5 +89,174 @@ const LayoutBase = props => {
   )
 }
 
-// 其余 LayoutIndex, LayoutPostList, LayoutSearch, LayoutArchive, LayoutSlug, Layout404, LayoutCategoryIndex, LayoutTagIndex 保持不变……
-// （请从您原来的代码中复制，此处省略重复内容，避免过长）
+/**
+ * 博客首页
+ */
+const LayoutIndex = props => <LayoutPostList {...props} />
+
+/**
+ * 博客列表
+ */
+const LayoutPostList = props => (
+  <>
+    <BlogPostBar {...props} />
+    <BlogListPage {...props} />
+  </>
+)
+
+/**
+ * 搜索页
+ */
+const LayoutSearch = props => {
+  const { keyword } = props
+  useEffect(() => {
+    if (isBrowser) {
+      replaceSearchResult({
+        doms: document.getElementById('posts-wrapper'),
+        search: keyword,
+        target: { element: 'span', className: 'text-red-500 border-b border-dashed' }
+      })
+    }
+  }, [keyword])
+  return <LayoutPostList {...props} />
+}
+
+function groupArticlesByYearArray(articles) {
+  const grouped = {}
+  for (const article of articles) {
+    const year = new Date(article.publishDate).getFullYear().toString()
+    if (!grouped[year]) grouped[year] = []
+    grouped[year].push(article)
+  }
+  for (const year in grouped) {
+    grouped[year].sort((a, b) => b.publishDate - a.publishDate)
+  }
+  return Object.entries(grouped)
+    .sort(([a], [b]) => b - a)
+    .map(([year, posts]) => ({ year, posts }))
+}
+
+/**
+ * 归档页
+ */
+const LayoutArchive = props => {
+  const { posts } = props
+  const sortPosts = groupArticlesByYearArray(posts)
+  return (
+    <div className='mb-10 pb-20 md:pb-12 p-5 min-h-screen w-full'>
+      {sortPosts.map(p => (
+        <BlogArchiveItem key={p.year} archiveTitle={p.year} archivePosts={p.posts} />
+      ))}
+    </div>
+  )
+}
+
+/**
+ * 文章详情
+ */
+const LayoutSlug = props => {
+  const { post, lock, validPassword, prev, next, recommendPosts } = props
+  const { fullWidth } = useGlobal()
+  const { setCurrentPost } = useSimpleGlobal()
+
+  useEffect(() => {
+    if (post) setCurrentPost(post)
+    return () => setCurrentPost(null)
+  }, [post, setCurrentPost])
+
+  return (
+    <>
+      {lock && <ArticleLock validPassword={validPassword} />}
+      {!lock && post && (
+        <div className='px-5 pt-3'>
+          <ArticleInfo post={post} />
+          <WWAds orientation='horizontal' className='w-full' />
+          <div id='article-wrapper'>
+            <NotionPage post={post} />
+          </div>
+          <AdSlot type='in-article' />
+          {post?.type === 'Post' && (
+            <>
+              <ArticleAround prev={prev} next={next} />
+              <RecommendPosts recommendPosts={recommendPosts} />
+            </>
+          )}
+          <Comment frontMatter={post} />
+        </div>
+      )}
+    </>
+  )
+}
+
+/**
+ * 404
+ */
+const Layout404 = props => {
+  const { post } = props
+  const router = useRouter()
+  const waiting404 = siteConfig('POST_WAITING_TIME_FOR_404') * 1000
+  useEffect(() => {
+    if (!post) {
+      setTimeout(() => {
+        if (isBrowser) {
+          const article = document.querySelector('#article-wrapper #notion-article')
+          if (!article) router.push('/404').then(() => console.warn('找不到页面', router.asPath))
+        }
+      }, waiting404)
+    }
+  }, [post, router])
+  return <>404 Not found.</>
+}
+
+/**
+ * 分类列表
+ */
+const LayoutCategoryIndex = props => {
+  const { categoryOptions } = props
+  return (
+    <div id='category-list' className='px-5 duration-200 flex flex-wrap'>
+      {categoryOptions?.map(category => (
+        <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
+          <div className='hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'>
+            <i className='mr-4 fas fa-folder' /> {category.name}({category.count})
+          </div>
+        </SmartLink>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * 标签列表
+ */
+const LayoutTagIndex = props => {
+  const { tagOptions } = props
+  return (
+    <div id='tags-list' className='px-5 duration-200 flex flex-wrap'>
+      {tagOptions.map(tag => (
+        <div key={tag.name} className='p-2'>
+          <SmartLink
+            href={`/tag/${encodeURIComponent(tag.name)}`}
+            className={`cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs whitespace-nowrap dark:hover:text-white text-gray-600 hover:shadow-xl dark:border-gray-400 notion-${tag.color}_background dark:bg-gray-800`}>
+            <div className='font-light dark:text-gray-400'>
+              <i className='mr-1 fas fa-tag' /> {tag.name + (tag.count ? `(${tag.count})` : '')}
+            </div>
+          </SmartLink>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export {
+  Layout404,
+  LayoutArchive,
+  LayoutBase,
+  LayoutCategoryIndex,
+  LayoutIndex,
+  LayoutPostList,
+  LayoutSearch,
+  LayoutSlug,
+  LayoutTagIndex,
+  CONFIG as THEME_CONFIG
+}
