@@ -89,7 +89,7 @@ const Style = () => {
 
       /* ========== 增加文章内容区右侧边距 6rem，增大与右侧边栏的间距 ========== */
       #container-inner {
-        margin-right: 15rem !important;
+        margin-right: 6rem !important;
       }
     `}</style>
   )
