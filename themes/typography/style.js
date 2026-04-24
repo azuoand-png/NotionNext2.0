@@ -87,15 +87,19 @@ const Style = () => {
         scrollbar-width: none; /* Firefox */
       }
 
-      /* ========== 新增：左侧栏菜单样式（去掉下划线、行距2倍、字体1.2倍） ========== */
+      /* ========== 左侧栏菜单样式：去掉下划线、行距1.6倍、海蓝色 ========== */
       .menu-custom .menu-link {
         text-decoration: none !important;
-        line-height: 2 !important;
-        font-size: 1.2rem !important;
+        line-height: 1.6 !important;
+        color: #1E90FF !important; /* 海蓝（道奇蓝） */
       }
-      /* 保持菜单项间距舒适（可选） */
+      /* 保持菜单项间距舒适 */
       .menu-custom .menu-item {
         margin-bottom: 0.25rem;
+      }
+      /* 可选：暗色模式下的菜单颜色（稍微提亮） */
+      .dark .menu-custom .menu-link {
+        color: #5BA3FF !important;
       }
     `}</style>
   )
