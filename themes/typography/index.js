@@ -69,7 +69,7 @@ const LayoutBase = props => {
           </div>
 
           {/* 右侧主要内容区域（文章列表/详情）- 可滚动，自适应剩余宽度 */}
-          <div className='overflow-hidden md:mt-20 flex-1'>
+          <div className='overflow-hidden md:mt-8 flex-1'>
             <div
               id='container-inner'
               className='h-full w-full md:px-8 overflow-y-auto scroll-hidden relative'>
