@@ -23,7 +23,6 @@ const Style = () => {
           PingFang HK,
           PingFang TC,
           sans-serif !important;
-        }
       }
       /* 底色 */
       .dark body {
@@ -83,30 +82,24 @@ const Style = () => {
       }
 
       #container-wrapper .scroll-hidden {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
 
-      /* ========== 强制布局覆盖（解决边距和右侧栏位置） ========== */
-      /* 1. 文章内容区左右内边距归零 */
+      /* ========== 强制左右贴边，消除多余中缝 ========== */
+      /* 左侧内容区左右内边距归零 */
       #container-inner {
         padding-left: 0 !important;
         padding-right: 0 !important;
       }
-
-      /* 2. 右侧边栏紧贴顶部 */
-      .sticky {
-        top: 0 !important;
+      /* 右侧边栏紧贴右边缘 */
+      .sticky.top-0 {
+        margin-left: auto !important;
+        margin-right: 0 !important;
       }
-
-      /* 3. 右侧边栏内部紫色虚线区域高度归零 */
-      .flex.flex-col.justify-between.md\:mt-20 {
+      /* 清除右侧边栏内部可能的上边距 */
+      .sticky.top-0 > div {
         margin-top: 0 !important;
-      }
-
-      /* 4. 右侧边栏向右移动 6rem（96px），增大间距 */
-      .hidden.md\:flex.md\:flex-col.md\:flex-shrink-0.md\:h-\[100vh\].sticky {
-        margin-left: 6rem !important;
       }
     `}</style>
   )
