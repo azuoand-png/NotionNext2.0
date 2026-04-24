@@ -23,7 +23,7 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    // 修改5：减少桌面端左右内边距，原来 md:px-8 改为 md:px-4
+    // 减少桌面端内边距，让卡片更靠边
     <div className='w-full px-4 md:px-4'>
       <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10'>
         {posts?.map((p, index) => (
