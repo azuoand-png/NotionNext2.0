@@ -86,6 +86,17 @@ const Style = () => {
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
       }
+
+      /* ========== 新增：左侧栏菜单样式（去掉下划线、行距2倍、字体1.2倍） ========== */
+      .menu-custom .menu-link {
+        text-decoration: none !important;
+        line-height: 2 !important;
+        font-size: 1.2rem !important;
+      }
+      /* 保持菜单项间距舒适（可选） */
+      .menu-custom .menu-item {
+        margin-bottom: 0.25rem;
+      }
     `}</style>
   )
 }
