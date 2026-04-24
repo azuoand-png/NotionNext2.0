@@ -14,88 +14,76 @@ export const BlogItem = props => {
   const showPageCover = siteConfig('TYPOGRAPHY_POST_COVER_ENABLE', false, CONFIG)
   const showPreview =
     siteConfig('POST_LIST_PREVIEW', false, NOTION_CONFIG) && post.blockMap
-  return (
-    <div key={post.id} className='h-42 mt-6 mb-10'>
-      {/* 文章标题 */}
 
-      <div className='flex'>
-        <div className='article-cover h-full'>
-          {/* 图片封面 */}
-          {showPageCover && (
-            <div className='overflow-hidden mr-2 w-56 h-full'>
-              <SmartLink href={post.href} passHref legacyBehavior>
-                <LazyImage
-                  src={post?.pageCoverThumbnail}
-                  className='w-56 h-full object-cover object-center group-hover:scale-110 duration-500'
-                />
-              </SmartLink>
+  return (
+    <div key={post.id} className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+      {/* 图片封面区域（纵向布局，图片在上方） */}
+      {showPageCover && (
+        <div className="relative w-full pt-[56.25%] overflow-hidden bg-gray-100 dark:bg-gray-700">
+          <SmartLink href={post.href} passHref legacyBehavior>
+            <LazyImage
+              src={post?.pageCoverThumbnail || post?.pageCover}
+              className="absolute inset-0 w-full h-full object-cover object-center hover:scale-110 duration-500"
+            />
+          </SmartLink>
+        </div>
+      )}
+
+      {/* 内容区域（下方） */}
+      <article className="article-info p-4 flex flex-col flex-grow">
+        <h2 className="mb-2">
+          <SmartLink
+            href={post.href}
+            className="text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
+          >
+            {siteConfig('POST_TITLE_ICON') && (
+              <NotionIcon icon={post.pageIcon} className="mr-1 inline" />
+            )}
+            {post.title}
+          </SmartLink>
+        </h2>
+
+        {/* 文章元信息：发布日期、标签 */}
+        <header className="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap items-center gap-2 mb-3">
+          <div className="flex items-center space-x-1">
+            <i className="far fa-calendar-alt"></i>
+            <span>{formatDateFmt(post?.publishDate || post?.date?.start_date, 'yyyy-MM-dd')}</span>
+          </div>
+          {post?.tags && post?.tags?.length > 0 && (
+            <div className="flex items-center flex-wrap gap-1">
+              {post.tags.map(t => (
+                <SmartLink
+                  key={t}
+                  href={`/tag/${t}`}
+                  className="hover:text-red-400 transition-all duration-200"
+                >
+                  <span className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full text-xs">#{t}</span>
+                </SmartLink>
+              ))}
             </div>
           )}
+        </header>
+
+        {/* 文章摘要 / 预览 */}
+        <main className="text-gray-600 dark:text-gray-300 line-clamp-3 overflow-hidden text-ellipsis leading-relaxed text-sm">
+          {!showPreview && <>{post.summary}</>}
+          {showPreview && post?.blockMap && (
+            <div className="line-clamp-3 overflow-hidden">
+              <NotionPage post={post} />
+            </div>
+          )}
+        </main>
+
+        {/* 可选：阅读更多链接 */}
+        <div className="mt-4">
+          <SmartLink
+            href={post.href}
+            className="text-sm text-[var(--primary-color)] dark:text-white hover:underline inline-flex items-center"
+          >
+            阅读全文 <i className="fas fa-arrow-right ml-1 text-xs"></i>
+          </SmartLink>
         </div>
-
-        <article className='article-info'>
-          <h2 className='mb-2'>
-            <SmartLink
-              href={post.href}
-              className='text-xl underline decoration-2 font-bold text-[var(--primary-color)] dark:text-white dark:hover:bg-white dark:hover:text-[var(--primary-color)]  duration-200 transition-all rounded-sm'>
-              {siteConfig('POST_TITLE_ICON') && (
-                <NotionIcon icon={post.pageIcon} />
-              )}
-              {post.title}
-            </SmartLink>
-          </h2>
-
-          {/* 文章信息 */}
-          <header className='text-md text-[var(--primary-color)] dark:text-gray-300 flex-wrap flex items-center leading-6'>
-            <div className='space-x-2'>
-              <span className='text-sm'>
-                发布于
-                <SmartLink
-                  className='p-1 hover:text-red-400 transition-all duration-200'
-                  href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}>
-                  {post.date?.start_date || post.createdTime}
-                </SmartLink>
-              </span>
-            </div>
-
-            <div className='text-sm'>
-              {/* {post.category && (
-                <SmartLink href={`/category/${post.category}`} className='p-1'>
-                  {' '}
-                  <span className='hover:text-red-400 transition-all duration-200'>
-                    <i className='fa-regular fa-folder mr-0.5' />
-                    {post.category}
-                  </span>
-                </SmartLink>
-              )} */}
-              {post?.tags &&
-                post?.tags?.length > 0 &&
-                post?.tags.map(t => (
-                  <SmartLink
-                    key={t}
-                    href={`/tag/${t}`}
-                    className=' hover:text-red-400 transition-all duration-200'>
-                    <span> #{t}</span>
-                  </SmartLink>
-                ))}
-            </div>
-          </header>
-
-          <main className='text-[var(--primary-color)] dark:text-gray-300 line-clamp-4 overflow-hidden text-ellipsis relative leading-[1.7]'>
-            {!showPreview && (
-              <>
-                {post.summary}
-              </>
-            )}
-            {showPreview && post?.blockMap && (
-              <div className='line-clamp-4 overflow-hidden'>
-                <NotionPage post={post} />
-                <hr className='border-dashed py-4' />
-              </div>
-            )}
-          </main>
-        </article>
-      </div>
+      </article>
     </div>
   )
 }
