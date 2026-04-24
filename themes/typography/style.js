@@ -87,17 +87,10 @@ const Style = () => {
         scrollbar-width: none;
       }
 
-      /* ========== 仅将右侧边栏向右平移，不改变文章区宽度 ========== */
-      /* 匹配右侧边栏容器（sticky top-20 的那个 div） */
-      div[class*="sticky top-20"] {
-        position: relative !important;
-        left: 6rem !important;   /* 向右平移 6rem (96px)，效果明显 */
-        /* 保持原有的 sticky 行为和 top 值 */
-        top: 5rem !important;
-      }
-      /* 确保内部原有布局不受影响 */
-      .flex.flex-col.justify-between.md\:mt-20 {
-        margin-top: 5rem !important;
+      /* ========== 增大文章区右侧外边距，推动右侧边栏向右 ========== */
+      /* 匹配左侧文章区容器（overflow-hidden flex-1） */
+      .overflow-hidden.md\:mt-20.flex-1 {
+        margin-right: 6rem !important;
       }
     `}</style>
   )
