@@ -1,9 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-/**
- * 此处样式只对当前主题生效
- * 此处不支持 tailwindCSS 的 @apply 语法
- * @returns
- */
 const Style = () => {
   return (
     <style jsx global>{`
@@ -25,11 +20,9 @@ const Style = () => {
           sans-serif !important;
         }
       }
-      // 底色
       .dark body {
         background-color: rgb(35, 34, 34);
       }
-      // 文本不可选取
       .forbid-copy {
         user-select: none;
         -webkit-user-select: none;
@@ -50,7 +43,8 @@ const Style = () => {
         background-color: rgb(255 255 255) / 1;
         color: #2e405b;
         background-size: 7px 7px;
-        text-shadow: 1px 1px 1px rgb(0 0 0 / 0.04);
+        /* 取消所有文字黑色阴影 */
+        text-shadow: none !important;
         background-image: linear-gradient(
             to right,
             rgb(0 0 0 / 0.04) 1px,
@@ -69,6 +63,11 @@ const Style = () => {
           'Source Han Serif SC', 'Source Han Serif TC', serif;
       }
 
+      /* 暗色模式下英文名变为白色 */
+      .dark #theme-typography #blog-name-en {
+        color: white !important;
+      }
+
       #theme-typography .blog-item-title {
         color: #276077;
       }
@@ -83,17 +82,17 @@ const Style = () => {
       }
 
       #container-wrapper .scroll-hidden {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
 
-      /* ========== 左侧栏菜单样式（完整重写，满足所有需求） ========== */
-      /* 基础重置：去除下划线、设置字体大小和行距 */
+      /* ========== 左侧栏菜单样式 ========== */
+      /* 菜单基础：行距1.1倍，字体大小1.2rem（之前已设） */
       .menu-custom .menu-link,
       .menu-custom .absolute ul li a {
         text-decoration: none !important;
-        font-size: 1.2rem !important;      /* 约为原字体 1.2 倍 */
-        line-height: 1.4 !important;       /* 行距紧凑，不会过大 */
+        font-size: 1.2rem !important;
+        line-height: 1.1 !important;   /* 行距 1.1 倍 */
         transition: all 0.2s ease;
         border-radius: 9999px;
         padding: 0.25rem 0.75rem;
@@ -101,33 +100,44 @@ const Style = () => {
         white-space: nowrap;
       }
 
-      /* 白天模式：正常文字蓝色 */
+      /* 白天模式文字颜色 */
       .menu-custom .menu-link,
       .menu-custom .absolute ul li a {
         color: #2563EB !important;
         background-color: transparent !important;
       }
-      /* 白天模式悬停：文字白色，背景蓝色（药丸） */
+      /* 白天悬停药丸效果 */
       .menu-custom .menu-link:hover,
       .menu-custom .absolute ul li a:hover {
         color: white !important;
         background-color: #2563EB !important;
       }
 
-      /* 夜晚模式：正常文字白色 */
+      /* 暗色模式文字颜色 */
       .dark .menu-custom .menu-link,
       .dark .menu-custom .absolute ul li a {
         color: white !important;
         background-color: transparent !important;
       }
-      /* 夜晚模式悬停：文字蓝色，背景白色（药丸） */
+      /* 暗色悬停 */
       .dark .menu-custom .menu-link:hover,
       .dark .menu-custom .absolute ul li a:hover {
         color: #2563EB !important;
         background-color: white !important;
       }
 
-      /* ---------- 二级菜单容器：彻底去除玻璃效果和背景条 ---------- */
+      /* 调整右箭头（右括号）位置，避免与文字重叠 */
+      .menu-custom .fa-chevron-right {
+        margin-left: 0.75rem;
+        position: relative;
+        top: 1px;
+      }
+      /* 针对有二级菜单的项，让箭头和文字保持间距，同时二级菜单出现时箭头旋转（由原有JS处理）不影响布局 */
+      .menu-custom .relative .fa-chevron-right {
+        margin-left: 0.5rem;
+      }
+
+      /* 二级菜单容器：清除背景，同时调整位置避免与菜单文字重叠（因为整体菜单左移2rem） */
       .menu-custom .glassmorphism,
       .menu-custom .absolute,
       .menu-custom ul,
@@ -137,20 +147,39 @@ const Style = () => {
         box-shadow: none !important;
         border: none !important;
       }
-      /* 移除二级菜单项的默认背景（包括 dark:bg-gray-900） */
+      /* 二级菜单整体左移，适应父菜单左移后的对齐 */
+      .menu-custom .absolute {
+        left: 0 !important;  /* 覆盖原有的 md:left-28，使之紧贴父元素左侧，可根据需要微调 */
+        transform: translateX(-0.5rem); /* 可选稍微左移，避免与文字重叠 */
+      }
+      /* 二级菜单项背景透明 */
       .menu-custom .absolute ul li {
         background: transparent !important;
         margin: 0;
         padding: 0;
-        border: none;
       }
-      /* 确保二级菜单项在白天/黑夜无背景 */
       .dark .menu-custom .absolute ul li {
         background: transparent !important;
       }
-      /* 二级菜单项之间的间距可以保留一点 */
       .menu-custom .absolute ul li {
         margin-bottom: 0.25rem;
+      }
+
+      /* ========== 目录样式：行距1.5倍，目录标题字体1.2倍 ========== */
+      /* 目录中每个链接（文章标题）行距1.5 */
+      .catalog-item,
+      .notion-table-of-contents-item {
+        line-height: 1.5 !important;
+      }
+      /* 目录标题“目录”二字字体放大1.2倍 */
+      .catalog-title,
+      .fa-stream + span,
+      .dark:text-white.mb-2.text-sm.font-semibold {
+        font-size: 1.2em !important;
+      }
+      /* 确保目录容器内的所有链接行距生效 */
+      .overflow-y-auto nav a {
+        line-height: 1.5 !important;
       }
     `}</style>
   )
