@@ -90,7 +90,7 @@ const Style = () => {
       /* ========== 仅调整右侧边栏：向右移动 + 顶部贴合 + 去除上边距 ========== */
       /* 右侧边栏容器向右移动 4rem（64px），数值可改 */
       .hidden.md\:flex.md\:flex-col.md\:flex-shrink-0.md\:h-\[100vh\].sticky {
-        margin-left: 4rem !important;
+        margin-left: 10rem !important;
       }
       /* 右侧边栏紧贴顶部 */
       .sticky {
