@@ -90,4 +90,4 @@ const Style = () => {
   )
 }
 
-export { Style } 
+export { Style }
