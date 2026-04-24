@@ -54,10 +54,10 @@ const LayoutBase = props => {
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
         {/* 外层容器 - 增加宽度，避免内容被切断 */}
-        <div className='flex flex-1 mx-auto overflow-hidden py-2 md:p-0 md:max-w-[90rem] md:px-8 w-screen'>
+        <div className='flex flex-1 mx-auto overflow-hidden py-4 md:p-0 md:max-w-[90rem] md:px-8 w-screen'>
           
           {/* 左侧边栏：固定在左侧，包含博客信息、导航、目录、页脚 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:w-64 md:h-[100vh] sticky top-20 overflow-y-auto scroll-hidden'>
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:w-64 md:h-[100vh] sticky top-8 overflow-y-auto scroll-hidden'>
             <NavBar {...props} />
             {/* 目录区域：仅在文章详情页显示 */}
             {currentPost && (
