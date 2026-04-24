@@ -47,10 +47,9 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：左右内边距设为 md:px-4，显著缩小边距 */}
-        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-4 w-screen'>
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-8 w-screen'>
           <div className='overflow-hidden md:mt-8 flex-1'>
-            {/* 内容区容器：左右内边距设为 md:px-2，进一步压缩 */}
+            {/* 内层容器左右内边距改为 md:px-2，进一步收窄 */}
             <div
               id='container-inner'
               className='h-full w-full md:px-2 overflow-y-auto scroll-hidden relative'>
