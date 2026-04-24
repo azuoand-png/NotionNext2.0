@@ -84,7 +84,7 @@ const LayoutBase = props => {
             {/* 左侧内容区域 - 可滚动 */}
             <div
               id='container-inner'
-              className='h-full w-full md:px-24 overflow-y-auto scroll-hidden relative'>
+              className='h-full w-full md:px-12 overflow-y-auto scroll-hidden relative'>
               {/* 移动端导航 - 显示在顶部 */}
               <div className='md:hidden'>
                 <NavBar {...props} />
