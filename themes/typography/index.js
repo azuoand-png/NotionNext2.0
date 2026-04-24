@@ -48,10 +48,10 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：去掉左右内边距，让右侧边栏能贴右 */}
+        {/* 外层容器：去掉左右内边距 */}
         <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-0 w-screen'>
-          {/* 左侧内容区域：单独添加左内边距，避免文字贴边 */}
-          <div className='overflow-hidden md:mt-8 flex-1 md:pl-6'>
+          {/* 左侧内容区域：左内边距改为 md:pl-0，让文章彻底靠左 */}
+          <div className='overflow-hidden md:mt-8 flex-1 md:pl-0'>
             <div
               id='container-inner'
               className='h-full w-full md:px-0 overflow-y-auto scroll-hidden relative'>
@@ -72,8 +72,8 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {/* 右侧边栏：完全贴顶（top-0），内部无上边距（mt-0），紧靠右侧边缘 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0'>
+          {/* 右侧边栏：完全贴顶，内部无上边距，并添加巨大左外边距 md:ml-24 向右移动 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 md:ml-24'>
             <div className='flex flex-col justify-between md:mt-0 md:h-[70vh]'>
               <NavBar {...props} />
             </div>
@@ -90,7 +90,6 @@ const LayoutBase = props => {
   )
 }
 
-// 以下所有函数与原始完全一致，保持原样
 const LayoutIndex = props => <LayoutPostList {...props} />
 
 const LayoutPostList = props => (
