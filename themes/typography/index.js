@@ -43,7 +43,7 @@ const LayoutBase = props => {
   const { children } = props
   const { onLoading, fullWidth } = useGlobal()
   const searchModal = useRef(null)
-  const [currentPost, setCurrentPost] = useState(null) // 存储当前文章，用于目录显示
+  const [currentPost, setCurrentPost] = useState(null)
 
   return (
     <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
@@ -53,13 +53,12 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器 - 减小上下内边距，进一步减少顶部留白 */}
+        {/* 外层容器 */}
         <div className='flex flex-1 mx-auto overflow-hidden py-1 md:p-0 md:max-w-[90rem] md:px-12 w-screen'>
           
-          {/* 左侧边栏：固定在左侧，包含博客信息、导航、目录、页脚 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:w-64 md:h-[100vh] sticky top-12 overflow-y-auto scroll-hidden'>
+          {/* 左侧边栏：增加顶部粘性距离（top-20），整体下移预留菜单空间 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:w-64 md:h-[100vh] sticky top-20 overflow-y-auto scroll-hidden'>
             <NavBar {...props} />
-            {/* 目录区域：仅在文章详情页显示 */}
             {currentPost && (
               <div className='mt-4 px-2'>
                 <Catalog post={currentPost} />
@@ -68,12 +67,11 @@ const LayoutBase = props => {
             <Footer {...props} />
           </div>
 
-          {/* 右侧主要内容区域（文章列表/详情）- 大幅减少顶部外边距 */}
-          <div className='overflow-hidden md:mt-4 flex-1'>
+          {/* 右侧主要内容区域：增加顶部外边距（md:mt-12），使文章区域整体下移 */}
+          <div className='overflow-hidden md:mt-12 flex-1'>
             <div
               id='container-inner'
               className='h-full w-full md:px-8 overflow-y-auto scroll-hidden relative'>
-              {/* 移动端导航 */}
               <div className='md:hidden'>
                 <NavBar {...props} />
               </div>
@@ -85,7 +83,6 @@ const LayoutBase = props => {
                 <>{children}</>
               )}
               <AdSlot type='native' />
-              {/* 移动端页脚 */}
               <div className='md:hidden z-30'>
                 <Footer {...props} />
               </div>
@@ -172,7 +169,6 @@ const LayoutSlug = props => {
   const { fullWidth } = useGlobal()
   const { setCurrentPost } = useSimpleGlobal()
 
-  // 将当前文章存入 Context，以便侧边栏显示目录
   useEffect(() => {
     if (post) setCurrentPost(post)
     return () => setCurrentPost(null)
