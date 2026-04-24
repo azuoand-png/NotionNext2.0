@@ -13,11 +13,11 @@ import SmartLink from '@/components/SmartLink'
  */
 export default function NavBar(props) {
   return (
-    /* 修改点：
-      1. md:-mr-35：让侧边栏向右平移更多，极度靠近边缘。
-      2. md:w-60：强制设定宽度为 15rem，这样它会从左侧“推开”文章区，形成 15rem 的间距。
+    /* 1. md:-mr-48: 我们给它一个足够大的负值，确保它能“飞”出原本受限的区域。
+      2. md:pl-60: 这是 15rem 的左侧留白，确保文字左侧离文章区侧线永远隔着 15rem。
+      3. md:pr-4: 这是右侧留白，数值越小，文字越贴近屏幕最右边缘。
     */
-    <div className='flex flex-col justify-between md:mt-20 md:h-[70vh] md:-mr-35 md:w-60'>
+    <div className='flex flex-col justify-between md:mt-20 md:h-[70vh] md:-mr-48 md:pl-60 md:pr-4'>
       <header className='w-fit self-center md:self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2'>
         <SmartLink href='/'>
           <div className='flex flex-col-reverse md:flex-col items-center md:items-start'>
