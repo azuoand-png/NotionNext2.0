@@ -42,7 +42,7 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 主内容区：最大宽度放宽，右侧无预留边距 */}
+        {/* 主内容区，最大宽度 1400px，左右内边距，桌面端右侧额外留出 6rem 给固定卡片 */}
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
             {/* 左侧目录（只在文章页显示） */}
@@ -52,8 +52,8 @@ const LayoutBase = props => {
               </div>
             )}
 
-            {/* 中间主要内容区（滚动） */}
-            <div className='flex-1 min-w-0'>
+            {/* 中间主要内容区：桌面端右侧内边距 6rem，为固定卡片预留空间 */}
+            <div className='flex-1 min-w-0 md:pr-24'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
                   <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
@@ -63,9 +63,12 @@ const LayoutBase = props => {
               )}
             </div>
 
-            {/* 右侧不再有信息栏（已用固定卡片 NavBar 替代） */}
+            {/* 不再需要将 NavBar 作为布局的一部分，已改为固定卡片 */}
           </div>
         </div>
+
+        {/* 固定卡片组件 */}
+        <NavBar {...props} />
 
         <div className='fixed right-4 bottom-4 z-20'>
           <JumpToTopButton />
@@ -133,7 +136,6 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 文章内容无额外限制，自然舒展
         <div>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
