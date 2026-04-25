@@ -25,11 +25,11 @@ const Style = () => {
           sans-serif !important;
         }
       }
-      /* 底色 */
+      // 底色
       .dark body {
         background-color: rgb(35, 34, 34);
       }
-      /* 文本不可选取 */
+      // 文本不可选取
       .forbid-copy {
         user-select: none;
         -webkit-user-select: none;
@@ -85,11 +85,6 @@ const Style = () => {
       #container-wrapper .scroll-hidden {
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
-      }
-
-      /* ========== 增加文章内容区右侧边距 6rem，增大与右侧边栏的间距 ========== */
-      #container-inner {
-        margin-right: 6rem !important;
       }
     `}</style>
   )
