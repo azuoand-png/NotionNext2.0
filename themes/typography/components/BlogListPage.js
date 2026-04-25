@@ -23,15 +23,28 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    // 减少桌面端内边距，让卡片更靠边
-    <div className='w-full px-4 md:px-4'>
-      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10'>
+    /* 关键修改：增加针对桌面端的左内边距 pl-64 或 pl-72，避开左侧挂件 */
+    <div className='w-full px-4 md:px-4 lg:pl-72 lg:pr-10'>
+      
+      {/* 这里的 style 是为了暴力覆盖主题可能存在的居中限制 */}
+      <style jsx>{`
+        :global(#theme-typography main) {
+            max-width: 100vw !important;
+            display: block !important;
+        }
+        :global(#article-wrapper) {
+            padding-left: 0 !important; /* 防止重复偏移 */
+            max-width: 100% !important;
+        }
+      `}</style>
+
+      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-10'>
         {posts?.map((p, index) => (
           <BlogItem key={p.id} post={p} />
         ))}
       </div>
 
-      <div className='flex justify-between text-xs mt-12'>
+      <div className='flex justify-between text-xs mt-12 mb-10'>
         <SmartLink
           href={{
             pathname:
@@ -41,7 +54,7 @@ export default function BlogListPage(props) {
             query: router.query.s ? { s: router.query.s } : {}
           }}
           className={`${showPrev ? 'text-blue-600 border-b border-blue-400 visible ' : ' invisible bg-gray pointer-events-none '} no-underline pb-1 px-3`}>
-          NEWER POSTS <i className='fa-solid fa-arrow-left'></i>
+          <i className='fa-solid fa-arrow-left mr-2'></i> NEWER POSTS
         </SmartLink>
         <SmartLink
           href={{
@@ -49,7 +62,7 @@ export default function BlogListPage(props) {
             query: router.query.s ? { s: router.query.s } : {}
           }}
           className={`${showNext ? 'text-blue-600 border-b border-blue-400 visible' : ' invisible bg-gray pointer-events-none '} no-underline pb-1 px-3`}>
-          OLDER POSTS <i className='fa-solid fa-arrow-right'></i>
+          OLDER POSTS <i className='fa-solid fa-arrow-right ml-2'></i>
         </SmartLink>
       </div>
     </div>
