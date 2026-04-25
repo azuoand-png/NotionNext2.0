@@ -12,6 +12,7 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
+import NavBar from './components/NavBar'
 
 const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
 
@@ -42,7 +43,7 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 主内容区，最大宽度 1400px，左右内边距，桌面端右侧额外留出 6rem 给固定卡片 */}
+        {/* 主内容区：最大宽度 1400px，左右内边距，桌面端右侧额外留出 6rem 给固定卡片 */}
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
             {/* 左侧目录（只在文章页显示） */}
@@ -62,12 +63,10 @@ const LayoutBase = props => {
                 children
               )}
             </div>
-
-            {/* 不再需要将 NavBar 作为布局的一部分，已改为固定卡片 */}
           </div>
         </div>
 
-        {/* 固定卡片组件 */}
+        {/* 右侧固定卡片（名字牌+菜单牌） */}
         <NavBar {...props} />
 
         <div className='fixed right-4 bottom-4 z-20'>
@@ -136,6 +135,7 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
+        // 文章内容无额外限制，自然舒展
         <div>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
