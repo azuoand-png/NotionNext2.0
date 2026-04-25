@@ -71,17 +71,23 @@ const Style = () => {
         scrollbar-width: none;
       }
 
-      /* ========== 强制让文章正文（Notion 内容）自然舒展，占满中间区域 ========== */
+      /* ========== 文章正文自然舒展，占满中间区域 ========== */
       #article-wrapper .notion {
         max-width: none !important;
         width: 100% !important;
         padding: 0 !important;
       }
-      /* 移除 Notion 内部可能存在的宽度限制 */
       .notion-page,
       .notion-viewport {
         width: 100% !important;
         max-width: 100% !important;
+      }
+      /* 可选：让表格和图片自适应宽度 */
+      .notion-table,
+      .notion-image,
+      .notion-asset-wrapper {
+        max-width: 100% !important;
+        overflow-x: auto;
       }
     `}</style>
   )
