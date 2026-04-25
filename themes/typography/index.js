@@ -32,7 +32,6 @@ const WWAds = dynamic(() => import('@/components/WWAds'), { ssr: false })
 const BlogListPage = dynamic(() => import('./components/BlogListPage'), { ssr: false })
 const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ssr: false })
 
-// 主题全局状态
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
@@ -46,22 +45,22 @@ const LayoutBase = props => {
     <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
       <div
         id='theme-typography'
-        className={`${siteConfig('FONT_STYLE')} font-typography h-screen flex flex-col dark:text-gray-300 bg-white dark:bg-[#232222] overflow-hidden`}>
+        className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：三栏布局的核心 */}
-        <div className='flex flex-1 overflow-hidden'>
-          {/* 左侧：目录栏（仅在文章页显示，固定不滚动） */}
-          {currentPost && (
-            <div className='hidden md:block w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 overflow-y-auto'>
-              <Catalog post={currentPost} />
-            </div>
-          )}
+        {/* 主体内容容器（不设置 overflow，让 body 自然滚动，滚动条在浏览器右侧） */}
+        <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
+          <div className='flex flex-col md:flex-row gap-6'>
+            {/* 左侧区域：文章页时显示目录（fixed 浮动卡片，不占文档流） */}
+            {currentPost && (
+              <div className='hidden md:block relative z-10'>
+                <Catalog post={currentPost} />
+              </div>
+            )}
 
-          {/* 中间：主要内容区域（可滚动） */}
-          <div className='flex-1 overflow-y-auto'>
-            <div className='max-w-4xl mx-auto py-8 px-4 md:px-6'>
+            {/* 中间主要内容区（首页列表 / 文章正文） */}
+            <div className='flex-1 min-w-0'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
                   <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
@@ -70,12 +69,12 @@ const LayoutBase = props => {
                 children
               )}
             </div>
-          </div>
 
-          {/* 右侧：信息栏（固定不滚动） */}
-          <div className='hidden md:flex md:flex-col md:w-64 flex-shrink-0 border-l border-gray-200 dark:border-gray-700 overflow-y-auto'>
-            <NavBar {...props} />
-            <Footer {...props} />
+            {/* 右侧信息栏（sticky 固定） */}
+            <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
+              <NavBar {...props} />
+              <Footer {...props} />
+            </div>
           </div>
         </div>
 
@@ -138,9 +137,6 @@ const LayoutArchive = props => {
   )
 }
 
-/**
- * 文章详情（只负责将 currentPost 存入 Context，内容由 LayoutBase 负责渲染）
- */
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
   const { fullWidth } = useGlobal()
@@ -155,7 +151,8 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        <div className='px-4'>
+        // 文章正文内容，直接渲染，宽度自然舒展
+        <div className='article-content max-w-3xl mx-auto px-4 md:px-0'>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
           <div id='article-wrapper'>
