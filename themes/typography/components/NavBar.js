@@ -5,7 +5,7 @@ import SmartLink from '@/components/SmartLink'
 
 export default function NavBar(props) {
   return (
-    <div className='flex flex-col items-end'>
+    <div className='flex flex-col items-end relative -right-4 md:-right-6'>
       <header className='w-fit self-end md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2'>
         <SmartLink href='/'>
           <div className='flex flex-col items-start'>
