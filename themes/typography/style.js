@@ -1,9 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-/**
- * 此处样式只对当前主题生效
- * 此处不支持 tailwindCSS 的 @apply 语法
- * @returns
- */
 const Style = () => {
   return (
     <style jsx global>{`
@@ -23,19 +18,15 @@ const Style = () => {
           PingFang HK,
           PingFang TC,
           sans-serif !important;
-        }
       }
-      // 底色
       .dark body {
         background-color: rgb(35, 34, 34);
       }
-      // 文本不可选取
       .forbid-copy {
         user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
       }
-
       .dark #theme-typography {
         background-image: linear-gradient(
               to right,
@@ -44,7 +35,6 @@ const Style = () => {
             ),
             linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
       }
-
       #theme-typography {
         --primary-color: #2e405b;
         background-color: rgb(255 255 255) / 1;
@@ -58,38 +48,27 @@ const Style = () => {
           ),
           linear-gradient(to bottom, rgb(0 0 0 / 0.04) 1px, transparent 1px);
       }
-
       #theme-typography #blog-name {
         font-family: HiraMinProN-W6, 'Source Han Serif CN',
           'Source Han Serif SC', 'Source Han Serif TC', serif;
       }
-
       #theme-typography #blog-name-en {
         font-family: HiraMinProN-W6, 'Source Han Serif CN',
           'Source Han Serif SC', 'Source Han Serif TC', serif;
       }
-
       #theme-typography .blog-item-title {
         color: #276077;
       }
-
       .dark #theme-typography .blog-item-title {
         color: #d1d5db;
       }
-
       .notion {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
       }
-
       #container-wrapper .scroll-hidden {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
-      }
-
-      /* ========== 文章正文与右侧边栏保持适当距离（可选，如不需要可删除） ========== */
-      .flex-1.px-5.pt-3 {
-        padding-right: 1.5rem !important;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
     `}</style>
   )
