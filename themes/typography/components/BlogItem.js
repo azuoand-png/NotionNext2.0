@@ -16,8 +16,8 @@ export const BlogItem = props => {
     post?.thumbnail ||
     (post?.blockMap && post?.blockMap?.cover?.length > 0 ? post.blockMap.cover : null)
 
-  // 副标题：优先使用 post.subTitle，如果没有则使用 post.summary
-  const subTitle = post?.subTitle || post?.summary || ''
+  // 副标题就是 summary
+  const subTitle = post?.summary || ''
 
   return (
     <div className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
@@ -35,9 +35,9 @@ export const BlogItem = props => {
       )}
 
       {/* 内容区域 */}
-      <article className="article-info p-4 flex flex-col flex-grow">
-        {/* 第1行：主标题 */}
-        <h2 className="mb-2">
+      <article className="article-info p-4 flex flex-col">
+        {/* 第1行：主标题 - 限制2行 */}
+        <h2 className="mb-2 line-clamp-2">
           <SmartLink
             href={post.href}
             className="text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
@@ -49,7 +49,7 @@ export const BlogItem = props => {
           </SmartLink>
         </h2>
 
-        {/* 第2行：副标题 */}
+        {/* 第2行：副标题 (summary) - 限制2行 */}
         {subTitle && (
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
             {subTitle}
@@ -57,7 +57,7 @@ export const BlogItem = props => {
         )}
 
         {/* 第3行：日期（左） + 标签（右，即右下角） */}
-        <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 mt-auto">
+        <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-1">
             <i className="far fa-calendar-alt"></i>
             <span>{formatDateFmt(post?.publishDate || post?.date?.start_date || post?.createdTime, 'yyyy-MM-dd')}</span>
