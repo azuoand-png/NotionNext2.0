@@ -34,9 +34,6 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-/**
- * 基础布局保持原样，不加任何影响全局的 CSS
- */
 const LayoutBase = props => {
   const { children } = props
   const { onLoading } = useGlobal()
@@ -97,55 +94,19 @@ const LayoutPostList = props => (
   </>
 )
 
-/**
- * 核心修改区域：LayoutSlug
- */
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
-  
   return (
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        <div className='flex flex-col md:flex-row pt-3'>
-          {/* 目录区域：固定宽度 240px */}
-          <div className='hidden md:block md:w-60 flex-shrink-0 ml-5'>
-            <Catalog post={post} />
-          </div>
-
-          {/* 正文区域：解除 mx-auto 居中限制，允许向右填充 */}
-          <div className='flex-1 min-w-0 px-5'> 
+        <div className='flex flex-col md:flex-row pt-3 px-5'>
+          <div className='flex-1 min-w-0'>
             <ArticleInfo post={post} />
             <WWAds orientation='horizontal' className='w-full' />
-            
-            <div id='article-wrapper' className='w-full'>
+            <div id='article-wrapper'>
               <NotionPage post={post} />
-              
-              {/* 针对 900px 剧本表格的专用 CSS */}
-              <style jsx global>{`
-                /* 关键：把强制居中去掉，让表格可以占据它需要的 900px 宽度 */
-                #notion-article {
-                   margin: 0 !important;
-                   max-width: none !important;
-                   width: 100% !important;
-                }
-                .notion-page {
-                   width: 100% !important;
-                   max-width: none !important;
-                   padding-left: 0 !important;
-                   padding-right: 0 !important;
-                }
-                /* 让表格容器允许溢出或自适应宽度 */
-                .notion-simple-table {
-                   min-width: 900px;
-                   margin-bottom: 2rem;
-                }
-                .notion-viewport {
-                   overflow-x: auto !important; /* 窄屏时允许滑动而不截断 */
-                }
-              `}</style>
             </div>
-
             <AdSlot type='in-article' />
             {post?.type === 'Post' && (
               <>
@@ -155,13 +116,15 @@ const LayoutSlug = props => {
             )}
             <Comment frontMatter={post} />
           </div>
+          <div className='hidden md:block md:w-64 md:ml-8 flex-shrink-0'>
+            <Catalog post={post} />
+          </div>
         </div>
       )}
     </>
   )
 }
 
-// 以下代码保持原样...
 const LayoutSearch = props => {
   const { keyword } = props
   useEffect(() => {
@@ -225,7 +188,7 @@ const LayoutCategoryIndex = props => {
     <div id='category-list' className='px-5 duration-200 flex flex-wrap'>
       {categoryOptions?.map(category => (
         <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
-          <div className='hover:text-black dark:hover:text-white px-5 cursor-pointer py-2 hover:bg-gray-100 uppercase text-sm font-bold'>
+          <div className='hover:text-black dark:hover:text-white px-5 cursor-pointer py-2 hover:bg-gray-100 uppercase text-sm'>
             <i className='mr-4 fas fa-folder' /> {category.name}({category.count})
           </div>
         </SmartLink>
@@ -240,7 +203,7 @@ const LayoutTagIndex = props => {
     <div id='tags-list' className='px-5 duration-200 flex flex-wrap'>
       {tagOptions.map(tag => (
         <div key={tag.name} className='p-2'>
-          <SmartLink href={`/tag/${encodeURIComponent(tag.name)}`} className='cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs border text-gray-600 uppercase font-medium'>
+          <SmartLink href={`/tag/${encodeURIComponent(tag.name)}`} className='cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs dark:border-gray-400 border text-gray-600 uppercase'>
             <i className='mr-1 fas fa-tag' /> {tag.name}
           </SmartLink>
         </div>
