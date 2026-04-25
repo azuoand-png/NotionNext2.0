@@ -23,7 +23,8 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    <div className='w-full px-4 md:px-4'>
+    // 增加上边距 mt-8（2rem），同时保持左右内边距已缩窄
+    <div className='w-full px-2 md:px-2 mt-8'>
       <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10'>
         {posts?.map((p, index) => (
           <BlogItem key={p.id} post={p} />
