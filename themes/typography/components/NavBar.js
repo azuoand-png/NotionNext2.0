@@ -5,7 +5,6 @@ import SmartLink from '@/components/SmartLink'
 
 export default function NavBar(props) {
   return (
-    // 移除内部可能的多余 padding，整体紧贴右侧
     <div className='flex flex-col items-end'>
       <header className='w-fit self-end md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2'>
         <SmartLink href='/'>
@@ -19,6 +18,7 @@ export default function NavBar(props) {
           </div>
         </SmartLink>
       </header>
+
       <nav className='md:pt-4 z-20 flex-shrink-0 w-full'>
         <div id='nav-bar-inner' className='text-sm md:text-md text-right'>
           <MenuList {...props} />
