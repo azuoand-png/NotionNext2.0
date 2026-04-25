@@ -29,8 +29,8 @@ export default function Footer(props) {
 
         /* 如果按钮内图标太小，可以微调 */
         .fixed-dark-button svg {
-           width: 1.7rem;
-           height: 1.7rem;
+           width: 1.4rem;
+           height: 1.4rem;
         }
       `}</style>
 
