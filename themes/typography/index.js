@@ -12,7 +12,6 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
-import NavBar from './components/NavBar'
 
 const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
 
@@ -43,17 +42,14 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 主内容区：最大宽度 1400px，左右内边距，桌面端右侧额外留出 6rem 给固定卡片 */}
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
-            {/* 左侧目录（只在文章页显示） */}
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
               </div>
             )}
 
-            {/* 中间主要内容区：桌面端右侧内边距 6rem，为固定卡片预留空间 */}
             <div className='flex-1 min-w-0 md:pr-24'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -66,7 +62,6 @@ const LayoutBase = props => {
           </div>
         </div>
 
-        {/* 右侧固定卡片（名字牌+菜单牌） */}
         <NavBar {...props} />
 
         <div className='fixed right-4 bottom-4 z-20'>
@@ -135,8 +130,8 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 文章内容无额外限制，自然舒展
-        <div>
+        // 增加顶部外边距 5rem（mt-20）
+        <div className="mt-20">
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
           <div id='article-wrapper'>
