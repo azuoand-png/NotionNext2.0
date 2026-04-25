@@ -124,9 +124,6 @@ const LayoutArchive = props => {
   )
 }
 
-/**
- * 文章详情（修正：文章内容自然舒展，无宽度限制）
- */
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
   const { fullWidth } = useGlobal()
@@ -141,7 +138,7 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 移除所有宽度限制，让内容自然占满
+        // 移除所有宽度限制，让文章内容自然舒展
         <div>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
