@@ -43,8 +43,8 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 三栏布局：左右固定，中间滚动 */}
-        <div className='max-w-7xl mx-auto px-4 md:px-8'>
+        {/* 外层容器：宽度扩大到 90rem，让卡片更宽 */}
+        <div className='max-w-[90rem] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
             {/* 左侧目录（只在文章页显示） */}
             {currentPost && (
@@ -138,7 +138,6 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 移除所有宽度限制，让文章内容自然舒展
         <div>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
