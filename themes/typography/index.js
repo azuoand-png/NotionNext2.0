@@ -72,7 +72,8 @@ const LayoutBase = props => {
 
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-24 w-screen'>
+        {/* 外层容器：大幅减小左右内边距，使内容区更宽 */}
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-4 w-screen'>
           {/* 主体 - 使用 flex 布局 */}
           {/* 文章详情才显示 */}
           {/* {props.post && (
@@ -81,10 +82,10 @@ const LayoutBase = props => {
             </div>
           )} */}
           <div className='overflow-hidden md:mt-20 flex-1 '>
-            {/* 左侧内容区域 - 可滚动 */}
+            {/* 左侧内容区域 - 可滚动，去掉多余的内边距 */}
             <div
               id='container-inner'
-              className='h-full w-full md:px-24 overflow-y-auto scroll-hidden relative'>
+              className='h-full w-full md:px-0 overflow-y-auto scroll-hidden relative'>
               {/* 移动端导航 - 显示在顶部 */}
               <div className='md:hidden'>
                 <NavBar {...props} />
