@@ -23,9 +23,10 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    // 扩大外层最大宽度，让卡片变宽
-    <div className='w-full px-2 md:px-2 mt-8'>
-      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-8'>
+    // 增加上边距 mt-12（3rem）
+    <div className='w-full px-2 md:px-2 mt-12'>
+      {/* 桌面端四列网格，移动端一列 */}
+      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-8'>
         {posts?.map((p, index) => (
           <BlogItem key={p.id} post={p} />
         ))}
