@@ -21,7 +21,6 @@ const ArticleInfo = dynamic(() => import('./components/ArticleInfo'), { ssr: fal
 const Comment = dynamic(() => import('@/components/Comment'), { ssr: false })
 const ArticleAround = dynamic(() => import('./components/ArticleAround'), { ssr: false })
 const TopBar = dynamic(() => import('./components/TopBar'), { ssr: false })
-const NavBar = dynamic(() => import('./components/NavBar'), { ssr: false })
 const JumpToTopButton = dynamic(() => import('./components/JumpToTopButton'), { ssr: false })
 const Footer = dynamic(() => import('./components/Footer'), { ssr: false })
 const WWAds = dynamic(() => import('@/components/WWAds'), { ssr: false })
@@ -43,8 +42,8 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：右侧内边距归零，让右侧栏紧贴边缘 */}
-        <div className='max-w-[90rem] mx-auto pl-4 md:pl-8 pr-0'>
+        {/* 主内容区：最大宽度放宽，右侧无预留边距 */}
+        <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
             {/* 左侧目录（只在文章页显示） */}
             {currentPost && (
@@ -64,11 +63,7 @@ const LayoutBase = props => {
               )}
             </div>
 
-            {/* 右侧信息栏：宽度缩小为 w-48，增加上边距 mt-12，紧贴右侧 */}
-            <div className='hidden md:block w-48 flex-shrink-0 sticky top-8 self-start mt-12'>
-              <NavBar {...props} />
-              <Footer {...props} />
-            </div>
+            {/* 右侧不再有信息栏（已用固定卡片 NavBar 替代） */}
           </div>
         </div>
 
@@ -138,6 +133,7 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
+        // 文章内容无额外限制，自然舒展
         <div>
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
