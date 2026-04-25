@@ -87,16 +87,9 @@ const Style = () => {
         scrollbar-width: none; /* Firefox */
       }
 
-      /* ========== 新增样式：右侧边栏向右移动（增大与正文间距） ========== */
-      .hidden.md\:flex.md\:flex-col.md\:flex-shrink-0.md\:h-\[100vh\].sticky {
-        margin-left: 4rem !important;   /* 向右移动 4rem (64px)，可根据需要调整 */
-      }
-
-      /* ========== 新增样式：首页文章列表上边距 ========== */
-      /* 确保首页列表容器顶部有间距（双重保险） */
-      .w-full.px-4.md\:px-4,
-      .w-full.px-2.md\:px-2 {
-        margin-top: 2rem !important;   /* 上边距 2rem */
+      /* ========== 文章正文与右侧边栏保持适当距离（可选，如不需要可删除） ========== */
+      .flex-1.px-5.pt-3 {
+        padding-right: 1.5rem !important;
       }
     `}</style>
   )
