@@ -34,6 +34,7 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
+// 1. 恢复基础布局，不添加全局干扰样式
 const LayoutBase = props => {
   const { children } = props
   const { onLoading } = useGlobal()
@@ -45,44 +46,9 @@ const LayoutBase = props => {
         id='theme-typography'
         className={`${siteConfig('FONT_STYLE')} font-typography h-screen flex flex-col dark:text-gray-300 bg-white dark:bg-[#232222] overflow-hidden`}>
         <Style />
-        
-        {/* 注入补丁：强制解除文章页的各种截断限制 */}
-        <style jsx global>{`
-          @media (min-width: 1024px) {
-            /* 1. 解除 LayoutBase 的 max-w-7xl 居中限制，允许内容向右侧无限拉伸 */
-            #theme-typography .mx-auto.max-w-7xl {
-              max-width: 100vw !important;
-              margin-left: 0 !important;
-              margin-right: 0 !important;
-            }
-
-            /* 2. 彻底拆掉正文容器的“围墙” */
-            #notion-article {
-              max-width: none !important;
-              width: 100% !important;
-              margin-left: 0 !important;
-              margin-right: 0 !important;
-              overflow: visible !important;
-            }
-
-            /* 3. 释放 Notion 渲染层级的所有 Padding，给表格留出最大空间 */
-            .notion-viewport, .notion-page {
-              padding-left: 0 !important;
-              padding-right: 2rem !important; /* 给右侧留一点点呼吸感 */
-              max-width: 100% !important;
-            }
-
-            /* 4. 解决表格被截断的核心：允许横向溢出 */
-            .notion-simple-table {
-              width: 100% !important;
-              display: table !important; /* 防止被 flex 挤压 */
-            }
-          }
-        `}</style>
-
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        <div className='flex flex-1 overflow-hidden py-8 md:p-0 w-screen'>
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl w-screen'>
           <div className='overflow-hidden md:mt-8 flex-1'>
             <div
               id='container-inner'
@@ -104,7 +70,7 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 border-l dark:border-gray-800 bg-white dark:bg-[#232222] ml-auto'>
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0'>
             <div className='flex flex-col justify-between md:mt-0 md:h-[70vh] w-64'>
               <NavBar {...props} />
             </div>
@@ -129,25 +95,47 @@ const LayoutPostList = props => (
   </>
 )
 
+// 2. 精准修改 LayoutSlug：这是调整正文宽度最安全的地方
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
+  const { fullWidth } = useGlobal()
+  
   return (
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        <div className='flex flex-col md:flex-row pt-3 px-5'>
-          {/* 左侧目录：固定宽度，作为正文的起始标尺 */}
-          <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
+        /* 这里把原来的 px-5 去掉一部分，改为 md:pl-2，减少左边绿色间隔 */
+        <div className='flex flex-col md:flex-row pt-3 pr-5'>
+          
+          {/* 目录：固定 280px 宽度 */}
+          <div className='hidden md:block md:w-[280px] flex-shrink-0'>
             <Catalog post={post} />
           </div>
 
-          {/* 正文区域：flex-1 会自动吞掉剩下所有的横向空间 */}
-          <div className='flex-1 min-w-0'> 
+          {/* 正文区域：使用 flex-grow 让它占满剩下的所有空间 */}
+          <div className='flex-grow min-w-0 md:ml-4'> 
             <ArticleInfo post={post} />
             <WWAds orientation='horizontal' className='w-full' />
-            <div id='article-wrapper' className='w-full'>
-              <NotionPage post={post} />
+            
+            {/* 这个容器必须是 w-full，内部的 notion-article 也要被强制拉宽 */}
+            <div id='article-wrapper' className='w-full overflow-visible'>
+               <NotionPage post={post} />
+               
+               {/* 局部补丁：只在这里强制 notion 居中容器失效 */}
+               <style jsx>{`
+                 :global(#notion-article) {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    margin: 0 !important;
+                 }
+                 :global(.notion-page) {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    padding-left: 0 !important;
+                 }
+               `}</style>
             </div>
+
             <AdSlot type='in-article' />
             {post?.type === 'Post' && (
               <>
@@ -163,7 +151,7 @@ const LayoutSlug = props => {
   )
 }
 
-// 其余函数保持原封不动...
+// 其余配置代码保持不变...
 const LayoutSearch = props => {
   const { keyword } = props
   useEffect(() => {
@@ -227,7 +215,7 @@ const LayoutCategoryIndex = props => {
     <div id='category-list' className='px-5 duration-200 flex flex-wrap'>
       {categoryOptions?.map(category => (
         <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
-          <div className='hover:text-black dark:hover:text-white px-5 cursor-pointer py-2 hover:bg-gray-100 uppercase text-sm'>
+          <div className='hover:text-black dark:hover:text-white px-5 cursor-pointer py-2 hover:bg-gray-100 uppercase text-sm font-bold'>
             <i className='mr-4 fas fa-folder' /> {category.name}({category.count})
           </div>
         </SmartLink>
@@ -242,7 +230,7 @@ const LayoutTagIndex = props => {
     <div id='tags-list' className='px-5 duration-200 flex flex-wrap'>
       {tagOptions.map(tag => (
         <div key={tag.name} className='p-2'>
-          <SmartLink href={`/tag/${encodeURIComponent(tag.name)}`} className='cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs dark:border-gray-400 border text-gray-600 uppercase'>
+          <SmartLink href={`/tag/${encodeURIComponent(tag.name)}`} className='cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs border text-gray-600 uppercase font-medium'>
             <i className='mr-1 fas fa-tag' /> {tag.name}
           </SmartLink>
         </div>
