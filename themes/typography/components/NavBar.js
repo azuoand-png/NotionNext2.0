@@ -4,31 +4,40 @@ import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 菜单导航 - 纯净版
- * 仅负责标题和菜单，不干涉页脚，通过 CSS 解决容器限制
+ * 菜单导航 - 绝对固定版
+ * 无论首页还是文章页，位置永远锁定在屏幕右侧固定距离
  */
 export default function NavBar(props) {
   return (
     <>
-      {/* 核心修复：直接暴力破除父容器的宽度和截断限制 */}
       <style jsx global>{`
-        /* 1. 扩大主容器的最大宽度，从 7xl(1280px) 扩大到 95% 屏幕宽度 */
-        .md\\:max-w-7xl {
-          max-width: 95% !important;
+        /* 1. 核心修复：锁死边栏位置 */
+        .fixed-sidebar-container {
+          position: fixed !important;
+          /* 这里的 2rem 决定了它距离屏幕最右侧的距离，你可以根据需要调整 */
+          right: 2rem; 
+          top: 5rem;
+          width: fit-content;
+          z-index: 100;
         }
-        /* 2. 彻底禁止截断 */
+
+        /* 2. 核心修复：防止内容区被边栏遮挡 */
+        /* 在大屏幕下，给主容器增加右侧内边距，确保文章内容不会钻到菜单下面 */
+        @media (min-width: 768px) {
+          #theme-typography #container-inner,
+          #theme-typography .flex-1 {
+            padding-right: 180px !important; 
+          }
+        }
+
+        /* 3. 彻底取消父容器对它的限制 */
         .overflow-hidden {
           overflow: visible !important;
         }
-        /* 3. 修正侧边栏与右边缘的距离 */
-        .sticky.md\\:ml-auto {
-          margin-right: 2rem; /* 调整这个数值可以控制靠右的间距 */
-        }
       `}</style>
 
-      {/* 侧边栏主体：去掉所有 translate 平移，靠 CSS margin 自然定位 */}
-      <div className='flex flex-col justify-between md:mt-20 md:h-fit min-w-max'>
-        
+      {/* 将原有的 div 加上 fixed-sidebar-container 类名 */}
+      <div className='fixed-sidebar-container flex flex-col justify-between md:h-[70vh]'>
         <div className='flex flex-col'>
           {/* 站点标题 */}
           <header className='w-fit self-center md:self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2'>
@@ -52,8 +61,6 @@ export default function NavBar(props) {
             <SocialButton />
           </nav>
         </div>
-
-        {/* 这里删除了所有手动添加的 footer 代码，系统会自动显示带黑暗模式的原生页脚 */}
       </div>
     </>
   )
