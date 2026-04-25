@@ -43,57 +43,52 @@ const Catalog = ({ post }) => {
   return (
     <div key={post?.id} className='relative'>
       <style jsx global>{`
+        /* 关键：只在包含 #article-wrapper（即文章页）时才执行以下样式 */
         @media (min-width: 1024px) {
-          /* 1. 修正父级 Flex 布局：防止正文被侧边栏挤压 */
-          #theme-typography .flex.flex-col.md\:flex-row {
-            display: block !important; /* 强制改为块级，打破挤压 */
-            position: relative;
+          /* 1. 针对文章页容器的精准平移 */
+          #article-wrapper {
+            padding-left: 280px !important; /* 避开左侧目录 */
+            padding-right: 0 !important;   /* 吞掉绿色截断区 */
+            margin-left: 0 !important;    /* 靠左对齐 */
+            margin-right: 0 !important;
+            max-width: none !important;   /* 解除宽度限制 */
+            width: auto !important;
           }
 
-          /* 2. 目录定位：强制移出原有的占位栏，钉在最左侧 */
-          .custom-toc-wrapper {
+          /* 2. 这里的选择器利用层级关系，强行拉宽正文，同时不影响首页卡片 */
+          #theme-typography #article-wrapper #notion-article {
+            width: calc(100vw - 480px) !important; /* 屏宽 - 目录 - 侧边栏 */
+            max-width: none !important;
+            margin-left: 0 !important;
+          }
+
+          /* 3. 让 Notion 内部表格能够撑满 */
+          .notion-viewport, .notion-page {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding-left: 0 !important;
+            padding-right: 20px !important;
+          }
+
+          /* 4. 目录本身的定位保持不动 */
+          .custom-toc-fixed-side {
             position: fixed !important;
             left: 20px !important;
             top: 180px !important;
-            width: 200px !important;
-            height: fit-content;
-            z-index: 90;
-          }
-
-          /* 3. 正文布局：彻底拉宽并避让两侧 */
-          /* 针对文章页的特定容器进行扩容 */
-          #theme-typography main .flex-1.xl\:max-w-4xl,
-          #theme-typography main .flex-1.2xl\:max-w-6xl {
-            max-width: 98vw !important; /* 几乎填满屏幕 */
-            width: 100% !important;
-            margin: 0 auto !important;
-            padding-left: 240px !important;  /* 给左边目录留位置 */
-            padding-right: 220px !important; /* 给右边卡片留位置 */
-            flex: none !important;
-          }
-
-          /* 4. 解决首页被误伤的问题：确保首页列表依然是 Grid */
-          #posts-wrapper {
-            display: grid !important; 
-            padding: 0 !important;
-            max-width: 100% !important;
-          }
-          
-          /* 隐藏原有的左侧占位容器的边距 */
-          #theme-typography .md\:w-64.md\:mr-8 {
-            width: 0 !important;
-            margin-right: 0 !important;
+            width: 240px !important;
+            z-index: 100;
           }
         }
       `}</style>
 
-      <div className='custom-toc-wrapper hidden lg:block'>
+      {/* 目录 UI 部分 */}
+      <div className='custom-toc-fixed-side hidden lg:block'>
         <div className='px-2'>
-          <div className='dark:text-white mb-2 text-sm font-bold flex items-center'>
+          <div className='dark:text-white mb-2 text-sm font-bold flex items-center opacity-70'>
             <i className='mr-1 fas fa-stream' /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
           </div>
           <div className='overflow-y-auto max-h-[calc(100vh-300px)] scroll-hidden' ref={tRef}>
-            <nav className='text-sm space-y-1'>
+            <nav className='text-sm space-y-1 border-l border-gray-100 dark:border-gray-800'>
               {post?.toc?.map(tocItem => {
                 const id = uuidToId(tocItem.id)
                 const isActive = activeSection === id
@@ -101,12 +96,12 @@ const Catalog = ({ post }) => {
                   <a
                     key={id}
                     href={`#${id}`}
-                    className={`block border-l-2 pl-3 py-1 transition-all duration-200 no-underline ${
-                      isActive ? 'border-amber-500 text-amber-600 font-semibold' : 'border-gray-200 text-gray-500'
+                    className={`block border-l-2 -ml-[1px] pl-3 py-1.5 transition-all duration-200 no-underline ${
+                      isActive ? 'border-amber-500 text-amber-600 font-semibold bg-amber-50/30' : 'border-transparent text-gray-500'
                     }`}
                     style={{ marginLeft: (tocItem.indentLevel || 0) * 12 }}
                   >
-                    <span className='truncate inline-block max-w-full align-middle'>{tocItem.text}</span>
+                    <span className='truncate inline-block max-w-full'>{tocItem.text}</span>
                   </a>
                 )
               })}
