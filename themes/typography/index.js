@@ -43,7 +43,7 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：左侧保留内边距，右侧内边距归零，让右侧栏紧贴边缘 */}
+        {/* 外层容器：右侧内边距归零，让右侧栏紧贴边缘 */}
         <div className='max-w-[90rem] mx-auto pl-4 md:pl-8 pr-0'>
           <div className='flex flex-col md:flex-row gap-6'>
             {/* 左侧目录（只在文章页显示） */}
@@ -64,8 +64,8 @@ const LayoutBase = props => {
               )}
             </div>
 
-            {/* 右侧信息栏（始终显示） */}
-            <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
+            {/* 右侧信息栏：宽度缩小为 w-48，增加上边距 mt-12，紧贴右侧 */}
+            <div className='hidden md:block w-48 flex-shrink-0 sticky top-8 self-start mt-12'>
               <NavBar {...props} />
               <Footer {...props} />
             </div>
