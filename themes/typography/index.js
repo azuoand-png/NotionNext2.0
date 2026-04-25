@@ -43,8 +43,8 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：宽度扩大到 90rem，让卡片更宽 */}
-        <div className='max-w-[90rem] mx-auto px-4 md:px-8'>
+        {/* 外层容器：左侧保留内边距，右侧内边距归零，让右侧栏紧贴边缘 */}
+        <div className='max-w-[90rem] mx-auto pl-4 md:pl-8 pr-0'>
           <div className='flex flex-col md:flex-row gap-6'>
             {/* 左侧目录（只在文章页显示） */}
             {currentPost && (
