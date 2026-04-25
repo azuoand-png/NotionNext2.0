@@ -48,10 +48,11 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 外层容器：去掉左右内边距 */}
-        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-0 w-screen'>
-          {/* 左侧内容区域：左内边距为0 */}
-          <div className='overflow-hidden md:mt-8 flex-1 md:pl-0'>
+        {/* --- 核心修改 1: 移除 mx-auto 和 max-w-7xl，确保内容能填满右侧 --- */}
+        <div className='flex flex-1 overflow-hidden py-8 md:p-0 w-screen'>
+          
+          {/* 左侧主要展示区域 */}
+          <div className='overflow-hidden md:mt-8 flex-1'>
             <div
               id='container-inner'
               className='h-full w-full md:px-0 overflow-y-auto scroll-hidden relative'>
@@ -72,9 +73,9 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {/* 右侧边栏：ml-auto 让它自动靠右，紧贴右侧 */}
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 md:ml-auto'>
-            <div className='flex flex-col justify-between md:mt-0 md:h-[70vh]'>
+          {/* 右侧边栏：维持原样但确保宽度固定且不被挤压 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 border-l dark:border-gray-800 bg-white dark:bg-[#232222]'>
+            <div className='flex flex-col justify-between md:mt-0 md:h-[70vh] w-64'>
               <NavBar {...props} />
             </div>
             <Footer {...props} />
@@ -90,7 +91,6 @@ const LayoutBase = props => {
   )
 }
 
-// 以下所有函数与原始完全一致，保持原样
 const LayoutIndex = props => <LayoutPostList {...props} />
 
 const LayoutPostList = props => (
@@ -148,16 +148,24 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        <div className='flex flex-col md:flex-row px-5 pt-3'>
-          <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
+        /* --- 核心修改 2: 移除 px-5，改为全宽布局 --- */
+        <div className='flex flex-col md:flex-row pt-3'>
+          
+          {/* 左侧目录固定宽度，给正文提供 280px 左右的偏移量 */}
+          <div className='hidden md:block md:w-72 md:mr-4 flex-shrink-0'>
             <Catalog post={post} />
           </div>
-          <div className={`flex-1 ${fullWidth ? '' : 'xl:max-w-4xl 2xl:max-w-6xl'}`}>
+
+          {/* --- 核心修改 3: 彻底移除 xl:max-w-4xl，让内容紧贴右边栏 --- */}
+          <div className='flex-1 w-full px-5 md:pr-10'>
             <ArticleInfo post={post} />
             <WWAds orientation='horizontal' className='w-full' />
-            <div id='article-wrapper'>
+            
+            {/* 正文包裹容器 */}
+            <div id='article-wrapper' className='w-full'>
               <NotionPage post={post} />
             </div>
+
             <AdSlot type='in-article' />
             {post?.type === 'Post' && (
               <>
