@@ -7,7 +7,7 @@ import { isBrowser } from '@/lib/utils'
 import dynamic from 'next/dynamic'
 import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useRef } from 'react'
 import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
@@ -39,42 +39,42 @@ const LayoutBase = props => {
   const { children } = props
   const { onLoading, fullWidth } = useGlobal()
   const searchModal = useRef(null)
-  const [currentPost, setCurrentPost] = useState(null)
 
   return (
-    <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
+    <ThemeGlobalSimple.Provider value={{ searchModal }}>
       <div
         id='theme-typography'
-        className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
+        className={`${siteConfig('FONT_STYLE')} font-typography h-screen flex flex-col dark:text-gray-300 bg-white dark:bg-[#232222] overflow-hidden`}>
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 主体内容容器（不设置 overflow，让 body 自然滚动，滚动条在浏览器右侧） */}
-        <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
-          <div className='flex flex-col md:flex-row gap-6'>
-            {/* 左侧区域：文章页时显示目录（fixed 浮动卡片，不占文档流） */}
-            {currentPost && (
-              <div className='hidden md:block relative z-10'>
-                <Catalog post={currentPost} />
+        {/* 外层容器：左右内边距从 md:px-24 改为 md:px-4，内容区变宽 */}
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl md:px-4 w-screen'>
+          <div className='overflow-hidden md:mt-20 flex-1 '>
+            <div
+              id='container-inner'
+              className='h-full w-full md:px-0 overflow-y-auto scroll-hidden relative'>
+              <div className='md:hidden'>
+                <NavBar {...props} />
               </div>
-            )}
-
-            {/* 中间主要内容区（首页列表 / 文章正文） */}
-            <div className='flex-1 min-w-0'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
                   <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
                 </div>
               ) : (
-                children
+                <>{children}</>
               )}
+              <AdSlot type='native' />
+              <div className='md:hidden z-30'>
+                <Footer {...props} />
+              </div>
             </div>
+          </div>
 
-            {/* 右侧信息栏（sticky 固定） */}
-            <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
-              <NavBar {...props} />
-              <Footer {...props} />
-            </div>
+          {/* 右侧导航和页脚 - 固定不滚动 */}
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-20'>
+            <NavBar {...props} />
+            <Footer {...props} />
           </div>
         </div>
 
@@ -137,35 +137,38 @@ const LayoutArchive = props => {
   )
 }
 
+/**
+ * 文章详情（修改后：目录使用 sticky，正文与右侧边栏保持合适间距）
+ */
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
   const { fullWidth } = useGlobal()
-  const { setCurrentPost } = useSimpleGlobal()
-
-  useEffect(() => {
-    if (post) setCurrentPost(post)
-    return () => setCurrentPost(null)
-  }, [post, setCurrentPost])
 
   return (
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 文章正文内容，直接渲染，宽度自然舒展
-        <div className='article-content max-w-3xl mx-auto px-4 md:px-0'>
-          <ArticleInfo post={post} />
-          <WWAds orientation='horizontal' className='w-full' />
-          <div id='article-wrapper'>
-            <NotionPage post={post} />
+        <div className='flex flex-col md:flex-row'>
+          {/* 左侧目录（sticky，固定宽度） */}
+          <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
+            <Catalog post={post} />
           </div>
-          <AdSlot type='in-article' />
-          {post?.type === 'Post' && (
-            <>
-              <ArticleAround prev={prev} next={next} />
-              <RecommendPosts recommendPosts={recommendPosts} />
-            </>
-          )}
-          <Comment frontMatter={post} />
+          {/* 右侧文章内容（自适应） */}
+          <div className='flex-1 px-5 pt-3'>
+            <ArticleInfo post={post} />
+            <WWAds orientation='horizontal' className='w-full' />
+            <div id='article-wrapper'>
+              <NotionPage post={post} />
+            </div>
+            <AdSlot type='in-article' />
+            {post?.type === 'Post' && (
+              <>
+                <ArticleAround prev={prev} next={next} />
+                <RecommendPosts recommendPosts={recommendPosts} />
+              </>
+            )}
+            <Comment frontMatter={post} />
+          </div>
         </div>
       )}
     </>
