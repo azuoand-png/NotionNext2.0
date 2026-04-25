@@ -21,6 +21,7 @@ const Catalog = ({ post }) => {
         const section = sections[i]
         if (!section || !(section instanceof Element)) continue
         const bbox = section.getBoundingClientRect()
+        // 偏移量视需要调整
         if (bbox.top - 100 < 0) {
           currentSectionId = section.getAttribute('data-id')
         } else {
@@ -51,8 +52,8 @@ const Catalog = ({ post }) => {
   if (!post || !post?.toc || post?.toc?.length < 1) return null
 
   return (
-    <div className="sticky top-24 z-20 w-full">
-      <div className="bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-3">
+    <div className="w-full">
+      <div className="p-3">
         <div className="dark:text-white mb-2 text-sm font-bold flex items-center opacity-80">
           <i className="mr-1 fas fa-stream" /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
         </div>
