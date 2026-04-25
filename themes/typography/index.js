@@ -34,7 +34,9 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-// 1. 恢复基础布局，不添加全局干扰样式
+/**
+ * 基础布局保持原样，不加任何影响全局的 CSS
+ */
 const LayoutBase = props => {
   const { children } = props
   const { onLoading } = useGlobal()
@@ -48,7 +50,7 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl w-screen'>
+        <div className='flex flex-1 mx-auto overflow-hidden py-8 md:p-0 md:max-w-7xl w-full'>
           <div className='overflow-hidden md:mt-8 flex-1'>
             <div
               id='container-inner'
@@ -70,7 +72,7 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0'>
+          <div className='hidden md:flex md:flex-col md:flex-shrink-0 md:h-[100vh] sticky top-0 border-l dark:border-gray-800 bg-white dark:bg-[#232222]'>
             <div className='flex flex-col justify-between md:mt-0 md:h-[70vh] w-64'>
               <NavBar {...props} />
             </div>
@@ -95,45 +97,53 @@ const LayoutPostList = props => (
   </>
 )
 
-// 2. 精准修改 LayoutSlug：这是调整正文宽度最安全的地方
+/**
+ * 核心修改区域：LayoutSlug
+ */
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
-  const { fullWidth } = useGlobal()
   
   return (
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        /* 这里把原来的 px-5 去掉一部分，改为 md:pl-2，减少左边绿色间隔 */
-        <div className='flex flex-col md:flex-row pt-3 pr-5'>
-          
-          {/* 目录：固定 280px 宽度 */}
-          <div className='hidden md:block md:w-[280px] flex-shrink-0'>
+        <div className='flex flex-col md:flex-row pt-3'>
+          {/* 目录区域：固定宽度 240px */}
+          <div className='hidden md:block md:w-60 flex-shrink-0 ml-5'>
             <Catalog post={post} />
           </div>
 
-          {/* 正文区域：使用 flex-grow 让它占满剩下的所有空间 */}
-          <div className='flex-grow min-w-0 md:ml-4'> 
+          {/* 正文区域：解除 mx-auto 居中限制，允许向右填充 */}
+          <div className='flex-1 min-w-0 px-5'> 
             <ArticleInfo post={post} />
             <WWAds orientation='horizontal' className='w-full' />
             
-            {/* 这个容器必须是 w-full，内部的 notion-article 也要被强制拉宽 */}
-            <div id='article-wrapper' className='w-full overflow-visible'>
-               <NotionPage post={post} />
-               
-               {/* 局部补丁：只在这里强制 notion 居中容器失效 */}
-               <style jsx>{`
-                 :global(#notion-article) {
-                    max-width: 100% !important;
-                    width: 100% !important;
-                    margin: 0 !important;
-                 }
-                 :global(.notion-page) {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    padding-left: 0 !important;
-                 }
-               `}</style>
+            <div id='article-wrapper' className='w-full'>
+              <NotionPage post={post} />
+              
+              {/* 针对 900px 剧本表格的专用 CSS */}
+              <style jsx global>{`
+                /* 关键：把强制居中去掉，让表格可以占据它需要的 900px 宽度 */
+                #notion-article {
+                   margin: 0 !important;
+                   max-width: none !important;
+                   width: 100% !important;
+                }
+                .notion-page {
+                   width: 100% !important;
+                   max-width: none !important;
+                   padding-left: 0 !important;
+                   padding-right: 0 !important;
+                }
+                /* 让表格容器允许溢出或自适应宽度 */
+                .notion-simple-table {
+                   min-width: 900px;
+                   margin-bottom: 2rem;
+                }
+                .notion-viewport {
+                   overflow-x: auto !important; /* 窄屏时允许滑动而不截断 */
+                }
+              `}</style>
             </div>
 
             <AdSlot type='in-article' />
@@ -151,7 +161,7 @@ const LayoutSlug = props => {
   )
 }
 
-// 其余配置代码保持不变...
+// 以下代码保持原样...
 const LayoutSearch = props => {
   const { keyword } = props
   useEffect(() => {
