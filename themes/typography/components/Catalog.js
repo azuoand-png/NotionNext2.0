@@ -51,12 +51,12 @@ const Catalog = ({ post }) => {
   if (!post || !post?.toc || post?.toc?.length < 1) return null
 
   return (
-    <div className="fixed left-4 top-24 z-30 w-64">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 backdrop-blur-sm">
-        <div className="dark:text-white mb-3 text-sm font-bold flex items-center">
-          <i className="mr-2 fas fa-stream text-amber-500" /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
+    <div className="sticky top-24 z-10 w-64">
+      <div className="bg-white/80 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-3">
+        <div className="dark:text-white mb-2 text-sm font-bold flex items-center">
+          <i className="mr-1 fas fa-stream" /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
         </div>
-        <div className="overflow-y-auto max-h-[calc(100vh-180px)] scroll-hidden" ref={tRef}>
+        <div className="overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden" ref={tRef}>
           <nav className="text-sm space-y-1">
             {post?.toc?.map(tocItem => {
               const id = uuidToId(tocItem.id)
@@ -68,7 +68,7 @@ const Catalog = ({ post }) => {
                   className={`
                     block border-l-2 pl-3 py-1.5 transition-all duration-200 no-underline
                     ${isActive
-                      ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-50/50 dark:bg-amber-900/30'
+                      ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-50/30 dark:bg-amber-900/20'
                       : 'border-transparent text-gray-600 dark:text-gray-400 hover:border-gray-300 hover:text-gray-800 dark:hover:text-gray-200'
                     }
                   `}
