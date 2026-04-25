@@ -41,7 +41,6 @@ const Catalog = ({ post }) => {
       }
     }, throttleMs)
 
-    // 注意：Typography主题通常是在 window 或特定的 scroll 容器滚动
     const content = document.querySelector('#container-inner') || window
     content.addEventListener('scroll', actionSectionScrollSpy)
     setTimeout(() => actionSectionScrollSpy(), 300)
@@ -51,66 +50,65 @@ const Catalog = ({ post }) => {
   if (!post || !post?.toc || post?.toc?.length < 1) return null
 
   return (
-    <>
-      {/* 注入局部样式：将原本占位的父容器隐藏，或者直接使用 fixed 覆盖 */}
+    <div key={post?.id} className='px-2'>
       <style jsx global>{`
         @media (min-width: 1024px) {
-          /* 核心：将目录容器固定在左侧边缘 */
-          .toc-fixed-container {
-            position: fixed !important;
-            left: 1.5rem; /* 距离左边缘的距离 */
-            top: 8rem;    /* 距离顶部的距离，避开页眉 */
-            width: 220px; /* 目录宽度 */
-            z-index: 40;
-          }
-          
-          /* 强制让正文页原本的侧边栏栏位消失，腾出空间 */
-          #theme-typography .md\:w-64.md\:mr-8 {
-             display: none !important;
+          /* 1. 强制目录父级容器放行，不裁剪固定定位的子元素 */
+          #theme-typography .md\:w-64 {
+            width: 0 !important; /* 宽度设为0，把空间还给正文 */
+            margin-right: 0 !important;
+            overflow: visible !important;
           }
 
-          /* 让正文内容向左移动，填补消失的侧边栏空隙，实现“最大距离” */
+          /* 2. 目录主体：钉在屏幕左侧 */
+          .custom-toc-fixed {
+            position: fixed !important;
+            left: 20px;
+            top: 150px;
+            width: 200px;
+            z-index: 100;
+          }
+          
+          /* 3. 正文区域：横向扩容 */
           #article-wrapper .flex-1 {
-             margin-left: 0 !important;
-             padding-left: 0 !important;
+            max-width: 85vw !important; /* 占据视口85%的宽度 */
+            margin: 0 auto !important;
           }
         }
       `}</style>
 
-      <div className='toc-fixed-container hidden lg:block'>
-        <div className='px-2'>
-          <div className='dark:text-white mb-3 text-sm font-bold flex items-center opacity-70'>
-            <i className='mr-1 fas fa-stream' /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
-          </div>
-          <div className='overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden' ref={tRef}>
-            <nav className='text-sm space-y-1 border-l border-gray-100 dark:border-gray-800'>
-              {post?.toc?.map(tocItem => {
-                const id = uuidToId(tocItem.id)
-                const isActive = activeSection === id
-                return (
-                  <a
-                    key={id}
-                    href={`#${id}`}
-                    className={`
-                      block border-l-2 -ml-[1px] pl-3 py-1.5 transition-all duration-200 no-underline
-                      ${isActive
-                        ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-bold bg-amber-50/50 dark:bg-amber-900/20'
-                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-amber-500'
-                      }
-                    `}
-                    style={{ marginLeft: (tocItem.indentLevel || 0) * 12 }}
-                  >
-                    <span className='truncate inline-block max-w-full align-middle'>
-                      {tocItem.text}
-                    </span>
-                  </a>
-                )
-              })}
-            </nav>
-          </div>
+      <div className='custom-toc-fixed hidden lg:block'>
+        <div className='dark:text-white mb-2 text-sm font-semibold flex items-center'>
+          <i className='mr-1 fas fa-stream' /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
+        </div>
+        <div className='overflow-y-auto max-h-[calc(100vh-300px)] scroll-hidden' ref={tRef}>
+          <nav className='text-sm space-y-1'>
+            {post?.toc?.map(tocItem => {
+              const id = uuidToId(tocItem.id)
+              const isActive = activeSection === id
+              return (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className={`
+                    block border-l-2 pl-3 py-1 transition-all duration-200 no-underline
+                    ${isActive
+                      ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold'
+                      : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+                    }
+                  `}
+                  style={{ marginLeft: (tocItem.indentLevel || 0) * 12 }}
+                >
+                  <span className='truncate inline-block max-w-full align-middle'>
+                    {tocItem.text}
+                  </span>
+                </a>
+              )
+            })}
+          </nav>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
