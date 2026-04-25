@@ -20,8 +20,8 @@ export default function Footer(props) {
         /* 强制将黑暗模式按钮固定在右上角 */
         .fixed-dark-button {
           position: fixed !important;
-          top: 3rem;   /* 距离顶部距离 */
-          right: 3rem; /* 距离右侧距离 */
+          top: 1.5rem;   /* 距离顶部距离 */
+          right: 1.5rem; /* 距离右侧距离 */
           z-index: 100;  /* 确保在最上层 */
           cursor: pointer;
           background: transparent;
