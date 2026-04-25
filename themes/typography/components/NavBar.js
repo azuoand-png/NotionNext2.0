@@ -4,42 +4,36 @@ import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
 
 /**
- * 菜单导航 - 绝对固定版
- * 无论首页还是文章页，位置永远锁定在屏幕右侧固定距离
+ * 菜单导航 - 绝对位置锁定版
  */
 export default function NavBar(props) {
   return (
     <>
       <style jsx global>{`
-        /* 1. 核心修复：锁死边栏位置 */
-        .fixed-sidebar-container {
-          position: fixed !important;
-          /* 这里的 2rem 决定了它距离屏幕最右侧的距离，你可以根据需要调整 */
-          right: 2rem; 
-          top: 5rem;
-          width: fit-content;
-          z-index: 100;
-        }
-
-        /* 2. 核心修复：防止内容区被边栏遮挡 */
-        /* 在大屏幕下，给主容器增加右侧内边距，确保文章内容不会钻到菜单下面 */
+        /* 仅在电脑端生效的强制定位 */
         @media (min-width: 768px) {
-          #theme-typography #container-inner,
-          #theme-typography .flex-1 {
-            padding-right: 180px !important; 
+          .pc-fixed-sidebar {
+            position: fixed !important;
+            /* 这里控制离右边的距离，调整为 4rem 确保它在格子背景内看起来更协调 */
+            right: 4rem !important; 
+            top: 5rem !important;
+            width: fit-content !important;
+            z-index: 90 !important;
+            /* 移除可能导致偏移的边距 */
+            margin: 0 !important;
+            height: auto !important;
           }
-        }
-
-        /* 3. 彻底取消父容器对它的限制 */
-        .overflow-hidden {
-          overflow: visible !important;
+          
+          /* 核心：防止文章内容和这个固定的边栏重叠 */
+          #theme-typography #container-inner {
+             padding-right: 220px !important;
+          }
         }
       `}</style>
 
-      {/* 将原有的 div 加上 fixed-sidebar-container 类名 */}
-      <div className='fixed-sidebar-container flex flex-col justify-between md:h-[70vh]'>
+      {/* PC端显示的固定边栏 */}
+      <div className='pc-fixed-sidebar hidden md:flex flex-col justify-between'>
         <div className='flex flex-col'>
-          {/* 站点标题 */}
           <header className='w-fit self-center md:self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2'>
             <SmartLink href='/'>
               <div className='flex flex-col-reverse md:flex-col items-center md:items-start'>
@@ -53,7 +47,6 @@ export default function NavBar(props) {
             </SmartLink>
           </header>
 
-          {/* 导航菜单 */}
           <nav className='md:pt-0 z-20 flex-shrink-0'>
             <div id='nav-bar-inner' className='text-sm md:text-md'>
               <MenuList {...props} />
@@ -61,6 +54,18 @@ export default function NavBar(props) {
             <SocialButton />
           </nav>
         </div>
+      </div>
+
+      {/* 移动端保留原样，不使用固定定位，防止手机遮挡内容 */}
+      <div className='md:hidden flex flex-col items-center pb-8'>
+         <header className='w-fit px-4 mb-4 text-[var(--primary-color)]'>
+            <SmartLink href='/'>
+               <div className='flex flex-col items-center'>
+                  <div className='font-bold text-3xl'>{siteConfig('TYPOGRAPHY_BLOG_NAME')}</div>
+               </div>
+            </SmartLink>
+         </header>
+         <MenuList {...props} />
       </div>
     </>
   )
