@@ -138,7 +138,7 @@ const LayoutArchive = props => {
 }
 
 /**
- * 文章详情（修改后：左侧目录 + 中间正文，右侧边栏由 LayoutBase 提供）
+ * 文章详情（修正后：左侧目录 sticky，右侧正文，正文与标题左对齐，无额外偏移）
  */
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
@@ -149,11 +149,11 @@ const LayoutSlug = props => {
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
         <div className='flex flex-col md:flex-row'>
-          {/* 左侧目录（桌面端显示，固定宽度） */}
+          {/* 左侧目录（桌面端显示，sticky 固定） */}
           <div className='hidden md:block md:w-64 md:mr-8 flex-shrink-0'>
             <Catalog post={post} />
           </div>
-          {/* 右侧文章内容（自适应宽度，移除宽度限制，确保不被截断） */}
+          {/* 右侧文章内容（自适应宽度） */}
           <div className='flex-1 px-5 pt-3'>
             <ArticleInfo post={post} />
             <WWAds orientation='horizontal' className='w-full' />
