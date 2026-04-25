@@ -21,7 +21,6 @@ const Catalog = ({ post }) => {
         const section = sections[i]
         if (!section || !(section instanceof Element)) continue
         const bbox = section.getBoundingClientRect()
-        // 这里使用 100px 的偏移量，抵消固定定位的影响
         if (bbox.top - 100 < 0) {
           currentSectionId = section.getAttribute('data-id')
         } else {
@@ -44,7 +43,6 @@ const Catalog = ({ post }) => {
     const container = document.querySelector('#container-inner')
     const scrollTarget = container || window
     scrollTarget.addEventListener('scroll', actionSectionScrollSpy)
-    // 初始执行一次
     actionSectionScrollSpy()
 
     return () => scrollTarget.removeEventListener('scroll', actionSectionScrollSpy)
@@ -53,63 +51,39 @@ const Catalog = ({ post }) => {
   if (!post || !post?.toc || post?.toc?.length < 1) return null
 
   return (
-    <>
-      {/* 全局样式：让文章内容区为目录预留左侧空间 */}
-      <style jsx global>{`
-        /* 仅在文章页生效（通过 #article-wrapper 的存在判断） */
-        #article-wrapper {
-          margin-left: 280px !important;
-          width: auto !important;
-          max-width: none !important;
-        }
-        /* 确保 Notion 内容内部容器也自适应 */
-        #article-wrapper .notion {
-          width: 100% !important;
-          max-width: none !important;
-        }
-        /* 响应式：移动端不预留空间 */
-        @media (max-width: 1023px) {
-          #article-wrapper {
-            margin-left: 0 !important;
-          }
-        }
-      `}</style>
-
-      {/* 目录本体：固定在左侧，不随页面滚动 */}
-      <div className="fixed left-6 top-24 z-30 hidden lg:block w-64">
-        <div className="bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-3">
-          <div className="dark:text-white mb-2 text-sm font-bold flex items-center opacity-80">
-            <i className="mr-1 fas fa-stream" /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
-          </div>
-          <div className="overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden" ref={tRef}>
-            <nav className="text-sm space-y-0.5">
-              {post?.toc?.map(tocItem => {
-                const id = uuidToId(tocItem.id)
-                const isActive = activeSection === id
-                return (
-                  <a
-                    key={id}
-                    href={`#${id}`}
-                    className={`
-                      block border-l-2 pl-3 py-1.5 transition-all duration-200 no-underline
-                      ${isActive
-                        ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-50/30 dark:bg-amber-900/20'
-                        : 'border-transparent text-gray-600 dark:text-gray-400 hover:border-gray-300 hover:text-gray-800 dark:hover:text-gray-200'
-                      }
-                    `}
-                    style={{ paddingLeft: (tocItem.indentLevel || 0) * 12 + 12 }}
-                  >
-                    <span className="truncate inline-block max-w-full align-middle">
-                      {tocItem.text}
-                    </span>
-                  </a>
-                )
-              })}
-            </nav>
-          </div>
+    <div className="sticky top-24 z-20 w-full">
+      <div className="bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-3">
+        <div className="dark:text-white mb-2 text-sm font-bold flex items-center opacity-80">
+          <i className="mr-1 fas fa-stream" /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
+        </div>
+        <div className="overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden" ref={tRef}>
+          <nav className="text-sm space-y-0.5">
+            {post?.toc?.map(tocItem => {
+              const id = uuidToId(tocItem.id)
+              const isActive = activeSection === id
+              return (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className={`
+                    block border-l-2 pl-3 py-1.5 transition-all duration-200 no-underline
+                    ${isActive
+                      ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-50/30 dark:bg-amber-900/20'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:border-gray-300 hover:text-gray-800 dark:hover:text-gray-200'
+                    }
+                  `}
+                  style={{ paddingLeft: (tocItem.indentLevel || 0) * 12 + 12 }}
+                >
+                  <span className="truncate inline-block max-w-full align-middle">
+                    {tocItem.text}
+                  </span>
+                </a>
+              )
+            })}
+          </nav>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
