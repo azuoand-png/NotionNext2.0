@@ -40,7 +40,7 @@ const Style = () => {
         background-color: rgb(255 255 255) / 1;
         color: #2e405b;
         background-size: 7px 7px;
-        text-shadow: 1px 1px 1px rgb(0 0 0 / 0.04);
+        /* 删除文字阴影 */
         background-image: linear-gradient(
             to right,
             rgb(0 0 0 / 0.04) 1px,
@@ -71,7 +71,7 @@ const Style = () => {
         scrollbar-width: none;
       }
 
-      /* ========== 文章正文自然舒展，占满中间区域 ========== */
+      /* 文章正文自然舒展 */
       #article-wrapper .notion {
         max-width: none !important;
         width: 100% !important;
@@ -82,12 +82,34 @@ const Style = () => {
         width: 100% !important;
         max-width: 100% !important;
       }
-      /* 可选：让表格和图片自适应宽度 */
       .notion-table,
       .notion-image,
       .notion-asset-wrapper {
         max-width: 100% !important;
         overflow-x: auto;
+      }
+
+      /* 正文段落、标注、引用、列表：行距1.5倍，两端对齐 */
+      #article-wrapper .notion-text,
+      #article-wrapper .notion-quote,
+      #article-wrapper .notion-callout,
+      #article-wrapper .notion-list {
+        line-height: 1.5 !important;
+        text-align: justify !important;
+      }
+      /* 表格行距1.4倍 */
+      #article-wrapper .notion-table td,
+      #article-wrapper .notion-table th,
+      #article-wrapper .notion-simple-table td,
+      #article-wrapper .notion-simple-table th {
+        line-height: 1.4 !important;
+      }
+      /* 标题保持左对齐 */
+      #article-wrapper .notion-h1,
+      #article-wrapper .notion-h2,
+      #article-wrapper .notion-h3,
+      #article-wrapper .notion-h4 {
+        text-align: left !important;
       }
     `}</style>
   )
