@@ -9,16 +9,16 @@ export default function ArticleInfo(props) {
   const { post } = props
   const { locale } = useGlobal()
 
+  // 原始标签处理逻辑
   const tagItems = post?.tagItems || []
   const plainTags = post?.tags || []
   const tagsWithColor = tagItems.length > 0 
     ? tagItems 
     : plainTags.map(tag => ({ name: tag, color: 'gray' }))
 
-  const publishDate = post.date?.start_date || post.createdTime
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
 
-  // 强制刷新不蒜子计数（确保加载后获取最新值）
+  // 手动刷新不蒜子计数
   useEffect(() => {
     if (enableBusuanzi && window.busuanzi) {
       window.busuanzi.fetch()
@@ -26,65 +26,59 @@ export default function ArticleInfo(props) {
   }, [enableBusuanzi])
 
   return (
-    // sticky top-20 保持距离顶部 5rem，不贴边；毛玻璃背景仅作用于标题区域，不影响正文
-    <section className="sticky top-20 z-10 backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 mt-2 text-gray-600 dark:text-gray-400 leading-8 overflow-visible">
-      <h2 className="blog-item-title mb-3 font-bold text-black text-xl md:text-2xl no-underline">
+    <section className='mt-2 text-gray-600 dark:text-gray-400 leading-8'>
+      <h2 className='blog-item-title mb-5 font-bold text-black text-xl md:text-2xl no-underline'>
         {siteConfig('POST_TITLE_ICON') && <NotionIcon icon={post?.pageIcon} />}
-        <span className="inline-block transition-transform duration-300 hover:scale-110 origin-left">
-          {post?.title}
-        </span>
+        {post?.title}
       </h2>
 
-      {/* 元信息行：日期 + 标签 + 阅读次数 */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400 pb-3">
-        <div className="flex items-center space-x-1">
-          <i className="far fa-calendar-alt"></i>
-          <span>发布于</span>
-          <SmartLink
-            className="hover:text-red-400 transition-all duration-200"
-            href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}
-          >
-            {publishDate}
-          </SmartLink>
-        </div>
-
-        {post?.type !== 'Page' && tagsWithColor.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {tagsWithColor.map(t => {
-              const tagName = t.name
-              const tagColor = t.color || 'gray'
-              return (
+      <div className='flex flex-wrap text-[var(--primary-color)] dark:text-gray-300'>
+        {post?.type !== 'Page' && (
+          <header className='text-md text-[var(--primary-color)] dark:text-gray-300 flex-wrap flex items-center leading-6 gap-2'>
+            <div className='space-x-2'>
+              <span className='text-sm'>
+                发布于
                 <SmartLink
-                  key={tagName}
-                  href={`/tag/${encodeURIComponent(tagName)}`}
-                  className={`
-                    inline-block px-2 py-0.5 rounded-full text-xs font-medium
-                    notion-${tagColor}_background
-                    transition-all duration-200
-                    hover:!bg-[var(--primary-color)] hover:!text-white
-                    dark:hover:!text-white
-                  `}
-                >
-                  #{tagName}
+                  className='p-1 hover:text-red-400 transition-all duration-200'
+                  href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}>
+                  {post.date?.start_date || post.createdTime}
                 </SmartLink>
-              )
-            })}
-          </div>
-        )}
+              </span>
+            </div>
 
-        {enableBusuanzi && (
-          <div className="flex items-center space-x-1">
-            <i className="fas fa-eye"></i>
-            <span>已被阅读</span>
-            <span id="busuanzi_value_page_pv">0</span>
-            <span>次</span>
-          </div>
-        )}
-      </div>
+            <div className='flex flex-wrap gap-2'>
+              {tagsWithColor.map(t => {
+                const tagName = t.name
+                const tagColor = t.color || 'gray'
+                return (
+                  <SmartLink
+                    key={tagName}
+                    href={`/tag/${encodeURIComponent(tagName)}`}
+                    className={`
+                      inline-block px-2 py-0.5 rounded-full text-xs font-medium
+                      notion-${tagColor}_background
+                      transition-all duration-200
+                      hover:!bg-[var(--primary-color)] hover:!text-white
+                      dark:hover:!bg-[var(--primary-color)] dark:hover:!text-black
+                    `}
+                  >
+                    #{tagName}
+                  </SmartLink>
+                )
+              })}
+            </div>
 
-      {/* 下划线：宽度与主标题等长，2.5px，暗红色/浅灰色，独立在元信息行下方 */}
-      <div className="flex justify-start">
-        <div className="w-fit h-[2.5px] bg-red-700 dark:bg-gray-400 rounded-full mt-1 mb-2"></div>
+            {/* 不蒜子阅读次数（新增） */}
+            {enableBusuanzi && (
+              <div className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
+                <i className="fas fa-eye"></i>
+                <span>已被阅读</span>
+                <span id="busuanzi_value_page_pv">0</span>
+                <span>次</span>
+              </div>
+            )}
+          </header>
+        )}
       </div>
     </section>
   )
