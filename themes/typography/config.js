@@ -13,5 +13,8 @@ const CONFIG = {
   TYPOGRAPHY_MENU_CATEGORY: true, // 显示分类
   TYPOGRAPHY_MENU_TAG: true, // 显示标签
   TYPOGRAPHY_MENU_ARCHIVE: true, // 显示归档
+
+  // 不蒜子统计（新增）
+  ANALYTICS_BUSUANZI_SITE_ID: true,
 }
 export default CONFIG
