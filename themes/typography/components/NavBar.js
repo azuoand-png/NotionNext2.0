@@ -39,7 +39,7 @@ export function MenuCard(props) {
   )
 }
 
-// 保留默认导出以防其他引用（实际不使用）
+// 保留默认导出，避免其他文件引用时报错
 export default function NavBar() {
   return null
 }
