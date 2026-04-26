@@ -13,6 +13,8 @@ import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
 import { NameCard, MenuCardRight, MenuCardLeft } from './components/NavBar'
+import Script from 'next/script'
+import Head from 'next/head'
 
 const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
 
@@ -38,48 +40,57 @@ const LayoutBase = props => {
   const [currentPost, setCurrentPost] = useState(null)
 
   return (
-    <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
-      <div id='theme-typography' className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
-        <Style />
-        {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
+    <>
+      <Head>
+        <Script
+          src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+          strategy="afterInteractive"
+        />
+      </Head>
+      <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
+        <div id='theme-typography' className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
+          <Style />
+          {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        <NameCard />
+          <NameCard />
 
-        <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
-          <div className='flex flex-col md:flex-row gap-6'>
-            {currentPost && (
-              <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
-                <Catalog post={currentPost} />
-                <div className='mt-8'>
-                  <MenuCardLeft {...props} />
+          <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
+            <div className='flex flex-col md:flex-row gap-6'>
+              {currentPost && (
+                <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
+                  <Catalog post={currentPost} />
+                  <div className='mt-8'>
+                    <MenuCardLeft {...props} />
+                  </div>
                 </div>
-              </div>
-            )}
-
-            <div className='flex-1 min-w-0 md:pr-32'>
-              {onLoading ? (
-                <div className='flex items-center justify-center min-h-[500px] w-full'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
-                </div>
-              ) : (
-                children
               )}
+
+              <div className='flex-1 min-w-0 md:pr-32'>
+                {onLoading ? (
+                  <div className='flex items-center justify-center min-h-[500px] w-full'>
+                    <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
+                  </div>
+                ) : (
+                  children
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {!currentPost && <MenuCardRight {...props} />}
+          {!currentPost && <MenuCardRight {...props} />}
 
-        <div className='fixed right-4 bottom-4 z-20'>
-          <JumpToTopButton />
+          <div className='fixed right-4 bottom-4 z-20'>
+            <JumpToTopButton />
+          </div>
+          <AlgoliaSearchModal cRef={searchModal} {...props} />
+          <Footer />
         </div>
-        <AlgoliaSearchModal cRef={searchModal} {...props} />
-        <Footer />
-      </div>
-    </ThemeGlobalSimple.Provider>
+      </ThemeGlobalSimple.Provider>
+    </>
   )
 }
 
+// 以下所有导出函数与您原代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
