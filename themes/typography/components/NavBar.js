@@ -18,7 +18,7 @@ export function NameCard() {
               {chars.map((ch, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-400 dark:bg-gray-500 text-white text-sm font-bold"
+                  className="flex items-center justify-center w-7 h-7 rounded-full border border-gray-400 dark:border-gray-500 text-inherit text-sm font-bold"
                 >
                   {ch}
                 </div>
