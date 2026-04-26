@@ -56,11 +56,10 @@ const LayoutBase = props => {
               </div>
             )}
 
-            {/* 唯一改动：将原来的 md:pr-16 改为 md:pr-32，防止右侧固定个人牌遮挡正文 */}
             <div className='flex-1 min-w-0 md:pr-32'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
+                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
                 </div>
               ) : (
                 children
@@ -81,7 +80,6 @@ const LayoutBase = props => {
   )
 }
 
-// 以下所有函数与您原始代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
