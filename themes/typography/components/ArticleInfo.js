@@ -1,6 +1,5 @@
 import SmartLink from '@/components/SmartLink'
 import { useGlobal } from '@/lib/global'
-import CONFIG from '../config'
 import { siteConfig } from '@/lib/config'
 import { formatDateFmt } from '@/lib/utils/formatDate'
 import NotionIcon from '@/components/NotionIcon'
@@ -9,21 +8,21 @@ export default function ArticleInfo(props) {
   const { post } = props
   const { locale } = useGlobal()
 
-  // 从 post 中获取带颜色的标签列表（如果存在 tagItems，则使用；否则回退到普通 tag 数组）
+  // 安全获取标签颜色信息
+  // 优先使用 post.tagItems（包含颜色），否则回退到 plain tags 并赋予灰色
   const tagItems = post?.tagItems || []
   const plainTags = post?.tags || []
-
-  // 合并标签：优先使用 tagItems 中的颜色信息
   const tagsWithColor = tagItems.length > 0 
     ? tagItems 
     : plainTags.map(tag => ({ name: tag, color: 'gray' }))
 
   return (
-    <section className='mt-2 text-gray-600 dark:text-gray-400 leading-8'>
+    // 添加 overflow-visible 防止标题放大时被裁剪
+    <section className='mt-2 text-gray-600 dark:text-gray-400 leading-8 overflow-visible'>
       <h2 className='blog-item-title mb-5 font-bold text-black text-xl md:text-2xl no-underline'>
         {siteConfig('POST_TITLE_ICON') && <NotionIcon icon={post?.pageIcon} />}
-        {/* 标题增加悬停放大效果 */}
-        <span className="inline-block transition-transform duration-200 hover:scale-110">
+        {/* 标题悬停放大：确保 inline-block 且父容器不裁剪 */}
+        <span className="inline-block transition-transform duration-300 hover:scale-110 origin-left">
           {post?.title}
         </span>
       </h2>
@@ -45,8 +44,10 @@ export default function ArticleInfo(props) {
             <div className='flex flex-wrap gap-2'>
               {tagsWithColor.map(t => {
                 const tagName = t.name
+                // 颜色值可能是 'gray', 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'brown'
                 const tagColor = t.color || 'gray'
-                // 使用 Notion 预设的背景色类，并添加悬停颜色互换效果
+                // 使用 Notion 预设的背景色类（如果主题已定义），否则回退到 bg-gray-100
+                // 注意：notion-${color}_background 类在 NotionNext 的主题中是存在的
                 return (
                   <SmartLink
                     key={tagName}
