@@ -12,10 +12,12 @@ export const MenuItemDrop = ({ link, menuAlign = 'left' }) => {
   }
   const selected = router.pathname === link.href || router.asPath === link.href
 
-  // 根据对齐方向确定子菜单的定位类
+  // 根据对齐方向确定子菜单的定位和间距
+  // 左对齐菜单（左侧边栏）：子菜单向右展开，使用 left-full 并添加 ml-1 拉近间距
+  // 右对齐菜单（右侧边栏）：子菜单向左展开，使用 right-full 并添加 mr-1 拉近间距
   const subMenuPositionClass = menuAlign === 'right'
-    ? 'md:right-full md:top-0 top-6'   // 右对齐时向左展开
-    : 'md:left-full md:top-0 top-6'     // 左对齐时向右展开
+    ? 'md:right-full md:top-0 top-6 mr-1'   // 右对齐时向左展开，并增加右外边距使其紧贴
+    : 'md:left-full md:top-0 top-6 ml-1'    // 左对齐时向右展开，并增加左外边距使其紧贴
 
   return (
     <div className='menu-item'>
@@ -52,7 +54,7 @@ export const MenuItemDrop = ({ link, menuAlign = 'left' }) => {
                     className='dark:hover:bg-gray-900 tracking-widest transition-all duration-200 dark:border-gray-800 pb-3'>
                     <SmartLink href={sLink.href} target={link?.target}>
                       <span className='dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold'>
-                        {link?.icon && <i className={sLink?.icon}> &nbsp; </i>}
+                        {sLink?.icon && <i className={sLink?.icon}> &nbsp; </i>}
                         {sLink.title}
                       </span>
                     </SmartLink>
