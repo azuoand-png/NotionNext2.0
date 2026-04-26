@@ -42,7 +42,7 @@ export function MenuCardRight(props) {
 // 卡片3：左侧菜单（用于文章页，位于目录下方，随目录滚动，不会重叠）
 export function MenuCardLeft(props) {
   return (
-    <div className="mt-8 w-full">
+    <div className="w-full">
       <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
         <div id="nav-bar-inner" className="text-sm md:text-md text-left">
           <MenuList {...props} />
