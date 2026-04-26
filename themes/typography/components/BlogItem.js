@@ -50,7 +50,7 @@ export const BlogItem = props => {
         <h2 className="mb-1 line-clamp-2">
           <SmartLink
             href={post.href}
-            className="inline-block transition-transform duration-200 hover:scale-110 text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
+            className="inline-block text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
           >
             {siteConfig('POST_TITLE_ICON') && (
               <NotionIcon icon={post.pageIcon} className="mr-1 inline" />
@@ -81,7 +81,7 @@ export const BlogItem = props => {
                     ${getTagColorClass(t)}
                     transition-all duration-200
                     hover:!bg-[var(--primary-color)] hover:!text-white
-                    dark:hover:!bg-[var(--primary-color)] dark:hover:!text-black
+                    dark:hover:!text-white
                   `}
                 >
                   #{t}
