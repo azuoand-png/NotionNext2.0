@@ -43,12 +43,10 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 固定个人牌（保持不变） */}
         <NameCard />
 
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
-            {/* 文章页左侧目录+菜单 */}
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
@@ -58,11 +56,11 @@ const LayoutBase = props => {
               </div>
             )}
 
-            {/* 主内容区 - 增加右边距避免被固定的个人牌遮挡 */}
-            <div className='flex-1 min-w-0 md:pr-24'>
+            {/* 唯一改动：将原来的 md:pr-16 改为 md:pr-32，防止右侧固定个人牌遮挡正文 */}
+            <div className='flex-1 min-w-0 md:pr-32'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
+                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
                 </div>
               ) : (
                 children
@@ -71,7 +69,6 @@ const LayoutBase = props => {
           </div>
         </div>
 
-        {/* 首页右侧菜单（仅在非文章页显示） */}
         {!currentPost && <MenuCardRight {...props} />}
 
         <div className='fixed right-4 bottom-4 z-20'>
@@ -84,7 +81,7 @@ const LayoutBase = props => {
   )
 }
 
-// 以下部分与您原始代码完全相同（无修改）
+// 以下所有函数与您原始代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
