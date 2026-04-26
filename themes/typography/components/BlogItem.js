@@ -8,7 +8,6 @@ import SmartLink from '@/components/SmartLink'
 export const BlogItem = props => {
   const { post } = props
 
-  // 获取封面图
   const coverImage =
     post?.pageCoverThumbnail ||
     post?.pageCover ||
@@ -16,12 +15,10 @@ export const BlogItem = props => {
     post?.thumbnail ||
     (post?.blockMap && post?.blockMap?.cover?.length > 0 ? post.blockMap.cover : null)
 
-  // 副标题就是 summary
   const subTitle = post?.summary || ''
 
   return (
-    <div className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-      {/* 图片区域 16:9 居中裁剪 */}
+    <div className="flex flex-col overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
       {coverImage && (
         <div className="relative w-full pt-[56.25%] overflow-hidden bg-gray-100 dark:bg-gray-700">
           <SmartLink href={post.href} passHref legacyBehavior>
@@ -34,9 +31,8 @@ export const BlogItem = props => {
         </div>
       )}
 
-      {/* 内容区域：不使用 flex-grow，防止被撑高 */}
-      <article className="article-info p-4 flex flex-col">
-        {/* 主标题 - 限制2行 */}
+      {/* 不使用 flex-grow，高度由内容自然撑开 */}
+      <article className="article-info p-4">
         <h2 className="mb-2 line-clamp-2">
           <SmartLink
             href={post.href}
@@ -49,14 +45,12 @@ export const BlogItem = props => {
           </SmartLink>
         </h2>
 
-        {/* 副标题 (summary) - 限制2行 */}
         {subTitle && (
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
             {subTitle}
           </div>
         )}
 
-        {/* 日期 + 标签 */}
         <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-1">
             <i className="far fa-calendar-alt"></i>
