@@ -43,25 +43,23 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 右上角固定个人牌 */}
         <NameCard />
 
-        {/* 主内容区：右侧预留适当空间（由内部各自控制） */}
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
-            {/* 左侧列：仅在文章页显示目录和菜单卡片 */}
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
+                {/* 目录上移：减少 Catalog 自身的 top 值，已在其组件的 sticky top-24 中调整 */}
                 <Catalog post={currentPost} />
-                {/* 菜单卡片位于目录下方，增加间距避免重叠 */}
+                {/* 菜单卡片与目录间距保持不变，但目录已上移，不会重叠 */}
                 <div className='mt-6'>
                   <MenuCardLeft {...props} />
                 </div>
               </div>
             )}
 
-            {/* 中间主要内容区：右侧内边距减小，拉近与右侧信息栏的距离 */}
-            <div className='flex-1 min-w-0 md:pr-8'>
+            {/* 主内容区：右侧内边距减小，避免与 fixed 的 NameCard 重叠 */}
+            <div className='flex-1 min-w-0 md:pr-16'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
                   <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
@@ -73,7 +71,6 @@ const LayoutBase = props => {
           </div>
         </div>
 
-        {/* 右侧菜单卡片（首页使用） */}
         {!currentPost && <MenuCardRight {...props} />}
 
         <div className='fixed right-4 bottom-4 z-20'>
@@ -84,6 +81,9 @@ const LayoutBase = props => {
     </ThemeGlobalSimple.Provider>
   )
 }
+
+// 以下所有函数（LayoutIndex, LayoutPostList, LayoutSearch, groupArticlesByYearArray, LayoutArchive, LayoutSlug, Layout404, LayoutCategoryIndex, LayoutTagIndex）与之前相同，但为了完整性，包含 LayoutSlug 调整（正文下移5rem）和 LayoutBase 调整后，需确保 LayoutSlug 仍然有 mt-20。
+// 注意：LayoutSlug 中的 mt-20 会与 LayoutBase 的主内容区右侧内边距共同作用。
 
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
@@ -142,7 +142,6 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 文章页正文整体下移 5rem
         <div className="mt-20">
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
