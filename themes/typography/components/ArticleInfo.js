@@ -18,7 +18,7 @@ export default function ArticleInfo(props) {
   const publishDate = post.date?.start_date || post.createdTime
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
 
-  // 手动刷新不蒜子计数（解决动态渲染后计数为0的问题）
+  // 强制刷新不蒜子计数（确保加载后获取最新值）
   useEffect(() => {
     if (enableBusuanzi && window.busuanzi) {
       window.busuanzi.fetch()
@@ -26,7 +26,7 @@ export default function ArticleInfo(props) {
   }, [enableBusuanzi])
 
   return (
-    // sticky 固定，距离顶部 5rem（避免贴边），毛玻璃背景遮挡正文
+    // sticky top-20 保持距离顶部 5rem，不贴边；毛玻璃背景仅作用于标题区域，不影响正文
     <section className="sticky top-20 z-10 backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 mt-2 text-gray-600 dark:text-gray-400 leading-8 overflow-visible">
       <h2 className="blog-item-title mb-3 font-bold text-black text-xl md:text-2xl no-underline">
         {siteConfig('POST_TITLE_ICON') && <NotionIcon icon={post?.pageIcon} />}
@@ -35,6 +35,7 @@ export default function ArticleInfo(props) {
         </span>
       </h2>
 
+      {/* 元信息行：日期 + 标签 + 阅读次数 */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400 pb-3">
         <div className="flex items-center space-x-1">
           <i className="far fa-calendar-alt"></i>
@@ -81,9 +82,9 @@ export default function ArticleInfo(props) {
         )}
       </div>
 
-      {/* 下划线：宽度与主标题一致，粗细2磅 */}
+      {/* 下划线：宽度与主标题等长，2.5px，暗红色/浅灰色，独立在元信息行下方 */}
       <div className="flex justify-start">
-        <div className="w-fit h-[2px] bg-red-700 dark:bg-gray-400 rounded-full mt-1 mb-2"></div>
+        <div className="w-fit h-[2.5px] bg-red-700 dark:bg-gray-400 rounded-full mt-1 mb-2"></div>
       </div>
     </section>
   )
