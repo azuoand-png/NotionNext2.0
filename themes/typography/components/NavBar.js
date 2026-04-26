@@ -3,7 +3,7 @@ import { MenuList } from './MenuList'
 import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
 
-// 固定右上角的博客名称卡片（始终显示）
+// 卡片1：固定右上角的博客名称（磕学英语 / 抱鸭将军）
 export function NameCard() {
   return (
     <div className="fixed right-6 top-24 z-30 hidden md:block">
@@ -23,7 +23,7 @@ export function NameCard() {
   )
 }
 
-// 右侧菜单卡片（用于首页，位于 NameCard 下方）
+// 卡片2：右侧菜单（用于首页，位于 NameCard 下方）
 export function MenuCardRight(props) {
   return (
     <div className="fixed right-6 top-48 z-30 hidden md:block">
@@ -39,7 +39,7 @@ export function MenuCardRight(props) {
   )
 }
 
-// 左侧菜单卡片（用于文章页，位于目录下方）
+// 卡片3：左侧菜单（用于文章页，位于目录下方，随目录滚动，不会重叠）
 export function MenuCardLeft(props) {
   return (
     <div className="mt-8 w-full">
