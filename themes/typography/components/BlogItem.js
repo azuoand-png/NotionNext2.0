@@ -7,6 +7,7 @@ import SmartLink from '@/components/SmartLink'
 
 export const BlogItem = props => {
   const { post } = props
+  const { tagOptions } = useGlobal() // 获取全局标签颜色配置
 
   const coverImage =
     post?.pageCoverThumbnail ||
@@ -16,6 +17,20 @@ export const BlogItem = props => {
     (post?.blockMap && post?.blockMap?.cover?.length > 0 ? post.blockMap.cover : null)
 
   const subTitle = post?.summary || ''
+
+  // 构建标签颜色映射表
+  const tagColorMap = {}
+  if (tagOptions && Array.isArray(tagOptions)) {
+    tagOptions.forEach(tag => {
+      tagColorMap[tag.name] = tag.color || 'gray'
+    })
+  }
+
+  // 获取标签的背景色类
+  const getTagColorClass = (tagName) => {
+    const color = tagColorMap[tagName] || 'gray'
+    return `notion-${color}_background`
+  }
 
   return (
     <div className="flex flex-col overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
@@ -32,10 +47,10 @@ export const BlogItem = props => {
       )}
 
       <article className="article-info px-3 pt-3 pb-2">
-        <h2 className={`${subTitle ? 'mb-1' : 'mb-0'} line-clamp-2`}>
+        <h2 className="mb-1 line-clamp-2">
           <SmartLink
             href={post.href}
-            className="text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
+            className="inline-block transition-transform duration-200 hover:scale-110 text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
           >
             {siteConfig('POST_TITLE_ICON') && (
               <NotionIcon icon={post.pageIcon} className="mr-1 inline" />
@@ -61,9 +76,15 @@ export const BlogItem = props => {
                 <SmartLink
                   key={t}
                   href={`/tag/${t}`}
-                  className="hover:text-red-400 transition-all duration-200"
+                  className={`
+                    inline-block px-2 py-0.5 rounded-full text-xs font-medium
+                    ${getTagColorClass(t)}
+                    transition-all duration-200
+                    hover:!bg-[var(--primary-color)] hover:!text-white
+                    dark:hover:!bg-[var(--primary-color)] dark:hover:!text-black
+                  `}
                 >
-                  <span className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full text-xs">#{t}</span>
+                  #{t}
                 </SmartLink>
               ))}
             </div>
