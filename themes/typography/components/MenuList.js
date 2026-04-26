@@ -7,12 +7,7 @@ import CONFIG from '../config'
 import { MenuItemCollapse } from './MenuItemCollapse'
 import { MenuItemDrop } from './MenuItemDrop'
 
-/**
- * 菜单导航
- * @param {*} props
- * @returns
- */
-export const MenuList = ({ customNav, customMenu }) => {
+export const MenuList = ({ customNav, customMenu, menuAlign = 'left' }) => {
   const { locale } = useGlobal()
   const [isOpen, changeIsOpen] = useState(false)
   const toggleIsOpen = () => {
@@ -53,7 +48,6 @@ export const MenuList = ({ customNav, customMenu }) => {
     links = links.concat(customNav)
   }
 
-  // 如果 开启自定义菜单，则覆盖 Page 生成的菜单
   if (siteConfig('CUSTOM_MENU')) {
     links = customMenu
   }
@@ -64,18 +58,14 @@ export const MenuList = ({ customNav, customMenu }) => {
 
   return (
     <>
-      {/* 大屏模式菜单 - 垂直排列 */}
       <div id='nav-menu-pc' className='hidden md:flex md:flex-col md:gap-2'>
         {links?.map((link, index) => (
-          <MenuItemDrop key={index} link={link} />
+          <MenuItemDrop key={index} link={link} menuAlign={menuAlign} />
         ))}
       </div>
-      {/* 移动端小屏菜单 - 水平排列 */}
-      <div
-        id='nav-menu-mobile'
-        className='flex md:hidden my-auto justify-center space-x-4'>
+      <div id='nav-menu-mobile' className='flex md:hidden my-auto justify-center space-x-4'>
         {links?.map((link, index) => (
-          <MenuItemDrop key={index} link={link} />
+          <MenuItemDrop key={index} link={link} menuAlign={menuAlign} />
         ))}
       </div>
     </>
