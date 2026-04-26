@@ -4,8 +4,6 @@ import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
 
 export function NameCard() {
-  const chars = ['抱', '鸭', '将', '军']
-
   return (
     <div className="fixed right-6 top-24 z-30 hidden md:block">
       <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2">
@@ -14,17 +12,8 @@ export function NameCard() {
             <div className="font-bold text-4xl text-center" id="blog-name">
               {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-            {/* 四个带圆圈的字竖排，紧密相连，强制垂直方向 */}
-            <div className="flex flex-col items-center gap-0 mt-2">
-              {chars.map((ch, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-400 dark:border-gray-500 text-inherit text-base font-bold"
-                  style={{ margin: 0, lineHeight: 1 }}
-                >
-                  {ch}
-                </div>
-              ))}
+            <div className="font-bold text-xl text-center" id="blog-name-en">
+              {siteConfig('TYPOGRAPHY_BLOG_NAME_EN')}
             </div>
           </div>
         </SmartLink>
