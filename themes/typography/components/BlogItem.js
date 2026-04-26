@@ -21,7 +21,7 @@ export const BlogItem = props => {
 
   return (
     <div className="flex flex-col h-full overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-      {/* 图片区域 */}
+      {/* 图片区域 16:9 居中裁剪 */}
       {coverImage && (
         <div className="relative w-full pt-[56.25%] overflow-hidden bg-gray-100 dark:bg-gray-700">
           <SmartLink href={post.href} passHref legacyBehavior>
@@ -34,9 +34,9 @@ export const BlogItem = props => {
         </div>
       )}
 
-      {/* 内容区域 */}
+      {/* 内容区域：不使用 flex-grow，防止被撑高 */}
       <article className="article-info p-4 flex flex-col">
-        {/* 第1行：主标题 - 限制2行 */}
+        {/* 主标题 - 限制2行 */}
         <h2 className="mb-2 line-clamp-2">
           <SmartLink
             href={post.href}
@@ -49,14 +49,14 @@ export const BlogItem = props => {
           </SmartLink>
         </h2>
 
-        {/* 第2行：副标题 (summary) - 限制2行 */}
+        {/* 副标题 (summary) - 限制2行 */}
         {subTitle && (
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
             {subTitle}
           </div>
         )}
 
-        {/* 第3行：日期（左） + 标签（右，即右下角） */}
+        {/* 日期 + 标签 */}
         <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center space-x-1">
             <i className="far fa-calendar-alt"></i>
