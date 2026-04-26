@@ -23,10 +23,9 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    // 增加上边距 mt-12（3rem）
-    <div className='w-full px-2 md:px-2 mt-12'>
-      {/* 桌面端四列网格，移动端一列 */}
-      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-4 gap-x-6 gap-y-8'>
+    // 上边距 7.5rem，网格三列，卡片间隙增大使卡片更宽
+    <div className='w-full px-1 md:px-1 mt-[7.5rem]'>
+      <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-10'>
         {posts?.map((p, index) => (
           <BlogItem key={p.id} post={p} />
         ))}
