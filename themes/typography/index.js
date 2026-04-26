@@ -50,7 +50,8 @@ const LayoutBase = props => {
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
-                <div className='mt-6'>
+                {/* 修改点：mt-6 改为 mt-20，保持目录与菜单间距 5rem */}
+                <div className='mt-20'>
                   <MenuCardLeft {...props} />
                 </div>
               </div>
@@ -80,6 +81,7 @@ const LayoutBase = props => {
   )
 }
 
+// 以下函数与您的原始代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
