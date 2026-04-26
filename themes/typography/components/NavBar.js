@@ -4,16 +4,25 @@ import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
 
 export function NameCard() {
+  const chars = ['抱', '鸭', '将', '军']
+
   return (
     <div className="fixed right-6 top-24 z-30 hidden md:block">
-      <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2">
+      <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2">
         <SmartLink href='/'>
           <div className="flex flex-col items-start">
             <div className="font-bold text-4xl text-center" id="blog-name">
               {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-            <div className="font-bold text-xl text-center" id="blog-name-en">
-              {siteConfig('TYPOGRAPHY_BLOG_NAME_EN')}
+            <div className="flex flex-col items-center gap-1 mt-2">
+              {chars.map((ch, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-center w-7 h-7 rounded-full bg-gray-400 dark:bg-gray-500 text-white text-sm font-bold"
+                >
+                  {ch}
+                </div>
+              ))}
             </div>
           </div>
         </SmartLink>
@@ -24,10 +33,10 @@ export function NameCard() {
 
 export function MenuCardRight(props) {
   return (
-    <div className="fixed right-6 top-96 z-30 hidden md:block">
+    <div className="fixed right-6 top-48 z-30 hidden md:block">
       <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
         <div id="nav-bar-inner" className="text-sm md:text-md text-right">
-          <MenuList {...props} menuAlign="right" />
+          <MenuList {...props} />
         </div>
         <div className="mt-4 flex justify-end">
           <SocialButton />
@@ -42,7 +51,7 @@ export function MenuCardLeft(props) {
     <div className="w-full">
       <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
         <div id="nav-bar-inner" className="text-sm md:text-md text-left">
-          <MenuList {...props} menuAlign="left" />
+          <MenuList {...props} />
         </div>
         <div className="mt-4 flex justify-start">
           <SocialButton />
