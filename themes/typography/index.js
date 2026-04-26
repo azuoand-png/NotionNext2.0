@@ -43,22 +43,25 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 固定右上角的博客名称卡片（始终显示） */}
+        {/* 右上角固定个人牌 */}
         <NameCard />
 
-        {/* 主内容区：桌面端右侧预留 12rem 空间，为右侧卡片留出位置 */}
+        {/* 主内容区：右侧预留适当空间（由内部各自控制） */}
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
-            {/* 左侧列：仅在文章页显示目录和左侧菜单卡片 */}
+            {/* 左侧列：仅在文章页显示目录和菜单卡片 */}
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
-                <MenuCardLeft {...props} />
+                {/* 菜单卡片位于目录下方，增加间距避免重叠 */}
+                <div className='mt-6'>
+                  <MenuCardLeft {...props} />
+                </div>
               </div>
             )}
 
-            {/* 中间主要内容区：右侧外边距 12rem，为右侧卡片留出空间 */}
-            <div className='flex-1 min-w-0 md:mr-48'>
+            {/* 中间主要内容区：右侧内边距减小，拉近与右侧信息栏的距离 */}
+            <div className='flex-1 min-w-0 md:pr-8'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
                   <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
@@ -70,7 +73,7 @@ const LayoutBase = props => {
           </div>
         </div>
 
-        {/* 右侧菜单卡片（仅在首页显示，即没有 currentPost 时） */}
+        {/* 右侧菜单卡片（首页使用） */}
         {!currentPost && <MenuCardRight {...props} />}
 
         <div className='fixed right-4 bottom-4 z-20'>
@@ -139,7 +142,7 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        // 文章页正文整体下移 5rem（mt-20）
+        // 文章页正文整体下移 5rem
         <div className="mt-20">
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
