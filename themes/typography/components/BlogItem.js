@@ -31,8 +31,8 @@ export const BlogItem = props => {
         </div>
       )}
 
-      <article className="article-info p-4">
-        <h2 className="mb-2 line-clamp-2">
+      <article className="article-info p-3">
+        <h2 className={`${subTitle ? 'mb-1' : 'mb-0'} line-clamp-2`}>
           <SmartLink
             href={post.href}
             className="text-xl font-bold text-[var(--primary-color)] dark:text-white hover:underline decoration-2"
@@ -45,7 +45,7 @@ export const BlogItem = props => {
         </h2>
 
         {subTitle && (
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">
             {subTitle}
           </div>
         )}
