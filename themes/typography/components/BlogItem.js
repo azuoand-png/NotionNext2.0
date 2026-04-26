@@ -20,7 +20,8 @@ export const BlogItem = props => {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
       {coverImage && (
-        <div className="relative w-full pt-[56.25%] overflow-hidden bg-gray-100 dark:bg-gray-700">
+        // 修改点：pt-[56.25%]（16:9）改为 pt-[37.5%]（高度为原来的2/3）
+        <div className="relative w-full pt-[37.5%] overflow-hidden bg-gray-100 dark:bg-gray-700">
           <SmartLink href={post.href} passHref legacyBehavior>
             <LazyImage
               src={coverImage}
@@ -31,7 +32,6 @@ export const BlogItem = props => {
         </div>
       )}
 
-      {/* 不使用 flex-grow，高度由内容自然撑开 */}
       <article className="article-info p-4">
         <h2 className="mb-2 line-clamp-2">
           <SmartLink
