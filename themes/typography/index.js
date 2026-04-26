@@ -12,7 +12,8 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
-import { NameCard, MenuCardRight, MenuCardLeft } from './components/NavBar'
+import { MenuList } from './components/MenuList'
+import SocialButton from './components/SocialButton'
 
 const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
 
@@ -36,6 +37,7 @@ const LayoutBase = props => {
   const { onLoading } = useGlobal()
   const searchModal = useRef(null)
   const [currentPost, setCurrentPost] = useState(null)
+  const siteInfo = props.siteInfo || {}
 
   return (
     <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
@@ -43,23 +45,29 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        <NameCard />
-
-        <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
-          <div className='flex flex-col md:flex-row gap-6'>
+        <div className='max-w-[1400px] mx-auto px-4 md:px-8 py-6'>
+          <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
+            {/* 左侧区域：文章页时显示目录和左侧菜单 */}
             {currentPost && (
-              <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
-                {/* 目录上移：减少 Catalog 自身的 top 值，已在其组件的 sticky top-24 中调整 */}
+              <div className='hidden md:block md:col-span-1 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
-                {/* 菜单卡片与目录间距保持不变，但目录已上移，不会重叠 */}
                 <div className='mt-6'>
-                  <MenuCardLeft {...props} />
+                  <div className="w-full">
+                    <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
+                      <div id="nav-bar-inner" className="text-sm md:text-md text-left">
+                        <MenuList {...props} />
+                      </div>
+                      <div className="mt-4 flex justify-start">
+                        <SocialButton />
+                      </div>
+                    </nav>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* 主内容区：右侧内边距减小，避免与 fixed 的 NameCard 重叠 */}
-            <div className='flex-1 min-w-0 md:pr-16'>
+            {/* 主内容区：文章页占2列，首页占3列 */}
+            <main className={`${currentPost ? 'md:col-span-2' : 'md:col-span-3'} min-w-0`}>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
                   <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
@@ -67,23 +75,51 @@ const LayoutBase = props => {
               ) : (
                 children
               )}
-            </div>
+            </main>
+
+            {/* 右侧边栏：独立卡片（个人牌 + 菜单牌），永不重叠 */}
+            <aside className='hidden md:block md:col-span-1 space-y-6'>
+              {/* 个人牌卡片 */}
+              <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 border border-gray-100 dark:border-gray-700 text-center'>
+                <div className='text-3xl font-bold text-gray-800 dark:text-white mb-1'>
+                  {siteConfig('TYPOGRAPHY_BLOG_NAME') || '磕学英语'}
+                </div>
+                <div className='text-lg font-medium text-gray-500 dark:text-gray-300 mb-3'>
+                  {siteConfig('TYPOGRAPHY_BLOG_NAME_EN') || '抱鸭将军'}
+                </div>
+                <div className='text-sm text-gray-400 dark:text-gray-500 border-t pt-3 mt-2'>
+                  {siteInfo?.description || '一个 NotionNext 搭建的博客'}
+                </div>
+              </div>
+
+              {/* 菜单牌卡片（右侧菜单） */}
+              <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 border border-gray-100 dark:border-gray-700'>
+                <h3 className='text-lg font-bold mb-3'>📋 导航菜单</h3>
+                <nav className='w-full'>
+                  <div className='text-sm md:text-md'>
+                    <MenuList {...props} />
+                  </div>
+                  <div className='mt-4'>
+                    <SocialButton />
+                  </div>
+                </nav>
+              </div>
+            </aside>
           </div>
         </div>
-
-        {!currentPost && <MenuCardRight {...props} />}
 
         <div className='fixed right-4 bottom-4 z-20'>
           <JumpToTopButton />
         </div>
         <AlgoliaSearchModal cRef={searchModal} {...props} />
+        <Footer />
       </div>
     </ThemeGlobalSimple.Provider>
   )
 }
 
-// 以下所有函数（LayoutIndex, LayoutPostList, LayoutSearch, groupArticlesByYearArray, LayoutArchive, LayoutSlug, Layout404, LayoutCategoryIndex, LayoutTagIndex）与之前相同，但为了完整性，包含 LayoutSlug 调整（正文下移5rem）和 LayoutBase 调整后，需确保 LayoutSlug 仍然有 mt-20。
-// 注意：LayoutSlug 中的 mt-20 会与 LayoutBase 的主内容区右侧内边距共同作用。
+// 以下函数（LayoutIndex, LayoutPostList, LayoutSearch, groupArticlesByYearArray, LayoutArchive, LayoutSlug, Layout404, LayoutCategoryIndex, LayoutTagIndex）与您原代码完全相同，只保留 LayoutSlug 中的 mt-20 等
+// 为节省篇幅，此处省略（您可保留原有实现）。但为了保证完整性，下面列出保持不变的部分。
 
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
