@@ -21,7 +21,6 @@ const Catalog = ({ post }) => {
         const section = sections[i]
         if (!section || !(section instanceof Element)) continue
         const bbox = section.getBoundingClientRect()
-        // 偏移量 100px，避免标题被顶部固定栏遮挡
         if (bbox.top - 100 < 0) {
           currentSectionId = section.getAttribute('data-id')
         } else {
@@ -52,7 +51,8 @@ const Catalog = ({ post }) => {
   if (!post || !post?.toc || post?.toc?.length < 1) return null
 
   return (
-    <div className="sticky top-24 z-10 w-full">
+    {/* 修改点：sticky top-24 改为 sticky top-6 */}
+    <div className="sticky top-6 z-10 w-full">
       <div className="bg-white/90 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-3">
         <div className="dark:text-white mb-2 text-sm font-bold flex items-center">
           <i className="mr-1 fas fa-stream" /> {locale.COMMON.TABLE_OF_CONTENTS || '目录'}
