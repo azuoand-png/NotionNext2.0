@@ -23,7 +23,6 @@ export function NameCard() {
 }
 
 export function MenuCardRight(props) {
-  // 修改点：top-72 → top-96（再下移6rem）
   return (
     <div className="fixed right-6 top-96 z-30 hidden md:block">
       <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
