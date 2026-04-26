@@ -4,11 +4,6 @@ import throttle from 'lodash.throttle'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BlogItem } from './BlogItem'
 
-/**
- * 滚动博客列表
- * @param {*} props
- * @returns
- */
 export default function BlogListScroll(props) {
   const { posts } = props
   const { locale, NOTION_CONFIG } = useGlobal()
@@ -30,7 +25,6 @@ export default function BlogListScroll(props) {
 
   const targetRef = useRef(null)
 
-  // 监听滚动自动分页加载
   const scrollTrigger = useCallback(
     throttle(() => {
       const scrollS = window.scrollY + window.outerHeight
@@ -47,23 +41,26 @@ export default function BlogListScroll(props) {
 
   useEffect(() => {
     window.addEventListener('scroll', scrollTrigger)
-
     return () => {
       window.removeEventListener('scroll', scrollTrigger)
     }
   })
 
   return (
-    <div id='posts-wrapper' className='w-full md:pr-8 mb-12 mt-20' ref={targetRef}>
+    <div
+      id='posts-wrapper'
+      className='w-full md:pr-8 mb-12'
+      style={{ marginTop: '5rem' }}
+      ref={targetRef}
+    >
       {postsToShow.map(p => (
         <BlogItem key={p.id} post={p} />
       ))}
-
       <div
         onClick={handleGetMore}
-        className='w-full my-4 py-4 text-center cursor-pointer '>
-        {' '}
-        {hasMore ? locale.COMMON.MORE : `${locale.COMMON.NO_MORE} 😰`}{' '}
+        className='w-full my-4 py-4 text-center cursor-pointer'
+      >
+        {hasMore ? locale.COMMON.MORE : `${locale.COMMON.NO_MORE} 😰`}
       </div>
     </div>
   )
