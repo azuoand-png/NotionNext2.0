@@ -23,15 +23,15 @@ export function NameCard() {
   )
 }
 
-// 卡片2：右侧菜单（用于首页，位于 NameCard 下方）
+// 卡片2：右侧菜单（用于首页，右对齐）
 export function MenuCardRight(props) {
   return (
     <div className="fixed right-6 top-48 z-30 hidden md:block">
       <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
-        <div id="nav-bar-inner" className="text-sm md:text-md text-left">
+        <div id="nav-bar-inner" className="text-sm md:text-md text-right">
           <MenuList {...props} />
         </div>
-        <div className="mt-4 flex justify-start">
+        <div className="mt-4 flex justify-end">
           <SocialButton />
         </div>
       </nav>
@@ -39,7 +39,7 @@ export function MenuCardRight(props) {
   )
 }
 
-// 卡片3：左侧菜单（用于文章页，位于目录下方，随目录滚动，不会重叠）
+// 卡片3：左侧菜单（用于文章页，位于目录下方，左对齐）
 export function MenuCardLeft(props) {
   return (
     <div className="w-full">
