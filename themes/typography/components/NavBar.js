@@ -8,17 +8,19 @@ export function NameCard() {
 
   return (
     <div className="fixed right-6 top-24 z-30 hidden md:block">
-      <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2">
+      <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2">
         <SmartLink href='/'>
           <div className="flex flex-col items-start">
             <div className="font-bold text-4xl text-center" id="blog-name">
               {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-            <div className="flex flex-col items-center gap-1 mt-2">
+            {/* 四个带圆圈的字竖排，紧密相连 */}
+            <div className="flex flex-col items-center mt-2 leading-none">
               {chars.map((ch, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-center w-7 h-7 rounded-full border border-gray-400 dark:border-gray-500 text-inherit text-sm font-bold"
+                  className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-400 dark:border-gray-500 text-inherit text-base font-bold"
+                  style={{ margin: 0, lineHeight: 1 }}
                 >
                   {ch}
                 </div>
