@@ -7,59 +7,86 @@ const Catalog = ({ post }) => {
   const { locale } = useGlobal()
   const tRef = useRef(null)
   const [activeSection, setActiveSection] = useState(null)
+  const isManualScrolling = useRef(false)
+  const manualScrollTimer = useRef(null)
 
   useEffect(() => {
     if (!post || !post?.toc || post?.toc?.length < 1) return
 
-    const throttleMs = 100
-    const actionSectionScrollSpy = throttle(() => {
+    const OFFSET = 80 // 固定标题栏高度，根据你的 sticky top-20 调整
+    const THROTTLE_MS = 100
+
+    const updateActiveSection = () => {
+      if (isManualScrolling.current) return
+
       const sections = document.getElementsByClassName('notion-h')
-      if (!sections || sections.length === 0) return
+      if (!sections.length) return
 
-      let currentSectionId = null
-      // 修复：从最后一个标题往前找，确保最后一项能被高亮
-      for (let i = sections.length - 1; i >= 0; i--) {
+      let bestMatchId = null
+      let bestDistance = Infinity
+
+      // 遍历所有标题，找到距离视口顶部最近且位于偏移线上方的标题
+      for (let i = 0; i < sections.length; i++) {
         const section = sections[i]
-        if (!section || !(section instanceof Element)) continue
-        const bbox = section.getBoundingClientRect()
-        // 如果标题顶部距离视口顶部小于 100px，则认为它是当前活动的
-        if (bbox.top - 100 < 0) {
-          currentSectionId = section.getAttribute('data-id')
-          break
+        const rect = section.getBoundingClientRect()
+        const distance = rect.top - OFFSET
+        // 如果标题顶部已经滚动到偏移线之上（distance <= 0），并且距离线更近
+        if (distance <= 0 && Math.abs(distance) < bestDistance) {
+          bestDistance = Math.abs(distance)
+          bestMatchId = section.getAttribute('data-id')
         }
       }
-      // 如果没有符合条件的标题（例如页面顶部），则取第一个标题
-      if (!currentSectionId && sections.length > 0) {
-        currentSectionId = sections[0].getAttribute('data-id')
+
+      // 如果没有找到合适的（例如页面开头），取第一个标题
+      if (!bestMatchId && sections.length > 0) {
+        bestMatchId = sections[0].getAttribute('data-id')
       }
 
-      if (currentSectionId !== activeSection) {
-        setActiveSection(currentSectionId)
-        const index = post?.toc?.findIndex(obj => uuidToId(obj.id) === currentSectionId)
-        if (index !== -1 && tRef?.current) {
-          tRef.current.scrollTo({ top: 28 * index, behavior: 'smooth' })
+      if (bestMatchId && bestMatchId !== activeSection) {
+        setActiveSection(bestMatchId)
+        // 同步滚动目录菜单
+        const index = post.toc.findIndex(obj => uuidToId(obj.id) === bestMatchId)
+        if (index !== -1 && tRef.current) {
+          tRef.current.scrollTo({ top: index * 28, behavior: 'smooth' })
         }
       }
-    }, throttleMs)
+    }
 
+    const throttledUpdate = throttle(updateActiveSection, THROTTLE_MS)
     const container = document.querySelector('#container-inner')
     const scrollTarget = container || window
-    scrollTarget.addEventListener('scroll', actionSectionScrollSpy)
-    actionSectionScrollSpy()
+    scrollTarget.addEventListener('scroll', throttledUpdate)
+    // 初始调用
+    updateActiveSection()
 
-    return () => scrollTarget.removeEventListener('scroll', actionSectionScrollSpy)
+    return () => {
+      scrollTarget.removeEventListener('scroll', throttledUpdate)
+      if (manualScrollTimer.current) clearTimeout(manualScrollTimer.current)
+    }
   }, [post, activeSection])
 
-  // 修复：点击目录时平滑滚动到对应标题，并计算偏移量，避免被固定标题栏遮挡
   const handleClick = (e, id) => {
     e.preventDefault()
-    const targetElement = document.getElementById(id)
-    if (targetElement) {
-      const offset = 80 // 顶部偏移量（5rem = 80px，根据您的固定标题栏高度调整）
-      const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY
-      window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' })
-      setActiveSection(id)
-    }
+    const target = document.getElementById(id)
+    if (!target) return
+
+    // 开始手动滚动，禁止监听器覆盖高亮
+    isManualScrolling.current = true
+    if (manualScrollTimer.current) clearTimeout(manualScrollTimer.current)
+
+    const OFFSET = 80
+    const elementPosition = target.getBoundingClientRect().top + window.scrollY
+    window.scrollTo({ top: elementPosition - OFFSET, behavior: 'smooth' })
+
+    // 立即设置高亮为当前点击项
+    setActiveSection(id)
+
+    // 滚动结束后恢复监听（假设动画500ms）
+    manualScrollTimer.current = setTimeout(() => {
+      isManualScrolling.current = false
+      // 手动触发一次更新，确保最终高亮正确
+      window.dispatchEvent(new Event('scroll'))
+    }, 500)
   }
 
   if (!post || !post?.toc || post?.toc?.length < 1) return null
@@ -72,7 +99,7 @@ const Catalog = ({ post }) => {
         </div>
         <div className="overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden" ref={tRef}>
           <nav className="text-sm space-y-1">
-            {post?.toc?.map(tocItem => {
+            {post.toc.map(tocItem => {
               const id = uuidToId(tocItem.id)
               const isActive = activeSection === id
               return (
