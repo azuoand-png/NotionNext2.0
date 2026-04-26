@@ -14,8 +14,8 @@ export function NameCard() {
             <div className="font-bold text-4xl text-center" id="blog-name">
               {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-            {/* 四个带圆圈的字竖排，紧密相连 */}
-            <div className="flex flex-col items-center mt-2 leading-none">
+            {/* 四个带圆圈的字竖排，紧密相连，强制垂直方向 */}
+            <div className="flex flex-col items-center gap-0 mt-2">
               {chars.map((ch, idx) => (
                 <div
                   key={idx}
