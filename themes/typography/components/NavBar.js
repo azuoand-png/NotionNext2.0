@@ -1,227 +1,57 @@
-import { AdSlot } from '@/components/GoogleAdsense'
-import replaceSearchResult from '@/components/Mark'
-import NotionPage from '@/components/NotionPage'
 import { siteConfig } from '@/lib/config'
-import { useGlobal } from '@/lib/global'
-import { isBrowser } from '@/lib/utils'
-import dynamic from 'next/dynamic'
+import { MenuList } from './MenuList'
+import SocialButton from './SocialButton'
 import SmartLink from '@/components/SmartLink'
-import { useRouter } from 'next/router'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import BlogPostBar from './components/BlogPostBar'
-import CONFIG from './config'
-import { Style } from './style'
-import Catalog from './components/Catalog'
-import { NameCard, MenuCardRight, MenuCardLeft } from './components/NavBar'
 
-const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
-
-const BlogArchiveItem = dynamic(() => import('./components/BlogArchiveItem'), { ssr: false })
-const ArticleLock = dynamic(() => import('./components/ArticleLock'), { ssr: false })
-const ArticleInfo = dynamic(() => import('./components/ArticleInfo'), { ssr: false })
-const Comment = dynamic(() => import('@/components/Comment'), { ssr: false })
-const ArticleAround = dynamic(() => import('./components/ArticleAround'), { ssr: false })
-const TopBar = dynamic(() => import('./components/TopBar'), { ssr: false })
-const JumpToTopButton = dynamic(() => import('./components/JumpToTopButton'), { ssr: false })
-const Footer = dynamic(() => import('./components/Footer'), { ssr: false })
-const WWAds = dynamic(() => import('@/components/WWAds'), { ssr: false })
-const BlogListPage = dynamic(() => import('./components/BlogListPage'), { ssr: false })
-const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ssr: false })
-
-const ThemeGlobalSimple = createContext()
-export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
-
-const LayoutBase = props => {
-  const { children } = props
-  const { onLoading } = useGlobal()
-  const searchModal = useRef(null)
-  const [currentPost, setCurrentPost] = useState(null)
-
+export function NameCard() {
   return (
-    <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
-      <div id='theme-typography' className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
-        <Style />
-        {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
-
-        {/* 个人牌：保持原样，fixed 定位，样式不变 */}
-        <NameCard />
-
-        <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
-          <div className='flex flex-col md:flex-row gap-6'>
-            {/* 文章页左侧：目录 + 菜单 */}
-            {currentPost && (
-              <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
-                <Catalog post={currentPost} />
-                <div className='mt-6'>
-                  <MenuCardLeft {...props} />
-                </div>
-              </div>
-            )}
-
-            {/* 主内容区：增加右侧内边距，避免与固定的个人牌重叠 */}
-            <div className='flex-1 min-w-0 md:pr-24'>
-              {onLoading ? (
-                <div className='flex items-center justify-center min-h-[500px] w-full'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
-                </div>
-              ) : (
-                children
-              )}
+    <div className="fixed right-6 top-24 z-30 hidden md:block">
+      <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4 mb-2">
+        <SmartLink href='/'>
+          <div className="flex flex-col items-start">
+            <div className="font-bold text-4xl text-center" id="blog-name">
+              {siteConfig('TYPOGRAPHY_BLOG_NAME')}
             </div>
-          </div>
-        </div>
-
-        {/* 删除右侧菜单卡片调用，避免与左侧菜单重复 */}
-        {/* {!currentPost && <MenuCardRight {...props} />} */}
-
-        <div className='fixed right-4 bottom-4 z-20'>
-          <JumpToTopButton />
-        </div>
-        <AlgoliaSearchModal cRef={searchModal} {...props} />
-      </div>
-    </ThemeGlobalSimple.Provider>
-  )
-}
-
-// 以下函数与您原代码完全相同，无任何改动
-
-const LayoutIndex = props => <LayoutPostList {...props} />
-const LayoutPostList = props => (
-  <>
-    <BlogPostBar {...props} />
-    <BlogListPage {...props} />
-  </>
-)
-
-const LayoutSearch = props => {
-  const { keyword } = props
-  useEffect(() => {
-    if (isBrowser) {
-      replaceSearchResult({
-        doms: document.getElementById('posts-wrapper'),
-        search: keyword,
-        target: { element: 'span', className: 'text-red-500 border-b border-dashed' }
-      })
-    }
-  }, [keyword])
-  return <LayoutPostList {...props} />
-}
-
-function groupArticlesByYearArray(articles) {
-  const grouped = {}
-  for (const article of articles) {
-    const year = new Date(article.publishDate).getFullYear().toString()
-    if (!grouped[year]) grouped[year] = []
-    grouped[year].push(article)
-  }
-  for (const year in grouped) grouped[year].sort((a, b) => b.publishDate - a.publishDate)
-  return Object.entries(grouped).sort(([a], [b]) => b - a).map(([year, posts]) => ({ year, posts }))
-}
-
-const LayoutArchive = props => {
-  const { posts } = props
-  const sortPosts = groupArticlesByYearArray(posts)
-  return (
-    <div className='mb-10 pb-20 md:pb-12 p-5 min-h-screen w-full'>
-      {sortPosts.map(p => <BlogArchiveItem key={p.year} archiveTitle={p.year} archivePosts={p.posts} />)}
-    </div>
-  )
-}
-
-const LayoutSlug = props => {
-  const { post, lock, validPassword, prev, next, recommendPosts } = props
-  const { fullWidth } = useGlobal()
-  const { setCurrentPost } = useSimpleGlobal()
-
-  useEffect(() => {
-    if (post) setCurrentPost(post)
-    return () => setCurrentPost(null)
-  }, [post, setCurrentPost])
-
-  return (
-    <>
-      {lock && <ArticleLock validPassword={validPassword} />}
-      {!lock && post && (
-        <div className="mt-20">
-          <ArticleInfo post={post} />
-          <WWAds orientation='horizontal' className='w-full' />
-          <div id='article-wrapper'>
-            <NotionPage post={post} />
-          </div>
-          <AdSlot type='in-article' />
-          {post?.type === 'Post' && (
-            <>
-              <ArticleAround prev={prev} next={next} />
-              <RecommendPosts recommendPosts={recommendPosts} />
-            </>
-          )}
-          <Comment frontMatter={post} />
-        </div>
-      )}
-    </>
-  )
-}
-
-const Layout404 = props => {
-  const { post } = props
-  const router = useRouter()
-  const waiting404 = siteConfig('POST_WAITING_TIME_FOR_404') * 1000
-  useEffect(() => {
-    if (!post) {
-      setTimeout(() => {
-        if (isBrowser) {
-          const article = document.querySelector('#article-wrapper #notion-article')
-          if (!article) router.push('/404').then(() => console.warn('找不到页面', router.asPath))
-        }
-      }, waiting404)
-    }
-  }, [post])
-  return <>404 Not found.</>
-}
-
-const LayoutCategoryIndex = props => {
-  const { categoryOptions } = props
-  return (
-    <div id='category-list' className='px-5 duration-200 flex flex-wrap'>
-      {categoryOptions?.map(category => (
-        <SmartLink key={category.name} href={`/category/${category.name}`} passHref legacyBehavior>
-          <div className='hover:text-black dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-600 px-5 cursor-pointer py-2 hover:bg-gray-100'>
-            <i className='mr-4 fas fa-folder' /> {category.name}({category.count})
+            <div className="font-bold text-xl text-center" id="blog-name-en">
+              {siteConfig('TYPOGRAPHY_BLOG_NAME_EN')}
+            </div>
           </div>
         </SmartLink>
-      ))}
+      </header>
     </div>
   )
 }
 
-const LayoutTagIndex = props => {
-  const { tagOptions } = props
+export function MenuCardRight(props) {
   return (
-    <div id='tags-list' className='px-5 duration-200 flex flex-wrap'>
-      {tagOptions.map(tag => (
-        <div key={tag.name} className='p-2'>
-          <SmartLink
-            href={`/tag/${encodeURIComponent(tag.name)}`}
-            className={`cursor-pointer inline-block rounded hover:bg-gray-500 hover:text-white duration-200 mr-2 py-1 px-2 text-xs whitespace-nowrap dark:hover:text-white text-gray-600 hover:shadow-xl dark:border-gray-400 notion-${tag.color}_background dark:bg-gray-800`}>
-            <div className='font-light dark:text-gray-400'>
-              <i className='mr-1 fas fa-tag' /> {tag.name + (tag.count ? `(${tag.count})` : '')}
-            </div>
-          </SmartLink>
+    <div className="fixed right-6 top-48 z-30 hidden md:block">
+      <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
+        <div id="nav-bar-inner" className="text-sm md:text-md text-right">
+          <MenuList {...props} />
         </div>
-      ))}
+        <div className="mt-4 flex justify-end">
+          <SocialButton />
+        </div>
+      </nav>
     </div>
   )
 }
 
-export {
-  Layout404,
-  LayoutArchive,
-  LayoutBase,
-  LayoutCategoryIndex,
-  LayoutIndex,
-  LayoutPostList,
-  LayoutSearch,
-  LayoutSlug,
-  LayoutTagIndex,
-  CONFIG as THEME_CONFIG
+export function MenuCardLeft(props) {
+  return (
+    <div className="w-full">
+      <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
+        <div id="nav-bar-inner" className="text-sm md:text-md text-left">
+          <MenuList {...props} />
+        </div>
+        <div className="mt-4 flex justify-start">
+          <SocialButton />
+        </div>
+      </nav>
+    </div>
+  )
+}
+
+export default function NavBar() {
+  return null
 }
