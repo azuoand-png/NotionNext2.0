@@ -9,7 +9,6 @@ export default function ArticleInfo(props) {
   const { post } = props
   const { locale } = useGlobal()
 
-  // 原始标签处理逻辑
   const tagItems = post?.tagItems || []
   const plainTags = post?.tags || []
   const tagsWithColor = tagItems.length > 0 
@@ -18,12 +17,15 @@ export default function ArticleInfo(props) {
 
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
 
-  // 手动刷新不蒜子计数
   useEffect(() => {
     if (enableBusuanzi && window.busuanzi) {
       window.busuanzi.fetch()
     }
   }, [enableBusuanzi])
+
+  // 从 post 中获取字数和阅读时长
+  const wordCount = post?.wordCount || 0
+  const readTime = post?.readTime || 1
 
   return (
     <section className='mt-2 text-gray-600 dark:text-gray-400 leading-8'>
@@ -68,7 +70,6 @@ export default function ArticleInfo(props) {
               })}
             </div>
 
-            {/* 不蒜子阅读次数（新增） */}
             {enableBusuanzi && (
               <div className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
                 <i className="fas fa-eye"></i>
@@ -79,6 +80,22 @@ export default function ArticleInfo(props) {
             )}
           </header>
         )}
+      </div>
+
+      {/* 新增：字数和阅读时长统计行，行距1.5倍 */}
+      <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex gap-3 font-light leading-6">
+          <span className="flex whitespace-nowrap items-center">
+            <i className="pl-1 pr-2 fas fa-file-word"></i>
+            <span>字数</span>&nbsp;
+            <span>{wordCount}</span>
+          </span>
+          <span className="flex whitespace-nowrap items-center">
+            <i className="mr-1 fas fa-clock"></i>
+            <span>阅读时长≈</span>&nbsp;
+            <span>{readTime}</span>&nbsp;分钟
+          </span>
+        </div>
       </div>
     </section>
   )
