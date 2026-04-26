@@ -31,7 +31,7 @@ export const BlogItem = props => {
         </div>
       )}
 
-      <article className="article-info p-3">
+      <article className="article-info px-3 pt-3 pb-0">
         <h2 className={`${subTitle ? 'mb-1' : 'mb-0'} line-clamp-2`}>
           <SmartLink
             href={post.href}
