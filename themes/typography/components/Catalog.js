@@ -125,8 +125,8 @@ const Catalog = ({ post }) => {
         </div>
 
         <div className="overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden" ref={tRef}>
-          {/* 修改点：space-y-1 → space-y-1.5 增加行距，同时给每个链接添加 leading-6 */}
-          <nav className="text-sm space-y-1.5">
+          {/* 修改点：移除 space-y，改用 py-1（上下内边距）控制间距，行高精确 1.5倍 */}
+          <nav className="text-sm">
             {post.toc.map(tocItem => {
               const id = uuidToId(tocItem.id)
               const isActive = activeSection === id
@@ -135,7 +135,7 @@ const Catalog = ({ post }) => {
                   key={id}
                   href={`#${id}`}
                   onClick={(e) => handleClick(e, id)}
-                  className={`block border-l-2 pl-3 py-1.5 transition-all duration-200 no-underline leading-6 ${
+                  className={`block border-l-2 pl-3 py-1 transition-all duration-200 no-underline leading-[21px] ${
                     isActive
                       ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-50/30 dark:bg-amber-900/20'
                       : 'border-transparent text-gray-600 dark:text-gray-400 hover:border-gray-300 hover:text-gray-800 dark:hover:text-gray-200'
