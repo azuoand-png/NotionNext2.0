@@ -3,6 +3,7 @@ import { useGlobal } from '@/lib/global'
 import { siteConfig } from '@/lib/config'
 import { formatDateFmt } from '@/lib/utils/formatDate'
 import NotionIcon from '@/components/NotionIcon'
+import { useEffect } from 'react'
 
 export default function ArticleInfo(props) {
   const { post } = props
@@ -17,8 +18,16 @@ export default function ArticleInfo(props) {
   const publishDate = post.date?.start_date || post.createdTime
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
 
+  // 手动刷新不蒜子计数（解决动态渲染后计数为0的问题）
+  useEffect(() => {
+    if (enableBusuanzi && window.busuanzi) {
+      window.busuanzi.fetch()
+    }
+  }, [enableBusuanzi])
+
   return (
-    <section className="sticky top-0 z-10 bg-white dark:bg-gray-900 mt-2 text-gray-600 dark:text-gray-400 leading-8 overflow-visible">
+    // sticky 固定，距离顶部 5rem（避免贴边），毛玻璃背景遮挡正文
+    <section className="sticky top-20 z-10 backdrop-blur-sm bg-white/70 dark:bg-gray-900/70 mt-2 text-gray-600 dark:text-gray-400 leading-8 overflow-visible">
       <h2 className="blog-item-title mb-3 font-bold text-black text-xl md:text-2xl no-underline">
         {siteConfig('POST_TITLE_ICON') && <NotionIcon icon={post?.pageIcon} />}
         <span className="inline-block transition-transform duration-300 hover:scale-110 origin-left">
@@ -72,7 +81,10 @@ export default function ArticleInfo(props) {
         )}
       </div>
 
-      <div className="w-full h-[2.5px] bg-red-700 dark:bg-gray-400 rounded-full mt-1 mb-2"></div>
+      {/* 下划线：宽度与主标题一致，粗细2磅 */}
+      <div className="flex justify-start">
+        <div className="w-fit h-[2px] bg-red-700 dark:bg-gray-400 rounded-full mt-1 mb-2"></div>
+      </div>
     </section>
   )
 }
