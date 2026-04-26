@@ -43,12 +43,10 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 个人牌：完全保留原样，fixed定位，样式不变 */}
         <NameCard />
 
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
-            {/* 文章页左侧：目录 + 菜单（不重叠） */}
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
@@ -58,11 +56,10 @@ const LayoutBase = props => {
               </div>
             )}
 
-            {/* 主内容区：增加右侧内边距，为固定的个人牌留出空间 */}
             <div className='flex-1 min-w-0 md:pr-24'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
-                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white'></div>
+                  <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
                 </div>
               ) : (
                 children
@@ -70,9 +67,6 @@ const LayoutBase = props => {
             </div>
           </div>
         </div>
-
-        {/* 不再渲染右侧菜单卡片，避免重复 */}
-        {/* {!currentPost && <MenuCardRight {...props} />} */}
 
         <div className='fixed right-4 bottom-4 z-20'>
           <JumpToTopButton />
@@ -82,9 +76,6 @@ const LayoutBase = props => {
     </ThemeGlobalSimple.Provider>
   )
 }
-
-// 以下所有函数（LayoutIndex, LayoutPostList, LayoutSearch, groupArticlesByYearArray, LayoutArchive, LayoutSlug, Layout404, LayoutCategoryIndex, LayoutTagIndex）与您原代码完全相同，保持不动
-// 只复制您原来提供的部分，确保无遗漏
 
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
