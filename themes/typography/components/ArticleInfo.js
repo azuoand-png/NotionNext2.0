@@ -3,11 +3,13 @@ import { useGlobal } from '@/lib/global'
 import { siteConfig } from '@/lib/config'
 import { formatDateFmt } from '@/lib/utils/formatDate'
 import NotionIcon from '@/components/NotionIcon'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function ArticleInfo(props) {
   const { post } = props
   const { locale } = useGlobal()
+  const [wordCount, setWordCount] = useState(0)
+  const [readTime, setReadTime] = useState(1)
 
   const tagItems = post?.tagItems || []
   const plainTags = post?.tags || []
@@ -17,15 +19,35 @@ export default function ArticleInfo(props) {
 
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
 
+  // 不蒜子刷新
   useEffect(() => {
     if (enableBusuanzi && window.busuanzi) {
       window.busuanzi.fetch()
     }
   }, [enableBusuanzi])
 
-  // 从 post 中获取字数和阅读时长
-  const wordCount = post?.wordCount || 0
-  const readTime = post?.readTime || 1
+  // 计算文章字数（从 DOM 中获取正文纯文本）
+  useEffect(() => {
+    if (!post) return
+    // 稍等一帧确保 Notion 正文已渲染
+    const timer = setTimeout(() => {
+      const articleWrapper = document.getElementById('article-wrapper')
+      if (articleWrapper) {
+        // 获取所有文本内容，排除代码块、注释等（简单规则：获取所有段落、列表、表格等）
+        const text = articleWrapper.innerText || articleWrapper.textContent || ''
+        // 中文字符 + 英文单词计数（粗略：匹配所有非空字符）
+        const words = text.replace(/\s+/g, '').length // 中文字符一个算一字，英文单词连在一起但实际阅读中一个一个字母不算，这里简化：统计非空白字符数
+        // 更合理的统计：中文字符数 + 英文单词数（按空格分割）
+        const chineseChars = (text.match(/[\u4e00-\u9fa5]/g) || []).length
+        const englishWords = (text.match(/[a-zA-Z]+(?:['’-]?[a-zA-Z]+)?/g) || []).length
+        const total = chineseChars + englishWords
+        setWordCount(total)
+        // 阅读时长按 300 字/分钟估算
+        setReadTime(Math.max(1, Math.ceil(total / 300)))
+      }
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [post])
 
   return (
     <section className='mt-2 text-gray-600 dark:text-gray-400 leading-8'>
@@ -82,7 +104,7 @@ export default function ArticleInfo(props) {
         )}
       </div>
 
-      {/* 新增：字数和阅读时长统计行，行距1.5倍 */}
+      {/* 字数和阅读时长统计行，行距1.5倍 */}
       <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
         <div className="flex gap-3 font-light leading-6">
           <span className="flex whitespace-nowrap items-center">
