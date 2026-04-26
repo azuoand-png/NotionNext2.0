@@ -17,16 +17,18 @@ const Catalog = ({ post }) => {
       if (!sections || sections.length === 0) return
 
       let currentSectionId = null
-      for (let i = 0; i < sections.length; ++i) {
+      // 修复：从最后一个标题往前找，确保最后一项能被高亮
+      for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i]
         if (!section || !(section instanceof Element)) continue
         const bbox = section.getBoundingClientRect()
+        // 如果标题顶部距离视口顶部小于 100px，则认为它是当前活动的
         if (bbox.top - 100 < 0) {
           currentSectionId = section.getAttribute('data-id')
-        } else {
           break
         }
       }
+      // 如果没有符合条件的标题（例如页面顶部），则取第一个标题
       if (!currentSectionId && sections.length > 0) {
         currentSectionId = sections[0].getAttribute('data-id')
       }
@@ -48,6 +50,18 @@ const Catalog = ({ post }) => {
     return () => scrollTarget.removeEventListener('scroll', actionSectionScrollSpy)
   }, [post, activeSection])
 
+  // 修复：点击目录时平滑滚动到对应标题，并计算偏移量，避免被固定标题栏遮挡
+  const handleClick = (e, id) => {
+    e.preventDefault()
+    const targetElement = document.getElementById(id)
+    if (targetElement) {
+      const offset = 80 // 顶部偏移量（5rem = 80px，根据您的固定标题栏高度调整）
+      const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY
+      window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' })
+      setActiveSection(id)
+    }
+  }
+
   if (!post || !post?.toc || post?.toc?.length < 1) return null
 
   return (
@@ -65,6 +79,7 @@ const Catalog = ({ post }) => {
                 <a
                   key={id}
                   href={`#${id}`}
+                  onClick={(e) => handleClick(e, id)}
                   className={`block border-l-2 pl-3 py-1.5 transition-all duration-200 no-underline ${
                     isActive
                       ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-50/30 dark:bg-amber-900/20'
