@@ -50,7 +50,8 @@ const LayoutBase = props => {
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
-                <div className='mt-20'>
+                {/* 修改点：间距从 mt-20 改为 mt-8（2rem） */}
+                <div className='mt-8'>
                   <MenuCardLeft {...props} />
                 </div>
               </div>
@@ -137,7 +138,8 @@ const LayoutSlug = props => {
     <>
       {lock && <ArticleLock validPassword={validPassword} />}
       {!lock && post && (
-        <div className="mt-20">
+        {/* 修改点：上边距从 mt-20 改为 mt-10 */}
+        <div className="mt-10">
           <ArticleInfo post={post} />
           <WWAds orientation='horizontal' className='w-full' />
           <div id='article-wrapper'>
