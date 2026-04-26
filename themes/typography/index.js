@@ -12,7 +12,7 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
-import { NameCard, MenuCard } from './components/NavBar'
+import { NameCard, MenuCardRight, MenuCardLeft } from './components/NavBar'
 
 const AlgoliaSearchModal = dynamic(() => import('@/components/AlgoliaSearchModal'), { ssr: false })
 
@@ -43,21 +43,21 @@ const LayoutBase = props => {
         <Style />
         {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-        {/* 两个独立卡片 */}
+        {/* 固定右上角的博客名称卡片（始终显示） */}
         <NameCard />
-        <MenuCard {...props} />
 
-        {/* 主内容区：桌面端右侧预留 12rem 空间，确保不被卡片遮挡 */}
+        {/* 主内容区：桌面端右侧预留 12rem 空间，为右侧卡片留出位置 */}
         <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
           <div className='flex flex-col md:flex-row gap-6'>
-            {/* 左侧目录（只在文章页显示） */}
+            {/* 左侧列：仅在文章页显示目录和左侧菜单卡片 */}
             {currentPost && (
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 <Catalog post={currentPost} />
+                <MenuCardLeft {...props} />
               </div>
             )}
 
-            {/* 主要内容区：右侧外边距 12rem，为卡片留出空间 */}
+            {/* 中间主要内容区：右侧外边距 12rem，为右侧卡片留出空间 */}
             <div className='flex-1 min-w-0 md:mr-48'>
               {onLoading ? (
                 <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -69,6 +69,9 @@ const LayoutBase = props => {
             </div>
           </div>
         </div>
+
+        {/* 右侧菜单卡片（仅在首页显示，即没有 currentPost 时） */}
+        {!currentPost && <MenuCardRight {...props} />}
 
         <div className='fixed right-4 bottom-4 z-20'>
           <JumpToTopButton />
