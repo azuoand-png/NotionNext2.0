@@ -7,7 +7,7 @@ import SmartLink from '@/components/SmartLink'
 
 export const BlogItem = props => {
   const { post } = props
-  const { tagOptions } = useGlobal() // 获取全局标签颜色配置
+  const { tagOptions } = useGlobal()
 
   const coverImage =
     post?.pageCoverThumbnail ||
@@ -18,7 +18,6 @@ export const BlogItem = props => {
 
   const subTitle = post?.summary || ''
 
-  // 构建标签颜色映射表
   const tagColorMap = {}
   if (tagOptions && Array.isArray(tagOptions)) {
     tagOptions.forEach(tag => {
@@ -26,7 +25,6 @@ export const BlogItem = props => {
     })
   }
 
-  // 获取标签的背景色类
   const getTagColorClass = (tagName) => {
     const color = tagColorMap[tagName] || 'gray'
     return `notion-${color}_background`
@@ -83,6 +81,7 @@ export const BlogItem = props => {
                     hover:!bg-[var(--primary-color)] hover:!text-white
                     dark:hover:!text-white
                   `}
+                  style={{ display: 'inline-block' }}
                 >
                   #{t}
                 </SmartLink>
