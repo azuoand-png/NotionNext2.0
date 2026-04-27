@@ -40,7 +40,6 @@ const Style = () => {
         background-color: rgb(255 255 255) / 1;
         color: #2e405b;
         background-size: 7px 7px;
-        /* 删除文字阴影 */
         background-image: linear-gradient(
             to right,
             rgb(0 0 0 / 0.04) 1px,
@@ -53,8 +52,11 @@ const Style = () => {
           'Source Han Serif SC', 'Source Han Serif TC', serif;
       }
       #theme-typography #blog-name-en {
-        font-family: HiraMinProN-W6, 'Source Han Serif CN',
-          'Source Han Serif SC', 'Source Han Serif TC', serif;
+        font-family: 'YouYuan', 'Yuanti SC', '幼圆', '华文圆体', cursive;
+        color: #4b5563; /* 白天深灰色 */
+      }
+      .dark #theme-typography #blog-name-en {
+        color: #e5e7eb; /* 暗色浅白色 */
       }
       #theme-typography .blog-item-title {
         color: #276077;
@@ -110,6 +112,16 @@ const Style = () => {
       #article-wrapper .notion-h3,
       #article-wrapper .notion-h4 {
         text-align: left !important;
+      }
+
+      /* 去掉二级菜单容器的背景、边框、阴影（保留子项的悬停样式） */
+      .menu-item .absolute.glassmorphism,
+      .menu-item ul.absolute {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
       }
     `}</style>
   )
