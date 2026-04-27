@@ -33,7 +33,7 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-// 首页左侧个人牌（样式与原始 NameCard 完全一致）
+// 首页左侧个人牌（与原始样式完全一致，添加 id 保证字体）
 const LeftNameCard = () => {
   const blogName = siteConfig('TYPOGRAPHY_BLOG_NAME', null, CONFIG) || '磕学英语'
   const blogNameEn = siteConfig('TYPOGRAPHY_BLOG_NAME_EN', null, CONFIG) || '抱鸭将军'
@@ -42,8 +42,8 @@ const LeftNameCard = () => {
       <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4">
         <SmartLink href='/'>
           <div className="flex flex-col items-start">
-            <div className="font-bold text-4xl text-center">{blogName}</div>
-            <div className="font-bold text-xl text-center">{blogNameEn}</div>
+            <div className="font-bold text-4xl text-center" id="blog-name">{blogName}</div>
+            <div className="font-bold text-xl text-center" id="blog-name-en">{blogNameEn}</div>
           </div>
         </SmartLink>
       </header>
