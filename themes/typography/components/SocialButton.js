@@ -1,115 +1,80 @@
 import { siteConfig } from '@/lib/config'
 
 /**
- * 社交联系方式按钮组
- * @returns {JSX.Element}
- * @constructor
+ * 个人资料底部按钮（Heo 风格）
+ * 只显示三个卡片：两个图标按钮 + 一个带文字和箭头的按钮
  */
 const SocialButton = () => {
+  // 读取配置
+  const card1 = {
+    url: siteConfig('HEO_INFO_CARD_URL1', null, {}),
+    icon: siteConfig('HEO_INFO_CARD_ICON1', null, {}),
+  }
+  const card2 = {
+    url: siteConfig('HEO_INFO_CARD_URL2', null, {}),
+    icon: siteConfig('HEO_INFO_CARD_ICON2', null, {}),
+  }
+  const card3 = {
+    url: siteConfig('HEO_INFO_CARD_URL3', null, {}),
+    text: siteConfig('HEO_INFO_CARD_TEXT3', null, {}),
+  }
+
+  const showCard1 = card1.url && card1.icon
+  const showCard2 = card2.url && card2.icon
+  const showCard3 = card3.url && card3.text
+
+  if (!showCard1 && !showCard2 && !showCard3) {
+    return null
+  }
+
   return (
-    <div className='justify-center w-full md:justify-start md:w-52 flex-wrap flex my-2'>
-      <div className='space-x-5  text-xl text-gray-600 dark:text-gray-400 text-center'>
-        {siteConfig('CONTACT_GITHUB') && (
+    <div className="flex justify-between w-full mt-6">
+      <div className="flex space-x-3">
+        {showCard1 && (
           <a
-            target='_blank'
-            rel='noreferrer'
-            title={'github'}
-            href={siteConfig('CONTACT_GITHUB')}>
-            <i className='fab fa-github transform hover:scale-125 duration-150' />
+            href={card1.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 flex items-center justify-center bg-indigo-400 dark:bg-yellow-500 rounded-full transition-colors duration-200 hover:bg-white dark:hover:bg-black"
+          >
+            <i className={`${card1.icon} text-white dark:text-white hover:text-black dark:hover:text-white transition-colors`} />
           </a>
         )}
-        {siteConfig('CONTACT_TWITTER') && (
+        {showCard2 && (
           <a
-            target='_blank'
-            rel='noreferrer'
-            title={'twitter'}
-            href={siteConfig('CONTACT_TWITTER')}>
-            <i className='fab fa-twitter transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_TELEGRAM') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            href={siteConfig('CONTACT_TELEGRAM')}
-            title={'telegram'}>
-            <i className='fab fa-telegram transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_LINKEDIN') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            href={siteConfig('CONTACT_LINKEDIN')}
-            title={'linkedIn'}>
-            <i className='fab fa-linkedin transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_WEIBO') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'weibo'}
-            href={siteConfig('CONTACT_WEIBO')}>
-            <i className='fab fa-weibo transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_INSTAGRAM') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'instagram'}
-            href={siteConfig('CONTACT_INSTAGRAM')}>
-            <i className='fab fa-instagram transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_EMAIL') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'email'}
-            href={`mailto:${siteConfig('CONTACT_EMAIL')}`}>
-            <i className='fas fa-envelope transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {JSON.parse(siteConfig('ENABLE_RSS')) && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'RSS'}
-            href={'/rss/feed.xml'}>
-            <i className='fas fa-rss transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_BILIBILI') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'bilibili'}
-            href={siteConfig('CONTACT_BILIBILI')}>
-            <i className='fab fa-bilibili transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_YOUTUBE') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'youtube'}
-            href={siteConfig('CONTACT_YOUTUBE')}>
-            <i className='fab fa-youtube transform hover:scale-125 duration-150' />
-          </a>
-        )}
-        {siteConfig('CONTACT_THREADS') && (
-          <a
-            target='_blank'
-            rel='noreferrer'
-            title={'threads'}
-            href={siteConfig('CONTACT_THREADS')}>
-            <i className='fab fa-threads transform hover:scale-125 duration-150' />
+            href={card2.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 flex items-center justify-center bg-indigo-400 dark:bg-yellow-500 rounded-full transition-colors duration-200 hover:bg-white dark:hover:bg-black"
+          >
+            <i className={`${card2.icon} text-white dark:text-white hover:text-black dark:hover:text-white transition-colors`} />
           </a>
         )}
       </div>
+      {showCard3 && (
+        <a
+          href={card3.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group bg-indigo-400 dark:bg-yellow-500 hover:bg-white dark:hover:bg-black rounded-full px-4 py-2 flex items-center space-x-1 transition-colors duration-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-5 h-5 text-white group-hover:text-black dark:group-hover:text-white transition-colors"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="font-bold text-white group-hover:text-black dark:group-hover:text-white transition-colors">
+            {card3.text}
+          </span>
+        </a>
+      )}
     </div>
   )
 }
+
 export default SocialButton
