@@ -33,7 +33,7 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-// 首页左侧个人牌（与原始样式完全一致，添加 id 保证字体）
+// 首页左侧个人牌（样式与原始 NameCard 完全一致）
 const LeftNameCard = () => {
   const blogName = siteConfig('TYPOGRAPHY_BLOG_NAME', null, CONFIG) || '磕学英语'
   const blogNameEn = siteConfig('TYPOGRAPHY_BLOG_NAME_EN', null, CONFIG) || '抱鸭将军'
@@ -77,10 +77,9 @@ const LayoutBase = props => {
 
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
             <div className='flex flex-col md:flex-row gap-6'>
-              {/* 左侧边栏 */}
-              <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
+              {/* 左侧边栏：首页宽度 w-48，文章页保持 w-64？用户要求首页削减，文章页不变，但左侧边栏在文章页也是同样结构，为了不影响文章页布局，我们需要分别设置 */}
+              <div className={`hidden md:block flex-shrink-0 sticky top-8 self-start ${isHomePage ? 'w-48' : 'w-64'}`}>
                 {currentPost ? (
-                  // 文章页和 Page 页：目录 + 菜单
                   <>
                     <Catalog post={currentPost} />
                     <div className='mt-8'>
@@ -88,7 +87,6 @@ const LayoutBase = props => {
                     </div>
                   </>
                 ) : (
-                  // 首页：个人牌 + 菜单
                   <>
                     <div className='mt-28'>
                       <LeftNameCard />
@@ -100,8 +98,8 @@ const LayoutBase = props => {
                 )}
               </div>
 
-              {/* 右侧主内容区：文章页和 Page 页增加右边距，避免与右侧个人牌重叠 */}
-              <div className={`flex-1 min-w-0 ${currentPost ? 'md:pr-24' : ''}`}>
+              {/* 右侧主内容区：首页添加 md:pr-16（4rem），文章页不加右边距 */}
+              <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-16' : ''}`}>
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
                     <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -115,7 +113,6 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {/* 回到顶部按钮（全局固定） */}
           <div className='fixed right-4 bottom-16 z-20'>
             <JumpToTopButton />
           </div>
