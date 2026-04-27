@@ -18,8 +18,7 @@ export const MenuItemDrop = ({ link }) => {
         <SmartLink
           href={link?.href}
           target={link?.target}
-          className="dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2"
-        >
+          className='dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2'>
           {link?.name}
         </SmartLink>
       )}
@@ -29,10 +28,9 @@ export const MenuItemDrop = ({ link }) => {
           <div
             onMouseOver={() => changeShow(true)}
             onMouseOut={() => changeShow(false)}
-            className={'relative ' + (selected ? 'bg-green-600 text-white hover:text-white' : 'hover:text-green-600')}
-          >
+            className={'relative ' + (selected ? 'bg-green-600 text-white hover:text-white' : 'hover:text-green-600')}>
             <div>
-              <span className="dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2">
+              <span className='dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2'>
                 {link?.icon && <i className={link?.icon} />} {link?.name}
               </span>
               {hasSubMenu && (
@@ -41,16 +39,14 @@ export const MenuItemDrop = ({ link }) => {
             </div>
 
             <ul
-              className={`${show ? 'visible opacity-100' : 'invisible opacity-0'} absolute glassmorphism md:left-full md:top-0 top-6 w-auto min-w-32 border-gray-100 transition-all duration-300 z-20 block whitespace-nowrap`}
-            >
+              className={`${show ? 'visible opacity-100' : 'invisible opacity-0'} absolute glassmorphism md:left-28 md:top-0 top-6 w-auto min-w-32 border-gray-100 transition-all duration-300 z-20 block whitespace-nowrap`}>
               {link?.subMenus?.map((sLink, index) => {
                 return (
                   <li
                     key={index}
-                    className='dark:hover:bg-gray-900 tracking-widest transition-all duration-200 dark:border-gray-800 pb-3'
-                  >
+                    className='dark:hover:bg-gray-900 tracking-widest transition-all duration-200 dark:border-gray-800 pb-3'>
                     <SmartLink href={sLink.href} target={link?.target}>
-                      <span className="dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2">
+                      <span className='dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2'>
                         {sLink?.icon && <i className={sLink?.icon}> &nbsp; </i>}
                         {sLink.title}
                       </span>
