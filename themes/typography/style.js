@@ -51,22 +51,23 @@ const Style = () => {
         font-family: HiraMinProN-W6, 'Source Han Serif CN',
           'Source Han Serif SC', 'Source Han Serif TC', serif;
       }
-      /* 抱鸭将军样式：黑体，字间距0.5rem，白天暗红色，暗色白色，悬停颜色互换 */
+      /* 抱鸭将军样式：黑体，字间距0.5rem，大小缩小0.9倍 */
       #theme-typography #blog-name-en {
         font-family: 'SimHei', 'Hei', 'Microsoft YaHei', '黑体', sans-serif;
         letter-spacing: 0.5rem;
-        color: #b91c1c; /* 白天暗红色 */
+        font-size: 1.125rem; /* 原 text-xl 1.25rem * 0.9 */
+        color: #2D519C;
         transition: color 0.2s ease;
       }
       .dark #theme-typography #blog-name-en {
-        color: #ffffff; /* 暗色白色 */
+        color: #ffffff;
       }
-      /* 悬停时颜色互换：白天变白，暗色变暗红 */
+      /* 悬停时颜色互换：白天变白，暗色变 #2D519C */
       #theme-typography header:hover #blog-name-en {
         color: #ffffff !important;
       }
       .dark #theme-typography header:hover #blog-name-en {
-        color: #b91c1c !important;
+        color: #2D519C !important;
       }
       #theme-typography .blog-item-title {
         color: #276077;
