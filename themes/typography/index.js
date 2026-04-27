@@ -33,7 +33,7 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-// 首页左侧个人牌（样式与原始 NameCard 完全一致）
+// 首页左侧个人牌
 const LeftNameCard = () => {
   const blogName = siteConfig('TYPOGRAPHY_BLOG_NAME', null, CONFIG) || '磕学英语'
   const blogNameEn = siteConfig('TYPOGRAPHY_BLOG_NAME_EN', null, CONFIG) || '抱鸭将军'
@@ -72,12 +72,10 @@ const LayoutBase = props => {
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-          {/* 文章页显示右上角固定个人牌，首页不显示 */}
           {!isHomePage && <NameCard />}
 
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
             <div className='flex flex-col md:flex-row gap-6'>
-              {/* 左侧边栏：首页宽度 w-48，文章页 w-64 */}
               <div className={`hidden md:block flex-shrink-0 sticky top-8 self-start ${isHomePage ? 'w-48' : 'w-64'}`}>
                 {currentPost ? (
                   <>
@@ -98,7 +96,6 @@ const LayoutBase = props => {
                 )}
               </div>
 
-              {/* 右侧主内容区：首页右侧边距 5rem (pr-20)，文章页右边距 6rem (pr-24) 避免与个人牌重叠 */}
               <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-20' : 'md:pr-24'}`}>
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
@@ -124,7 +121,6 @@ const LayoutBase = props => {
   )
 }
 
-// 以下导出函数与原代码基本相同，仅修改 LayoutSlug 添加不蒜子刷新
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
@@ -168,7 +164,6 @@ const LayoutArchive = props => {
   )
 }
 
-// 修改点：在 LayoutSlug 中添加不蒜子刷新逻辑
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
   const { fullWidth } = useGlobal()
@@ -179,27 +174,19 @@ const LayoutSlug = props => {
     return () => setCurrentPost(null)
   }, [post, setCurrentPost])
 
-  // 新增：刷新不蒜子文章阅读数（使用 post.id 作为稳定标识）
+  // 强制刷新不蒜子，使用文章唯一 ID 作为计数键
   useEffect(() => {
     if (!post) return
-    // 确保不蒜子脚本已加载且存在 pagePV 方法
-    const refreshBusuanzi = () => {
-      if (typeof window !== 'undefined' && window.busuanzi) {
-        // 优先使用 pagePV 方法传入唯一标识，避免 URL 参数干扰
-        if (typeof window.busuanzi.pagePV === 'function') {
-          window.busuanzi.pagePV({ pageKey: post.id })
-        } else if (typeof window.busuanzi.fetch === 'function') {
-          window.busuanzi.fetch()
-        } else {
-          // 若都不可用，延迟重试
-          setTimeout(refreshBusuanzi, 200)
-        }
+    const refresh = () => {
+      if (window.busuanzi && typeof window.busuanzi.pagePV === 'function') {
+        window.busuanzi.pagePV(post.id)
+      } else if (window.busuanzi && typeof window.busuanzi.fetch === 'function') {
+        window.busuanzi.fetch()
       } else {
-        setTimeout(refreshBusuanzi, 200)
+        setTimeout(refresh, 200)
       }
     }
-    // 延迟执行确保 DOM 中已渲染出不蒜子元素
-    const timer = setTimeout(refreshBusuanzi, 200)
+    const timer = setTimeout(refresh, 300)
     return () => clearTimeout(timer)
   }, [post?.id])
 
