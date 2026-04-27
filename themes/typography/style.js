@@ -102,27 +102,24 @@ const Style = () => {
         overflow-x: auto;
       }
 
-      /* 正文段落、标注、引用、列表：行距1.5倍，两端对齐 */
-      #article-wrapper .notion-text,
-      #article-wrapper .notion-quote,
-      #article-wrapper .notion-callout,
-      #article-wrapper .notion-list {
+      /* ========== 修改：正文所有文本样式（两端对齐 + 行距1.5倍，排除标题） ========== */
+      #article-wrapper .notion-page *:not(.notion-h1):not(.notion-h2):not(.notion-h3):not(.notion-h4) {
         line-height: 1.5 !important;
         text-align: justify !important;
       }
-      /* 表格行距1.4倍 */
-      #article-wrapper .notion-table td,
-      #article-wrapper .notion-table th,
-      #article-wrapper .notion-simple-table td,
-      #article-wrapper .notion-simple-table th {
+      /* 表格内文字单独恢复行距1.4倍，同时保留两端对齐 */
+      #article-wrapper .notion-page .notion-table *,
+      #article-wrapper .notion-page .notion-simple-table * {
         line-height: 1.4 !important;
+        text-align: justify !important;
       }
-      /* 标题保持左对齐 */
-      #article-wrapper .notion-h1,
-      #article-wrapper .notion-h2,
-      #article-wrapper .notion-h3,
-      #article-wrapper .notion-h4 {
+      /* 标题保持左对齐，不两端对齐 */
+      #article-wrapper .notion-page .notion-h1,
+      #article-wrapper .notion-page .notion-h2,
+      #article-wrapper .notion-page .notion-h3,
+      #article-wrapper .notion-page .notion-h4 {
         text-align: left !important;
+        line-height: 1.2 !important;
       }
 
       /* 去掉二级菜单容器的背景、边框、阴影（保留子项的悬停样式） */
