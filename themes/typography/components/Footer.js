@@ -2,8 +2,6 @@ import DarkModeButton from '@/components/DarkModeButton'
 import { siteConfig } from '@/lib/config'
 
 export default function Footer(props) {
-  const chars = ['抱', '鸭', '将', '军']
-
   return (
     <footer>
       <style jsx global>{`
@@ -42,21 +40,6 @@ export default function Footer(props) {
           align-items: center;
         }
       `}</style>
-
-      {/* 抱鸭将军竖排带圆的效果 */}
-      <div className="fixed left-6 bottom-4 z-30 hidden md:block">
-        <div className="flex flex-col items-center gap-1">
-          {chars.map((ch, idx) => (
-            <div
-              key={idx}
-              className="flex items-center justify-center w-8 h-8 rounded-full border border-current text-inherit text-xl font-bold"
-              style={{ margin: 0, lineHeight: 1 }}
-            >
-              {ch}
-            </div>
-          ))}
-        </div>
-      </div>
 
       <div className="fixed-dark-button">
         <DarkModeButton />
