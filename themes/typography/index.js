@@ -96,7 +96,8 @@ const LayoutBase = props => {
                 )}
               </div>
 
-              <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-20' : 'md:pr-24'}`}>
+              {/* 首页右边距 md:pr-11，文章页右边距增大为 md:pr-32（原 md:pr-24） */}
+              <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-11' : 'md:pr-32'}`}>
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
                     <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -174,7 +175,6 @@ const LayoutSlug = props => {
     return () => setCurrentPost(null)
   }, [post, setCurrentPost])
 
-  // 强制刷新不蒜子，使用文章唯一 ID 作为计数键
   useEffect(() => {
     if (!post) return
     const refresh = () => {
