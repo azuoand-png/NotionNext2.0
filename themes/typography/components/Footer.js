@@ -7,7 +7,7 @@ export default function Footer(props) {
       <style jsx global>{`
         .fixed-dark-button {
           position: fixed !important;
-          top: 3.0rem;
+          top: 3.5rem;
           right: 1.5rem;
           z-index: 100;
           cursor: pointer;
@@ -17,22 +17,20 @@ export default function Footer(props) {
           width: 1.4rem;
           height: 1.4rem;
         }
-        /* 右下角统计样式 */
         .fixed-stats {
           position: fixed;
-          bottom: 1.5rem;
-          right: 1.5rem;
+          bottom: 1rem;
+          right: 0.6rem;
           z-index: 99;
-          background: rgba(0,0,0,0.6);
-          backdrop-filter: blur(4px);
-          padding: 0.3rem 0.8rem;
-          border-radius: 2rem;
           font-size: 0.75rem;
-          color: white;
+          color: #4b5563; /* gray-600 */
           display: flex;
           gap: 0.8rem;
           align-items: center;
           pointer-events: none;
+        }
+        .dark .fixed-stats {
+          color: #e5e7eb; /* gray-200 */
         }
         .fixed-stats i {
           margin-right: 0.2rem;
@@ -43,12 +41,10 @@ export default function Footer(props) {
         }
       `}</style>
 
-      {/* 黑暗模式按钮 */}
       <div className="fixed-dark-button">
         <DarkModeButton />
       </div>
 
-      {/* 右下角固定统计 */}
       <div className="fixed-stats">
         <span className="busuanzi_container_site_pv" style={{ display: 'none' }}>
           <i className="fas fa-eye"></i>
