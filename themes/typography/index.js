@@ -38,6 +38,18 @@ const LayoutBase = props => {
   const { onLoading } = useGlobal()
   const searchModal = useRef(null)
   const [currentPost, setCurrentPost] = useState(null)
+  const router = useRouter()
+
+  const isHomePage = router.pathname === '/'
+  const customMenu = props.customMenu || []
+
+  const openSearch = () => {
+    if (searchModal.current && searchModal.current.open) {
+      searchModal.current.open()
+    } else {
+      window.dispatchEvent(new CustomEvent('openSearch'))
+    }
+  }
 
   return (
     <>
@@ -53,6 +65,42 @@ const LayoutBase = props => {
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
           <NameCard />
+
+          {/* 首页顶部导航栏（水平菜单+搜索） */}
+          {isHomePage && !currentPost && (
+            <div className="sticky top-0 z-20 w-full border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
+              <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+                <div className="flex items-center justify-between h-16">
+                  {/* 菜单项，水平排列 */}
+                  <div className="flex items-center space-x-6 overflow-x-auto">
+                    {customMenu.map((item, idx) => {
+                      if (item.show === false) return null
+                      const hasSubMenu = item.subMenus && item.subMenus.length > 0
+                      // 忽略二级菜单（简化），直接渲染链接
+                      return (
+                        <SmartLink
+                          key={idx}
+                          href={item.href}
+                          target={item.target || '_self'}
+                          className="whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-[var(--primary-color)] dark:hover:text-[var(--primary-color)] transition-colors"
+                        >
+                          {item.name || item.title}
+                        </SmartLink>
+                      )
+                    })}
+                  </div>
+                  {/* 搜索按钮 */}
+                  <div
+                    onClick={openSearch}
+                    className="flex items-center justify-center w-8 h-8 rounded-full cursor-pointer text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    title="搜索"
+                  >
+                    <i className="fas fa-search text-sm"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
             <div className='flex flex-col md:flex-row gap-6'>
@@ -77,7 +125,8 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {!currentPost && <MenuCardRight {...props} />}
+          {/* 原有的右侧固定菜单：仅在不等于首页且不是文章详情页时显示 */}
+          {!currentPost && !isHomePage && <MenuCardRight {...props} />}
 
           <div className='fixed right-4 bottom-4 z-20'>
             <JumpToTopButton />
