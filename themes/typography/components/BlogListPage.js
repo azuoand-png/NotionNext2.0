@@ -23,7 +23,7 @@ export default function BlogListPage(props) {
     .replace('.html', '')
 
   return (
-    <div className='w-full px-1 md:px-1 mt-[7.5rem]'>
+    <div className='w-full px-1 md:px-1 mt-[1.5rem]'>
       {/* 修改点：添加 items-start，防止卡片被强行拉高产生底部空白 */}
       <div id='posts-wrapper' className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10 items-start'>
         {posts?.map((p, index) => (
