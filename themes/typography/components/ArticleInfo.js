@@ -19,18 +19,26 @@ export default function ArticleInfo(props) {
 
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
 
-  // 不蒜子刷新（修复：确保每次文章切换后重新获取，并增加重试机制）
+  // 强制刷新不蒜子，使用文章唯一 ID（post.id）作为 pageKey，避免 URL 参数干扰
   useEffect(() => {
-    if (!enableBusuanzi) return
-    const refreshBusuanzi = (retries = 3) => {
-      if (window.busuanzi && typeof window.busuanzi.fetch === 'function') {
+    if (!enableBusuanzi || !post?.id) return
+    let retry = 0
+    const maxRetry = 5
+    const refresh = () => {
+      if (window.busuanzi && typeof window.busuanzi.pagePV === 'function') {
+        // 使用 post.id 作为稳定标识
+        window.busuanzi.pagePV(post.id)
+      } else if (window.busuanzi && typeof window.busuanzi.fetch === 'function') {
+        // 兼容降级
         window.busuanzi.fetch()
-      } else if (retries > 0) {
-        setTimeout(() => refreshBusuanzi(retries - 1), 200)
+      } else if (retry < maxRetry) {
+        retry++
+        setTimeout(refresh, 200)
       }
     }
-    refreshBusuanzi()
-  }, [enableBusuanzi, post?.id])  // 依赖文章ID，确保切换文章时重新刷新
+    const timer = setTimeout(refresh, 200)
+    return () => clearTimeout(timer)
+  }, [enableBusuanzi, post?.id])
 
   // 计算文章字数（从 DOM 中获取正文纯文本）
   useEffect(() => {
@@ -96,7 +104,7 @@ export default function ArticleInfo(props) {
               <div className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
                 <i className="fas fa-eye"></i>
                 <span>已被阅读</span>
-                <span id="busuanzi_value_page_pv">0</span>
+                <span id="busuanzi_value_page_pv" className="busuanzi_value_page_pv">0</span>
                 <span>次</span>
               </div>
             )}
