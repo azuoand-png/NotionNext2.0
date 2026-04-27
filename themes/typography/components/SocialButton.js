@@ -23,14 +23,14 @@ const SocialButton = () => {
 
   return (
     <div className="w-full">
-      {/* 支持打赏按钮：右对齐，距离菜单牌底部 4rem（mt-16） */}
+      {/* 支持打赏按钮：右对齐，距离菜单牌底部 3rem（mt-3） */}
       {showSupport && (
-        <div className="flex justify-end mt-16">
+        <div className="flex justify-end mt-3">
           <a
             href={support.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center space-x-1 rounded-full px-4 py-2 bg-indigo-400 dark:bg-yellow-500 transition-colors duration-200"
+            className="group flex items-center space-x-1 rounded-full px-4 py-2 bg-indigo-400 dark:bg-yellow-500 transition-colors duration-200 hover:bg-white/80 dark:hover:bg-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -49,16 +49,16 @@ const SocialButton = () => {
         </div>
       )}
 
-      {/* 下方的文字链接，距离支持打赏按钮 3rem（mt-12），左对齐 */}
+      {/* 下方的文字链接，距离支持打赏按钮 2rem（mt-2），内部间距 0.5rem（space-y-2），行距 1.5rem（leading-6） */}
       {(showBottomLink1 || showBottomLink2) && (
-        <div className="mt-12 space-y-3 leading-6">
+        <div className="mt-2 space-y-2 leading-6">
           {showBottomLink1 && (
             <div className="text-left">
               <a
                 href={bottomLink1.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block underline decoration-2 hover:scale-105 transition-transform duration-200"
+                className="inline-block text-sm font-medium underline decoration-2 hover:scale-105 transition-transform duration-200"
                 style={{ color: '#833737', textDecorationColor: '#833737' }}
               >
                 {bottomLink1.text}
@@ -71,7 +71,7 @@ const SocialButton = () => {
                 href={bottomLink2.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block underline decoration-2 hover:scale-105 transition-transform duration-200"
+                className="inline-block text-sm font-medium underline decoration-2 hover:scale-105 transition-transform duration-200"
                 style={{ color: '#833737', textDecorationColor: '#833737' }}
               >
                 {bottomLink2.text}
