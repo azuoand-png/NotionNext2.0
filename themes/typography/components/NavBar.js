@@ -22,20 +22,7 @@ export function NameCard() {
   )
 }
 
-export function MenuCardRight(props) {
-  return (
-    <div className="fixed right-6 top-48 z-30 hidden md:block">
-      <nav className="md:pt-4 z-20 flex-shrink-0 w-full">
-        <div id="nav-bar-inner" className="text-sm md:text-md text-right">
-          <MenuList {...props} />
-        </div>
-        <div className="mt-4 flex justify-end">
-          <SocialButton />
-        </div>
-      </nav>
-    </div>
-  )
-}
+// 注意：MenuCardRight 已被彻底删除，不再导出
 
 export function MenuCardLeft(props) {
   return (
