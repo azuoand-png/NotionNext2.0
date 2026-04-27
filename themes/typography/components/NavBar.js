@@ -22,8 +22,6 @@ export function NameCard() {
   )
 }
 
-// 注意：MenuCardRight 已被彻底删除，不再导出
-
 export function MenuCardLeft(props) {
   return (
     <div className="w-full">
