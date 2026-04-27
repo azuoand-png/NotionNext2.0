@@ -72,12 +72,12 @@ const LayoutBase = props => {
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-          {/* 文章页和 Page 页显示右上角固定个人牌，首页不显示 */}
+          {/* 文章页显示右上角固定个人牌，首页不显示 */}
           {!isHomePage && <NameCard />}
 
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
             <div className='flex flex-col md:flex-row gap-6'>
-              {/* 左侧边栏：首页宽度 w-48，文章页保持 w-64？用户要求首页削减，文章页不变，但左侧边栏在文章页也是同样结构，为了不影响文章页布局，我们需要分别设置 */}
+              {/* 左侧边栏：首页宽度 w-48，文章页 w-64 */}
               <div className={`hidden md:block flex-shrink-0 sticky top-8 self-start ${isHomePage ? 'w-48' : 'w-64'}`}>
                 {currentPost ? (
                   <>
@@ -98,8 +98,8 @@ const LayoutBase = props => {
                 )}
               </div>
 
-              {/* 右侧主内容区：首页添加 md:pr-16（4rem），文章页不加右边距 */}
-              <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-16' : ''}`}>
+              {/* 右侧主内容区：首页右侧边距 5rem (pr-20)，文章页右边距 6rem (pr-24) 避免与个人牌重叠 */}
+              <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-20' : 'md:pr-24'}`}>
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
                     <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -124,7 +124,7 @@ const LayoutBase = props => {
   )
 }
 
-// 以下所有导出函数与您的原代码完全相同，无任何改动
+// 以下导出函数与原代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
