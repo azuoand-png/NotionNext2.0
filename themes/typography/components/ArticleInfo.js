@@ -18,7 +18,7 @@ export default function ArticleInfo(props) {
     : plainTags.map(tag => ({ name: tag, color: 'gray' }))
 
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
-  const subtitle = post?.summary || ''  // 副标题
+  const subtitle = post?.summary || ''
 
   // 强制刷新不蒜子，使用文章唯一 ID 作为 pageKey
   useEffect(() => {
@@ -58,26 +58,36 @@ export default function ArticleInfo(props) {
 
   return (
     <section className='mt-2 text-gray-600 dark:text-gray-400 leading-8'>
-      <h2 className='blog-item-title mb-5 font-bold text-black text-xl md:text-2xl no-underline'>
+      {/* 主标题：文字大小 *1.15 倍 */}
+      <h2 
+        className='blog-item-title mb-2 font-bold text-black no-underline'
+        style={{ fontSize: '1.4375rem' }}
+      >
         {siteConfig('POST_TITLE_ICON') && <NotionIcon icon={post?.pageIcon} />}
         {post?.title}
       </h2>
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .blog-item-title {
+            font-size: 1.725rem !important;
+          }
+        }
+      `}</style>
 
       {/* 副标题 */}
       {subtitle && (
-        <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">
+        <div className="text-base text-gray-500 dark:text-gray-400 mb-2 line-clamp-2">
           {subtitle}
         </div>
       )}
 
       <div className='flex flex-wrap text-[var(--primary-color)] dark:text-gray-300'>
-        {/* 移除类型限制，让 Page 也显示发布日期、标签、阅读次数 */}
         <header className='text-md text-[var(--primary-color)] dark:text-gray-300 flex-wrap flex items-center leading-6 gap-2'>
           <div className='space-x-2'>
             <span className='text-sm'>
               发布于
               <SmartLink
-                className='p-1 hover:text-red-400 transition-all duration-200'
+                className='p-1 transition-all duration-200'  // 移除了 hover:text-red-400
                 href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}>
                 {post.date?.start_date || post.createdTime}
               </SmartLink>
@@ -97,7 +107,7 @@ export default function ArticleInfo(props) {
                     notion-${tagColor}_background
                     transition-all duration-200
                     hover:!bg-[var(--primary-color)] hover:!text-white
-                    dark:hover:!bg-[var(--primary-color)] dark:hover:!text-black
+                    dark:hover:!text-white dark:text-yellow-300
                   `}
                 >
                   #{tagName}
