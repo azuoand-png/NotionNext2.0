@@ -33,7 +33,7 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-// 首页左侧个人牌（样式与原始个人牌相同，但非fixed）
+// 首页左侧个人牌（样式与原始 NameCard 完全一致）
 const LeftNameCard = () => {
   const blogName = siteConfig('TYPOGRAPHY_BLOG_NAME', null, CONFIG) || '磕学英语'
   const blogNameEn = siteConfig('TYPOGRAPHY_BLOG_NAME_EN', null, CONFIG) || '抱鸭将军'
@@ -72,7 +72,7 @@ const LayoutBase = props => {
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-          {/* 文章页显示右上角固定个人牌，首页不显示（因为左侧已有） */}
+          {/* 文章页和 Page 页显示右上角固定个人牌，首页不显示 */}
           {!isHomePage && <NameCard />}
 
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
@@ -80,7 +80,7 @@ const LayoutBase = props => {
               {/* 左侧边栏 */}
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 {currentPost ? (
-                  // 文章页：目录 + 菜单
+                  // 文章页和 Page 页：目录 + 菜单
                   <>
                     <Catalog post={currentPost} />
                     <div className='mt-8'>
@@ -90,17 +90,18 @@ const LayoutBase = props => {
                 ) : (
                   // 首页：个人牌 + 菜单
                   <>
-                    <LeftNameCard />
-                    <div className='mt-8'>
+                    <div className='mt-28'>
+                      <LeftNameCard />
+                    </div>
+                    <div className='mt-16'>
                       <MenuCardLeft {...props} />
                     </div>
                   </>
                 )}
               </div>
 
-              {/* 右侧主内容区 */}
-              <div className='flex-1 min-w-0'>
-                {/* 首页顶部距离 6rem，文章页保持原有上边距 */}
+              {/* 右侧主内容区：文章页和 Page 页增加右边距，避免与右侧个人牌重叠 */}
+              <div className={`flex-1 min-w-0 ${currentPost ? 'md:pr-24' : ''}`}>
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
                     <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -114,7 +115,8 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          <div className='fixed right-4 bottom-4 z-20'>
+          {/* 回到顶部按钮（全局固定） */}
+          <div className='fixed right-4 bottom-16 z-20'>
             <JumpToTopButton />
           </div>
           <AlgoliaSearchModal cRef={searchModal} {...props} />
@@ -125,7 +127,7 @@ const LayoutBase = props => {
   )
 }
 
-// 以下导出函数与原代码完全相同，无改动
+// 以下所有导出函数与您的原代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
