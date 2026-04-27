@@ -1,67 +1,36 @@
 import { siteConfig } from '@/lib/config'
 
 const SocialButton = () => {
-  const card1 = {
-    url: siteConfig('HEO_INFO_CARD_URL1', null, {}),
-    icon: siteConfig('HEO_INFO_CARD_ICON1', null, {}),
-  }
-  const card2 = {
-    url: siteConfig('HEO_INFO_CARD_URL2', null, {}),
-    icon: siteConfig('HEO_INFO_CARD_ICON2', null, {}),
-  }
-  const card3 = {
+  // 支持打赏按钮（按钮3）
+  const support = {
     url: siteConfig('HEO_INFO_CARD_URL3', null, {}),
     text: siteConfig('HEO_INFO_CARD_TEXT3', null, {}),
   }
-  const customLink1 = {
+
+  // 下方两条文字链接
+  const bottomLink1 = {
     text: siteConfig('CUSTOM_LINK1_TEXT', null, {}),
     url: siteConfig('CUSTOM_LINK1_URL', null, {}),
   }
-  const customLink2 = {
+  const bottomLink2 = {
     text: siteConfig('CUSTOM_LINK2_TEXT', null, {}),
     url: siteConfig('CUSTOM_LINK2_URL', null, {}),
   }
 
-  const showCard1 = card1.url && card1.icon
-  const showCard2 = card2.url && card2.icon
-  const showCard3 = card3.url && card3.text
-  const showCustom1 = customLink1.text && customLink1.url
-  const showCustom2 = customLink2.text && customLink2.url
+  const showSupport = support.url && support.text
+  const showBottomLink1 = bottomLink1.text && bottomLink1.url
+  const showBottomLink2 = bottomLink2.text && bottomLink2.url
 
   return (
     <div className="w-full">
-      <div className="flex justify-between w-full">
-        <div className="flex space-x-3">
-          {showCard1 && (
-            <a
-              href={card1.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center bg-indigo-400 dark:bg-yellow-500 rounded-full transition-colors duration-200 hover:bg-white dark:hover:bg-black"
-            >
-              <i className={`${card1.icon} text-white dark:text-white hover:text-black dark:hover:text-white transition-colors`} />
-            </a>
-          )}
-          {showCard2 && (
-            <a
-              href={card2.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center bg-indigo-400 dark:bg-yellow-500 rounded-full transition-colors duration-200 hover:bg-white dark:hover:bg-black"
-            >
-              <i className={`${card2.icon} text-white dark:text-white hover:text-black dark:hover:text-white transition-colors`} />
-            </a>
-          )}
-        </div>
-      </div>
-
-      {showCard3 && (
+      {/* 支持打赏按钮：右对齐，距离菜单牌底部 4rem（mt-16） */}
+      {showSupport && (
         <div className="flex justify-end mt-16">
           <a
-            href={card3.url}
+            href={support.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center space-x-1 rounded-full px-4 py-2 bg-indigo-400 dark:bg-yellow-500"
+            className="group flex items-center space-x-1 rounded-full px-4 py-2 bg-indigo-400 dark:bg-yellow-500 transition-colors duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -74,49 +43,49 @@ const SocialButton = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="font-bold text-white group-hover:text-indigo-400 dark:group-hover:text-yellow-500 transition-colors">
-              {card3.text}
+              {support.text}
             </span>
           </a>
         </div>
       )}
 
-      {(showCustom1 || showCustom2) && (
+      {/* 下方的文字链接，距离支持打赏按钮 3rem（mt-12），左对齐 */}
+      {(showBottomLink1 || showBottomLink2) && (
         <div className="mt-12 space-y-3 leading-6">
-          {showCustom1 && (
+          {showBottomLink1 && (
             <div className="text-left">
               <a
-                href={customLink1.url}
+                href={bottomLink1.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block underline decoration-2 hover:scale-105 transition-transform duration-200 custom-link"
+                className="inline-block underline decoration-2 hover:scale-105 transition-transform duration-200"
+                style={{ color: '#833737', textDecorationColor: '#833737' }}
               >
-                {customLink1.text}
+                {bottomLink1.text}
               </a>
             </div>
           )}
-          {showCustom2 && (
+          {showBottomLink2 && (
             <div className="text-left">
               <a
-                href={customLink2.url}
+                href={bottomLink2.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block underline decoration-2 hover:scale-105 transition-transform duration-200 custom-link"
+                className="inline-block underline decoration-2 hover:scale-105 transition-transform duration-200"
+                style={{ color: '#833737', textDecorationColor: '#833737' }}
               >
-                {customLink2.text}
+                {bottomLink2.text}
               </a>
             </div>
           )}
         </div>
       )}
 
+      {/* 暗色模式覆盖：为文字链接设置暗色颜色 */}
       <style jsx global>{`
-        .custom-link {
-          color: #833737;
-          text-decoration-color: #833737;
-        }
-        .dark .custom-link {
-          color: #E4C500;
-          text-decoration-color: #E4C500;
+        .dark a[style*="color: #833737"] {
+          color: #E4C500 !important;
+          text-decoration-color: #E4C500 !important;
         }
       `}</style>
     </div>
