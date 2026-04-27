@@ -7,7 +7,7 @@ export default function Footer(props) {
       <style jsx global>{`
         .fixed-dark-button {
           position: fixed !important;
-          top: 3.5rem;
+          top: 3.9rem;
           right: 1.5rem;
           z-index: 100;
           cursor: pointer;
