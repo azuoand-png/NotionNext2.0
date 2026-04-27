@@ -43,15 +43,6 @@ const LayoutBase = props => {
   const customMenu = props.customMenu || []
   const [searchKeyword, setSearchKeyword] = useState('')
 
-  const handleSearchKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      if (searchKeyword.trim()) {
-        router.push(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`)
-      }
-    }
-  }
-
   return (
     <>
       <Head>
@@ -60,7 +51,13 @@ const LayoutBase = props => {
           strategy="afterInteractive"
         />
       </Head>
-      <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
+      <ThemeGlobalSimple.Provider value={{
+        searchModal,
+        currentPost,
+        setCurrentPost,
+        searchKeyword,
+        setSearchKeyword
+      }}>
         <div id='theme-typography' className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
@@ -68,7 +65,7 @@ const LayoutBase = props => {
           <NameCard />
 
           {isHomePage && !currentPost && (
-            <div className="relative w-full border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90">
+            <div className="sticky top-0 z-20 w-full border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
               <div className="max-w-[1400px] mx-auto px-4 md:px-8">
                 <div className="flex items-center justify-between h-16 gap-4">
                   <div className="flex items-center space-x-4 overflow-x-auto">
@@ -81,19 +78,30 @@ const LayoutBase = props => {
                             key={idx}
                             href={item.href || '/'}
                             target={item.target || '_self'}
-                            className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-[var(--primary-color)] transition-colors rounded-md"
+                            className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-gray-800 transition-colors rounded-md"
                           >
                             {item.name || item.title}
                           </SmartLink>
                         )
                       }
                       return (
-                        <div key={idx} className="relative group">
-                          <div className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-[var(--primary-color)] transition-colors rounded-md cursor-pointer">
+                        <div
+                          key={idx}
+                          className="relative"
+                          onMouseEnter={(e) => {
+                            const menu = e.currentTarget.querySelector('.submenu')
+                            if (menu) menu.style.display = 'block'
+                          }}
+                          onMouseLeave={(e) => {
+                            const menu = e.currentTarget.querySelector('.submenu')
+                            if (menu) menu.style.display = 'none'
+                          }}
+                        >
+                          <div className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-gray-800 transition-colors rounded-md cursor-pointer">
                             {item.name || item.title}
                           </div>
-                          <div className="absolute left-0 top-full pt-1 hidden group-hover:block z-50">
-                            <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 min-w-32">
+                          <div className="submenu absolute left-0 top-full pt-1 z-50 hidden" style={{ minWidth: '120px' }}>
+                            <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700">
                               {item.subMenus.map((sub, subIdx) => (
                                 <SmartLink
                                   key={subIdx}
@@ -115,8 +123,7 @@ const LayoutBase = props => {
                       type="text"
                       value={searchKeyword}
                       onChange={(e) => setSearchKeyword(e.target.value)}
-                      onKeyDown={handleSearchKeyDown}
-                      placeholder="按Enter键 搜索"
+                      placeholder="搜索文章"
                       className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)] w-48 md:w-64"
                     />
                   </div>
