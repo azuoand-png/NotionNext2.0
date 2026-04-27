@@ -12,7 +12,7 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
-import { NameCard, MenuCardLeft } from './components/NavBar'  // 删除 MenuCardRight
+import { NameCard, MenuCardLeft } from './components/NavBar'
 import Script from 'next/script'
 import Head from 'next/head'
 
@@ -43,10 +43,12 @@ const LayoutBase = props => {
   const customMenu = props.customMenu || []
   const [searchKeyword, setSearchKeyword] = useState('')
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    if (searchKeyword.trim()) {
-      router.push(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`)
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (searchKeyword.trim()) {
+        router.push(`/search?keyword=${encodeURIComponent(searchKeyword.trim())}`)
+      }
     }
   }
 
@@ -65,59 +67,59 @@ const LayoutBase = props => {
 
           <NameCard />
 
-          {/* 首页顶部导航栏（水平菜单+搜索框） */}
           {isHomePage && !currentPost && (
-            <div className="sticky top-0 z-20 w-full border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
+            <div className="relative w-full border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90">
               <div className="max-w-[1400px] mx-auto px-4 md:px-8">
                 <div className="flex items-center justify-between h-16 gap-4">
-                  {/* 菜单项，水平排列，支持二级菜单 */}
                   <div className="flex items-center space-x-4 overflow-x-auto">
                     {customMenu.map((item, idx) => {
                       if (item.show === false) return null
                       const hasSubMenu = item.subMenus && item.subMenus.length > 0
-                      return (
-                        <div key={idx} className="relative group">
+                      if (!hasSubMenu) {
+                        return (
                           <SmartLink
-                            href={item.href}
+                            key={idx}
+                            href={item.href || '/'}
                             target={item.target || '_self'}
-                            className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[var(--primary-color)] dark:hover:text-[var(--primary-color)] transition-colors rounded-md"
+                            className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-[var(--primary-color)] transition-colors rounded-md"
                           >
                             {item.name || item.title}
                           </SmartLink>
-                          {/* 二级菜单下拉 */}
-                          {hasSubMenu && (
-                            <div className="absolute left-0 top-full pt-1 hidden group-hover:block z-30">
-                              <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 min-w-32">
-                                {item.subMenus.map((sub, subIdx) => (
-                                  <SmartLink
-                                    key={subIdx}
-                                    href={sub.href}
-                                    target={sub.target || '_self'}
-                                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap"
-                                  >
-                                    {sub.title || sub.name}
-                                  </SmartLink>
-                                ))}
-                              </div>
+                        )
+                      }
+                      return (
+                        <div key={idx} className="relative group">
+                          <div className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-[var(--primary-color)] transition-colors rounded-md cursor-pointer">
+                            {item.name || item.title}
+                          </div>
+                          <div className="absolute left-0 top-full pt-1 hidden group-hover:block z-50">
+                            <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 min-w-32">
+                              {item.subMenus.map((sub, subIdx) => (
+                                <SmartLink
+                                  key={subIdx}
+                                  href={sub.href}
+                                  target={sub.target || '_self'}
+                                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap"
+                                >
+                                  {sub.title || sub.name}
+                                </SmartLink>
+                              ))}
                             </div>
-                          )}
+                          </div>
                         </div>
                       )
                     })}
                   </div>
-                  {/* 搜索输入框 */}
-                  <form onSubmit={handleSearch} className="flex items-center">
+                  <div className="flex items-center">
                     <input
                       type="text"
                       value={searchKeyword}
                       onChange={(e) => setSearchKeyword(e.target.value)}
-                      placeholder="搜索..."
-                      className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)]"
+                      onKeyDown={handleSearchKeyDown}
+                      placeholder="按Enter键 搜索"
+                      className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)] w-48 md:w-64"
                     />
-                    <button type="submit" className="ml-2 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition">
-                      搜索
-                    </button>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -146,9 +148,7 @@ const LayoutBase = props => {
             </div>
           </div>
 
-          {/* 原 MenuCardRight 已彻底删除，此处不再渲染 */}
-
-          <div className='fixed right-4 bottom-4 z-20'>
+          <div className='fixed right-4 bottom-16 z-20'>
             <JumpToTopButton />
           </div>
           <AlgoliaSearchModal cRef={searchModal} {...props} />
