@@ -33,9 +33,7 @@ export const MenuItemDrop = ({ link }) => {
               <span className='dark:hover:text-[var(--primary-color)] dark:hover:bg-white menu-link underline decoration-2 hover:no-underline hover:bg-[#2E405B] hover:text-white text-[var(--primary-color)] dark:text-gray-200 tracking-widest pb-1 font-bold hover:rounded-full hover:px-2'>
                 {link?.icon && <i className={link?.icon} />} {link?.name}
               </span>
-              {hasSubMenu && (
-                <i className={`px-2 fas fa-chevron-right duration-500 transition-all ${show ? ' rotate-180' : ''}`}></i>
-              )}
+              {/* 箭头已删除 */}
             </div>
 
             <ul
