@@ -124,7 +124,7 @@ const LayoutBase = props => {
   )
 }
 
-// 以下导出函数与原代码完全相同，无任何改动
+// 以下导出函数与原代码基本相同，仅修改 LayoutSlug 添加不蒜子刷新
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
@@ -168,6 +168,7 @@ const LayoutArchive = props => {
   )
 }
 
+// 修改点：在 LayoutSlug 中添加不蒜子刷新逻辑
 const LayoutSlug = props => {
   const { post, lock, validPassword, prev, next, recommendPosts } = props
   const { fullWidth } = useGlobal()
@@ -177,6 +178,30 @@ const LayoutSlug = props => {
     if (post) setCurrentPost(post)
     return () => setCurrentPost(null)
   }, [post, setCurrentPost])
+
+  // 新增：刷新不蒜子文章阅读数（使用 post.id 作为稳定标识）
+  useEffect(() => {
+    if (!post) return
+    // 确保不蒜子脚本已加载且存在 pagePV 方法
+    const refreshBusuanzi = () => {
+      if (typeof window !== 'undefined' && window.busuanzi) {
+        // 优先使用 pagePV 方法传入唯一标识，避免 URL 参数干扰
+        if (typeof window.busuanzi.pagePV === 'function') {
+          window.busuanzi.pagePV({ pageKey: post.id })
+        } else if (typeof window.busuanzi.fetch === 'function') {
+          window.busuanzi.fetch()
+        } else {
+          // 若都不可用，延迟重试
+          setTimeout(refreshBusuanzi, 200)
+        }
+      } else {
+        setTimeout(refreshBusuanzi, 200)
+      }
+    }
+    // 延迟执行确保 DOM 中已渲染出不蒜子元素
+    const timer = setTimeout(refreshBusuanzi, 200)
+    return () => clearTimeout(timer)
+  }, [post?.id])
 
   return (
     <>
