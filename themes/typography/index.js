@@ -12,7 +12,7 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
-import { NameCard, MenuCardLeft } from './components/NavBar'
+import { MenuCardLeft } from './components/NavBar'
 import Script from 'next/script'
 import Head from 'next/head'
 
@@ -33,6 +33,24 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
+// 左侧个人牌组件（原始样式：竖排文字，左边框）
+const LeftNameCard = () => {
+  const blogName = siteConfig('TYPOGRAPHY_BLOG_NAME', null, CONFIG) || '磕学英语'
+  const blogNameEn = siteConfig('TYPOGRAPHY_BLOG_NAME_EN', null, CONFIG) || '抱鸭将军'
+  return (
+    <div className="w-full mb-6">
+      <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4">
+        <SmartLink href='/'>
+          <div className="flex flex-col items-start">
+            <div className="font-bold text-4xl text-center" id="blog-name">{blogName}</div>
+            <div className="font-bold text-xl text-center" id="blog-name-en">{blogNameEn}</div>
+          </div>
+        </SmartLink>
+      </header>
+    </div>
+  )
+}
+
 const LayoutBase = props => {
   const { children } = props
   const { onLoading } = useGlobal()
@@ -40,8 +58,6 @@ const LayoutBase = props => {
   const [currentPost, setCurrentPost] = useState(null)
   const router = useRouter()
   const isHomePage = router.pathname === '/'
-  const customMenu = props.customMenu || []
-  const [searchKeyword, setSearchKeyword] = useState('')
 
   return (
     <>
@@ -51,111 +67,51 @@ const LayoutBase = props => {
           strategy="afterInteractive"
         />
       </Head>
-      <ThemeGlobalSimple.Provider value={{
-        searchModal,
-        currentPost,
-        setCurrentPost,
-        searchKeyword,
-        setSearchKeyword
-      }}>
+      <ThemeGlobalSimple.Provider value={{ searchModal, currentPost, setCurrentPost }}>
         <div id='theme-typography' className={`${siteConfig('FONT_STYLE')} font-typography min-h-screen bg-white dark:bg-[#232222]`}>
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
-          <NameCard />
-
-          {isHomePage && !currentPost && (
-            <div className="sticky top-0 z-20 w-full border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
-              <div className="max-w-[1400px] mx-auto px-4 md:px-8">
-                <div className="flex items-center justify-between h-16 gap-4">
-                  <div className="flex items-center space-x-4 overflow-x-auto">
-                    {customMenu.map((item, idx) => {
-                      if (item.show === false) return null
-                      const hasSubMenu = item.subMenus && item.subMenus.length > 0
-                      if (!hasSubMenu) {
-                        return (
-                          <SmartLink
-                            key={idx}
-                            href={item.href || '/'}
-                            target={item.target || '_self'}
-                            className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-gray-800 transition-colors rounded-md"
-                          >
-                            {item.name || item.title}
-                          </SmartLink>
-                        )
-                      }
-                      return (
-                        <div
-                          key={idx}
-                          className="relative"
-                          onMouseEnter={(e) => {
-                            const menu = e.currentTarget.querySelector('.submenu')
-                            if (menu) menu.style.display = 'block'
-                          }}
-                          onMouseLeave={(e) => {
-                            const menu = e.currentTarget.querySelector('.submenu')
-                            if (menu) menu.style.display = 'none'
-                          }}
-                        >
-                          <div className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-current hover:text-white dark:hover:bg-white dark:hover:text-gray-800 transition-colors rounded-md cursor-pointer">
-                            {item.name || item.title}
-                          </div>
-                          <div className="submenu absolute left-0 top-full pt-1 z-50 hidden" style={{ minWidth: '120px' }}>
-                            <div className="bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700">
-                              {item.subMenus.map((sub, subIdx) => (
-                                <SmartLink
-                                  key={subIdx}
-                                  href={sub.href}
-                                  target={sub.target || '_self'}
-                                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap"
-                                >
-                                  {sub.title || sub.name}
-                                </SmartLink>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="text"
-                      value={searchKeyword}
-                      onChange={(e) => setSearchKeyword(e.target.value)}
-                      placeholder="搜索文章"
-                      className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)] w-48 md:w-64"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
             <div className='flex flex-col md:flex-row gap-6'>
-              {currentPost && (
-                <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
-                  <Catalog post={currentPost} />
-                  <div className='mt-8'>
-                    <MenuCardLeft {...props} />
-                  </div>
-                </div>
-              )}
-
-              <div className='flex-1 min-w-0 md:pr-32'>
-                {onLoading ? (
-                  <div className='flex items-center justify-center min-h-[500px] w-full'>
-                    <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
-                  </div>
+              {/* 左侧边栏（始终显示） */}
+              <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
+                {currentPost ? (
+                  // 文章页：目录 + 菜单
+                  <>
+                    <Catalog post={currentPost} />
+                    <div className='mt-8'>
+                      <MenuCardLeft {...props} />
+                    </div>
+                  </>
                 ) : (
-                  children
+                  // 首页：个人牌 + 菜单
+                  <>
+                    <LeftNameCard />
+                    <div className='mt-8'>
+                      <MenuCardLeft {...props} />
+                    </div>
+                  </>
                 )}
+              </div>
+
+              {/* 右侧主内容区 */}
+              <div className='flex-1 min-w-0'>
+                {/* 首页顶部距离 6rem，文章页使用原有的 mt-10 */}
+                <div className={`${isHomePage ? 'mt-24' : ''}`}>
+                  {onLoading ? (
+                    <div className='flex items-center justify-center min-h-[500px] w-full'>
+                      <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white' />
+                    </div>
+                  ) : (
+                    children
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className='fixed right-4 bottom-16 z-20'>
+          <div className='fixed right-4 bottom-4 z-20'>
             <JumpToTopButton />
           </div>
           <AlgoliaSearchModal cRef={searchModal} {...props} />
@@ -166,7 +122,7 @@ const LayoutBase = props => {
   )
 }
 
-// 以下所有导出函数与您原代码完全相同，无任何改动
+// 以下导出函数与原代码完全相同，无任何改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
