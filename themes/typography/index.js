@@ -12,7 +12,7 @@ import BlogPostBar from './components/BlogPostBar'
 import CONFIG from './config'
 import { Style } from './style'
 import Catalog from './components/Catalog'
-import { MenuCardLeft } from './components/NavBar'
+import { NameCard, MenuCardLeft } from './components/NavBar'
 import Script from 'next/script'
 import Head from 'next/head'
 
@@ -33,7 +33,7 @@ const RecommendPosts = dynamic(() => import('./components/RecommendPosts'), { ss
 const ThemeGlobalSimple = createContext()
 export const useSimpleGlobal = () => useContext(ThemeGlobalSimple)
 
-// 左侧个人牌组件（原始样式：竖排文字，左边框）
+// 首页左侧个人牌（样式与原始个人牌相同，但非fixed）
 const LeftNameCard = () => {
   const blogName = siteConfig('TYPOGRAPHY_BLOG_NAME', null, CONFIG) || '磕学英语'
   const blogNameEn = siteConfig('TYPOGRAPHY_BLOG_NAME_EN', null, CONFIG) || '抱鸭将军'
@@ -42,8 +42,8 @@ const LeftNameCard = () => {
       <header className="w-fit self-start md:pb-8 md:border-l-2 dark:md:border-white dark:text-white md:border-[var(--primary-color)] text-[var(--primary-color)] md:[writing-mode:vertical-lr] px-4 hover:bg-[var(--primary-color)] dark:hover:bg-white hover:text-white dark:hover:text-[var(--primary-color)] ease-in-out duration-700 md:hover:pt-4 md:hover:pb-4">
         <SmartLink href='/'>
           <div className="flex flex-col items-start">
-            <div className="font-bold text-4xl text-center" id="blog-name">{blogName}</div>
-            <div className="font-bold text-xl text-center" id="blog-name-en">{blogNameEn}</div>
+            <div className="font-bold text-4xl text-center">{blogName}</div>
+            <div className="font-bold text-xl text-center">{blogNameEn}</div>
           </div>
         </SmartLink>
       </header>
@@ -72,9 +72,12 @@ const LayoutBase = props => {
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
+          {/* 文章页显示右上角固定个人牌，首页不显示（因为左侧已有） */}
+          {!isHomePage && <NameCard />}
+
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
             <div className='flex flex-col md:flex-row gap-6'>
-              {/* 左侧边栏（始终显示） */}
+              {/* 左侧边栏 */}
               <div className='hidden md:block w-64 flex-shrink-0 sticky top-8 self-start'>
                 {currentPost ? (
                   // 文章页：目录 + 菜单
@@ -97,7 +100,7 @@ const LayoutBase = props => {
 
               {/* 右侧主内容区 */}
               <div className='flex-1 min-w-0'>
-                {/* 首页顶部距离 6rem，文章页使用原有的 mt-10 */}
+                {/* 首页顶部距离 6rem，文章页保持原有上边距 */}
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
                     <div className='flex items-center justify-center min-h-[500px] w-full'>
@@ -122,7 +125,7 @@ const LayoutBase = props => {
   )
 }
 
-// 以下导出函数与原代码完全相同，无任何改动
+// 以下导出函数与原代码完全相同，无改动
 const LayoutIndex = props => <LayoutPostList {...props} />
 const LayoutPostList = props => (
   <>
