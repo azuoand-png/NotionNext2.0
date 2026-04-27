@@ -51,15 +51,14 @@ const SocialButton = () => {
 
       {/* 下方的文字链接，距离支持打赏按钮 2rem（mt-2），内部间距 0.5rem（space-y-2），行距 1.5rem（leading-6） */}
       {(showBottomLink1 || showBottomLink2) && (
-        <div className="mt-2 space-y-2 leading-6">
+        <div className="mt-2 space-y-1 leading-6">
           {showBottomLink1 && (
             <div className="text-left">
               <a
                 href={bottomLink1.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block text-sm font-medium underline decoration-2 hover:scale-105 transition-transform duration-200"
-                style={{ color: '#833737', textDecorationColor: '#833737' }}
+                className="inline-block text-sm font-medium underline decoration-2 decoration-current hover:scale-105 transition-transform duration-200 text-[var(--primary-color)] dark:text-white"
               >
                 {bottomLink1.text}
               </a>
@@ -71,8 +70,7 @@ const SocialButton = () => {
                 href={bottomLink2.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block text-sm font-medium underline decoration-2 hover:scale-105 transition-transform duration-200"
-                style={{ color: '#833737', textDecorationColor: '#833737' }}
+                className="inline-block text-sm font-medium underline decoration-2 decoration-current hover:scale-105 transition-transform duration-200 text-[var(--primary-color)] dark:text-white"
               >
                 {bottomLink2.text}
               </a>
@@ -80,14 +78,6 @@ const SocialButton = () => {
           )}
         </div>
       )}
-
-      {/* 暗色模式覆盖：为文字链接设置暗色颜色 */}
-      <style jsx global>{`
-        .dark a[style*="color: #833737"] {
-          color: #E4C500 !important;
-          text-decoration-color: #E4C500 !important;
-        }
-      `}</style>
     </div>
   )
 }
