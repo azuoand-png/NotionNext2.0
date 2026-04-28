@@ -7,15 +7,26 @@ import { useEffect, useState } from 'react'
 
 export default function ArticleInfo(props) {
   const { post } = props
-  const { locale } = useGlobal()
+  const { locale, tagOptions } = useGlobal()  // 获取全局标签颜色配置
   const [wordCount, setWordCount] = useState(0)
   const [readTime, setReadTime] = useState(1)
 
   const tagItems = post?.tagItems || []
   const plainTags = post?.tags || []
-  const tagsWithColor = tagItems.length > 0 
-    ? tagItems 
-    : plainTags.map(tag => ({ name: tag, color: 'gray' }))
+
+  // 构建标签颜色：优先使用 post.tagItems，否则从全局 tagOptions 中获取颜色
+  let tagsWithColor = []
+  if (tagItems.length > 0) {
+    tagsWithColor = tagItems
+  } else if (plainTags.length > 0 && tagOptions && tagOptions.length) {
+    // 为每个普通标签匹配全局颜色
+    tagsWithColor = plainTags.map(tag => {
+      const found = tagOptions.find(t => t.name === tag)
+      return { name: tag, color: found?.color || 'gray' }
+    })
+  } else {
+    tagsWithColor = plainTags.map(tag => ({ name: tag, color: 'gray' }))
+  }
 
   const enableBusuanzi = siteConfig('ANALYTICS_BUSUANZI_SITE_ID', null, {})
   const subtitle = post?.summary || ''
@@ -87,7 +98,7 @@ export default function ArticleInfo(props) {
             <span className='text-sm'>
               发布于
               <SmartLink
-                className='p-1 transition-all duration-200'  // 移除了 hover:text-red-400
+                className='p-1 transition-all duration-200'
                 href={`/archive#${formatDateFmt(post?.publishDate, 'yyyy-MM')}`}>
                 {post.date?.start_date || post.createdTime}
               </SmartLink>
