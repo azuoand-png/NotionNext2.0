@@ -31,51 +31,70 @@ const Catalog = ({ post }) => {
     const OFFSET = 80
     const THROTTLE_MS = 100
 
-    const updateActiveSection = () => {
-      if (isManualScrolling.current) return
+    let retryCount = 0
+    const maxRetry = 5
+    let scrollTarget = null
+    let throttledUpdate = null
 
+    const init = () => {
+      // 等待文章正文标题元素出现
       const sections = document.getElementsByClassName('notion-h')
-      if (!sections.length) return
+      if (sections.length === 0 && retryCount < maxRetry) {
+        retryCount++
+        setTimeout(init, 200)
+        return
+      }
 
-      let bestMatchId = null
-      let bestDistance = Infinity
+      const updateActiveSection = () => {
+        if (isManualScrolling.current) return
 
-      for (let i = 0; i < sections.length; i++) {
-        const section = sections[i]
-        const rect = section.getBoundingClientRect()
-        const distance = rect.top - OFFSET
-        if (distance <= 0 && Math.abs(distance) < bestDistance) {
-          bestDistance = Math.abs(distance)
-          bestMatchId = section.getAttribute('data-id')
+        const sectionsNow = document.getElementsByClassName('notion-h')
+        if (!sectionsNow.length) return
+
+        let bestMatchId = null
+        let bestDistance = Infinity
+
+        for (let i = 0; i < sectionsNow.length; i++) {
+          const section = sectionsNow[i]
+          const rect = section.getBoundingClientRect()
+          const distance = rect.top - OFFSET
+          if (distance <= 0 && Math.abs(distance) < bestDistance) {
+            bestDistance = Math.abs(distance)
+            bestMatchId = section.getAttribute('data-id')
+          }
+        }
+
+        if (!bestMatchId && sectionsNow.length > 0) {
+          bestMatchId = sectionsNow[0].getAttribute('data-id')
+        }
+
+        if (bestMatchId && bestMatchId !== activeSection) {
+          setActiveSection(bestMatchId)
+          const index = post.toc.findIndex(obj => uuidToId(obj.id) === bestMatchId)
+          if (index !== -1 && tRef.current) {
+            tRef.current.scrollTo({ top: index * 28, behavior: 'smooth' })
+          }
         }
       }
 
-      if (!bestMatchId && sections.length > 0) {
-        bestMatchId = sections[0].getAttribute('data-id')
-      }
+      throttledUpdate = throttle(() => {
+        updateActiveSection()
+        updateProgress()
+      }, THROTTLE_MS)
 
-      if (bestMatchId && bestMatchId !== activeSection) {
-        setActiveSection(bestMatchId)
-        const index = post.toc.findIndex(obj => uuidToId(obj.id) === bestMatchId)
-        if (index !== -1 && tRef.current) {
-          tRef.current.scrollTo({ top: index * 28, behavior: 'smooth' })
-        }
-      }
-    }
-
-    const throttledUpdate = throttle(() => {
+      const container = document.querySelector('#container-inner')
+      scrollTarget = container || window
+      scrollTarget.addEventListener('scroll', throttledUpdate)
       updateActiveSection()
       updateProgress()
-    }, THROTTLE_MS)
+    }
 
-    const container = document.querySelector('#container-inner')
-    const scrollTarget = container || window
-    scrollTarget.addEventListener('scroll', throttledUpdate)
-    updateActiveSection()
-    updateProgress()
+    init()
 
     return () => {
-      scrollTarget.removeEventListener('scroll', throttledUpdate)
+      if (scrollTarget && throttledUpdate) {
+        scrollTarget.removeEventListener('scroll', throttledUpdate)
+      }
       if (manualScrollTimer.current) clearTimeout(manualScrollTimer.current)
     }
   }, [post, activeSection])
@@ -125,7 +144,6 @@ const Catalog = ({ post }) => {
         </div>
 
         <div className="overflow-y-auto max-h-[calc(100vh-200px)] scroll-hidden" ref={tRef}>
-          {/* 修改点：移除 space-y，改用 py-1（上下内边距）控制间距，行高精确 1.5倍 */}
           <nav className="text-sm">
             {post.toc.map(tocItem => {
               const id = uuidToId(tocItem.id)
