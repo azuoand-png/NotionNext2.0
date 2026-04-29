@@ -51,18 +51,17 @@ const Style = () => {
         font-family: HiraMinProN-W6, 'Source Han Serif CN',
           'Source Han Serif SC', 'Source Han Serif TC', serif;
       }
-      /* 抱鸭将军样式：黑体，字间距0.5rem，大小缩小0.9倍 */
+      /* 抱鸭将军样式 */
       #theme-typography #blog-name-en {
         font-family: 'SimHei', 'Hei', 'Microsoft YaHei', '黑体', sans-serif;
         letter-spacing: 0.5rem;
-        font-size: 1.125rem; /* 原 text-xl 1.25rem * 0.9 */
+        font-size: 1.125rem;
         color: #2D519C;
         transition: color 0.2s ease;
       }
       .dark #theme-typography #blog-name-en {
         color: #ffffff;
       }
-      /* 悬停时颜色互换：白天变白，暗色变 #2D519C */
       #theme-typography header:hover #blog-name-en {
         color: #ffffff !important;
       }
@@ -102,18 +101,15 @@ const Style = () => {
         overflow-x: auto;
       }
 
-      /* ========== 修改：正文所有文本样式（两端对齐 + 行距1.5倍，排除标题） ========== */
       #article-wrapper .notion-page *:not(.notion-h1):not(.notion-h2):not(.notion-h3):not(.notion-h4) {
         line-height: 1.5 !important;
         text-align: justify !important;
       }
-      /* 表格内文字单独恢复行距1.4倍，同时保留两端对齐 */
       #article-wrapper .notion-page .notion-table *,
       #article-wrapper .notion-page .notion-simple-table * {
         line-height: 1.4 !important;
         text-align: justify !important;
       }
-      /* 标题保持左对齐，不两端对齐 */
       #article-wrapper .notion-page .notion-h1,
       #article-wrapper .notion-page .notion-h2,
       #article-wrapper .notion-page .notion-h3,
@@ -122,7 +118,6 @@ const Style = () => {
         line-height: 1.2 !important;
       }
 
-      /* 去掉二级菜单容器的背景、边框、阴影（保留子项的悬停样式） */
       .menu-item .absolute.glassmorphism,
       .menu-item ul.absolute {
         background: transparent !important;
@@ -130,6 +125,41 @@ const Style = () => {
         border: none !important;
         box-shadow: none !important;
         background-color: transparent !important;
+      }
+
+      /* ========== Cusdis 评论区样式覆盖（仅外层） ========== */
+      /* 1. 隐藏原有的红色 "Cusdis" 文字，并添加新的标题 */
+      .comment .mb-5 ul {
+        position: relative;
+        text-align: center;
+      }
+      .comment .mb-5 ul li {
+        display: none; /* 隐藏原始标签 */
+      }
+      .comment .mb-5 ul::before {
+        content: "欢迎评论留言";
+        display: inline-block;
+        font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #215E99;
+        border-bottom: 2px solid #215E99;
+        padding-bottom: 0.25rem;
+      }
+      .dark .comment .mb-5 ul::before {
+        color: #e5e7eb; /* 浅白色 */
+        border-bottom-color: #e5e7eb;
+      }
+
+      /* 6. 黑暗模式下评论区域背景：移除黑色背景，恢复格子背景 */
+      .dark .comment {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      /* 确保 iframe 容器背景也透明（让网页背景透出） */
+      .dark #cusdis_thread,
+      .dark .comment section {
+        background: transparent !important;
       }
     `}</style>
   )
