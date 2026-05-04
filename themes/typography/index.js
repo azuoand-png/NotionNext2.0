@@ -72,6 +72,7 @@ const LayoutBase = props => {
           <Style />
           {siteConfig('SIMPLE_TOP_BAR', null, CONFIG) && <TopBar {...props} />}
 
+          {/* 右侧个人牌：仅在非首页时显示 */}
           {!isHomePage && <NameCard />}
 
           <div className='max-w-[1400px] mx-auto px-4 md:px-8'>
@@ -86,17 +87,16 @@ const LayoutBase = props => {
                   </>
                 ) : (
                   <>
-                    <div className='mt-28'>
-                      <LeftNameCard />
-                    </div>
-                    <div className='mt-16'>
+                    {/* 首页才显示左侧个人牌，其他页面（标签/分类/归档等）不显示个人牌 */}
+                    {isHomePage && <div className='mt-28'><LeftNameCard /></div>}
+                    <div className={`${isHomePage ? 'mt-16' : 'mt-8'}`}>
                       <MenuCardLeft {...props} />
                     </div>
                   </>
                 )}
               </div>
 
-              {/* 首页右边距 md:pr-11，文章页右边距增大为 md:pr-32（原 md:pr-24） */}
+              {/* 首页右边距 md:pr-11，文章页右边距增大为 md:pr-32 */}
               <div className={`flex-1 min-w-0 ${isHomePage ? 'md:pr-11' : 'md:pr-32'}`}>
                 <div className={`${isHomePage ? 'mt-24' : ''}`}>
                   {onLoading ? (
